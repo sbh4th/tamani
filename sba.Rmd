@@ -1,0 +1,62 @@
+---
+title: "Untitled"
+author: "Sam Harper"
+date: "22/09/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(tidybayes)
+library(broom)
+library(magrittr)
+library(patchwork)
+library(haven)
+library(rethinking)
+library(modelsummary)
+library(kableExtra)
+library(brms)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+library(cmdstanr)
+library(bayestestR)
+library(modelr)
+```
+
+## R Markdown
+First, read in the data
+
+```{r data, echo=F}
+## Read in dataset, limit to target sample
+d <- read_dta("hh_female_impact_rpt.dta")
+
+d1 <- d %>%
+  # trim to analytic variables
+  select("hh1","sba_birth","txdel","delwave") %>%
+  
+  # limit to complete cases
+  drop_na() %>% 
+  
+  # create unique continuous hamlet Id
+  mutate(h_id = cur_group_id(),
+         delwave = factor(delwave),
+         txdel = factor(txdel)) %>%
+```
+
+
+## Model 3
+## add baseline schooling
+b3 <-
+  brm(data = d1, 
+      family = bernoulli(),
+      school_3 ~ 1 + (1 | h_id) + blockf + school_1,
+      prior = c(prior(normal(0, 1.5), class = Intercept),  # bar alpha
+                prior(normal(0, 0.5), class = b),          # betas
+                prior(exponential(1), class = sd)),        # sigma
+      iter = 5000, warmup = 1000, chains = 4, cores = 4,
+      sample_prior = "yes",
+      seed = 56)
+
+plot(b3)
+print(b3)
