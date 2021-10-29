@@ -73,7 +73,74 @@ Now, just to get a look at what we are comparing when we run the group-time DDs,
 
 ```{r gtwide}
 gt <- d_agg %>% select(group, time, psba) %>%
-  pivot_wider(names_from = time, values_from = psba)
+  pivot_wider(names_from = time, names_prefix = "time",
+              values_from = psba)
 
-kbl(gt) 
+gt %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling()
+```
+The basic idea of the group-time ATTs is to estimate a series of ATTs for each group $G$ that is treated at time $T$. So if we wanted to estimate the ATT at time=2 for the group that is first treated at time=2, we calculate the 'long' difference, i.e., post minus pre for the treated group ($G=2$) and the difference for all groups *not already treated* for the same period. Thus, the groups we are comparing to estimate ATT(2,2) are:
+```{r gt22}
+gt %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling() %>%
+  column_spec(2:3, color = "black", background = "red") %>%
+  row_spec(2:4, background  = "lightgray") %>%
+  column_spec(4:6, background = "white") %>%
+  column_spec(1, background = "white") %>%
+  kable_minimal() %>%
+  footnote(general = "Red = treated, Gray = untreated")
+```
+
+If we take the population-weighted average SBA proportions for these two groups, we get
+
+```{r att22}
+d_agg %>% filter(time < 3) %>%
+  mutate(g22 = if_else(group==2,1,0)) %>%
+  group_by(g22, time) %>%
+  summarise(tsba = sum(tsba),
+            tpop = sum(tpop),
+            psba = tsba / tpop) %>%
+  select(g22, time, psba) %>%
+  pivot_wider(names_from = time, values_from = psba) %>%
+  mutate(Diff = `2` - `1`) %>%
+  group_by() %>%
+  mutate(ATT_2_2 = Diff - lag(Diff, default = NA)) %>%
+  kable(digits=3) %>%
+  column_spec(5, bold=TRUE) %>%
+  kable_minimal()
+```
+
+Now, we can ask about how the effect in Group 2 changes with time after the intervention. The ATT(2,3) asks about the estimated treatment effect at time 3 ($t=3$) for the group that was first treated at time 2 ($g=2$). To get this estimate, we now create a similar 2x2 table but are using time 3 as the 'post' estimate. But note here that, since group 3 ($G=3$) is treated at time 3, we don't want to include it as a part of our control group, we that means we restrict our control comparison to only those groups that are **not** treated by time 3. So we are comparing:
+
+```{r gt23}
+gt %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling() %>%
+  column_spec(c(2,4), color = "black", background = "red") %>%
+  row_spec(2, background = "white") %>%
+  row_spec(3:4, background  = "lightgray") %>%
+  column_spec(c(3,5,6), background = "white") %>%
+  column_spec(1, background = "white") %>%
+  kable_minimal() %>%
+  footnote(general = "Red = treated, Gray = untreated")
+```
+
+And we get:
+```{r att23}
+d_agg %>% filter((time==1 | time==3) & group!=3) %>%
+  mutate(g23 = if_else(group==2,1,0)) %>%
+  group_by(g23, time) %>%
+  summarise(tsba = sum(tsba),
+            tpop = sum(tpop),
+            psba = tsba / tpop) %>%
+  select(g23, time, psba) %>%
+  pivot_wider(names_from = time, values_from = psba) %>%
+  mutate(Diff = `3` - `1`) %>%
+  group_by() %>%
+  mutate(ATT_2_3 = Diff - lag(Diff, default = NA)) %>%
+  kable(digits=3) %>%
+  column_spec(5, bold=TRUE) %>%
+  kable_minimal()
 ```
