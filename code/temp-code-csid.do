@@ -1,4 +1,4 @@
-use "/Users/samharper/Dropbox/work/research/projects/TAMANI project/Data/Impact Eval/dta/hh_female_impact_rpt.dta", clear
+use "/Users/samharper/OneDrive - McGill University/TAMANI project/Data/Impact Eval/dta/hh_female_impact_rpt.dta", clear
 
 by hh1, sort: egen txdel_time = min(cond(txdel == 1, delwave, .))
 tab txdel_time

@@ -1,0 +1,79 @@
+---
+title: "Untitled"
+author: "Sam Harper"
+date: "29/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here) 
+library(tidyverse)
+library(haven)
+library(bacondecomp)
+library(ggplot2)
+library(fixest)
+library(glue)
+library(modelsummary)
+library(TwoWayFEWeights)
+library(kableExtra)
+devtools::install_github("bcallaway11/did")
+library(did)
+```
+
+First, let's read in the Stata dataset, and create a smaller version with just the variables of interest for looking at skilled birth attendance:
+```{r d1}
+d <- read_dta(here("data-clean", "hh_female_impact_rpt.dta")) %>%
+    mutate(district = as_factor(hh1, levels = "labels"),
+         time = as.numeric(delwave) + 1,
+         sba_birth = as.numeric(sba_birth))
+
+# restrict to variables for analysis
+d_ind <- d %>% 
+  select(district, sba_birth, txdel, time) %>%
+  mutate(dist_id = as.numeric(district)) %>%
+  drop_na() %>%
+  group_by(district, dist_id) %>%
+  mutate(group = min(if_else(txdel==1, time, 5)),
+         g2 = if_else(group==2, 1, 0),
+         g3 = if_else(group==3, 1, 0),
+         g4 = if_else(group==4, 1, 0)) 
+```
+
+Next let's aggregate up to the district level
+```{r d2}
+d_sba <- d_ind %>%
+  group_by(district, dist_id, time) %>%
+  summarise(tsba = sum(sba_birth),
+         tpop = n(),
+         psba = tsba / tpop, # % SBA
+         txdel = mean(txdel),
+         group = mean(group),
+         g2 = mean(g2),
+         g3 = mean(g3),
+         g4 = mean(g4))
+glimpse(d_sba)
+```
+
+Since the CS DiD approach functions by aggregating different kinds of group-time DDs, we can also aggregate up to the group level, since we have 2 groups being treated at each wave post-baseline:
+
+```{r gt}
+# create group-time aggregate data
+d_agg <- d_sba %>% group_by(group, time) %>%
+  summarise(tsba = sum(tsba),
+         tpop = sum(tpop),
+         psba = tsba / tpop, # % SBA
+         txdel = mean(txdel),
+         g2 = mean(g2),
+         g3 = mean(g3),
+         g4 = mean(g4))
+```
+
+Now, just to get a look at what we are comparing when we run the group-time DDs, let's reshape this data to wide (just to see it):
+
+```{r gtwide}
+gt <- d_agg %>% select(group, time, psba) %>%
+  pivot_wider(names_from = time, values_from = psba)
+
+kbl(gt) 
+```
