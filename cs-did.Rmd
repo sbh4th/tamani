@@ -22,7 +22,7 @@ library(did)
 ```
 
 First, let's read in the Stata dataset, and create a smaller version with just the variables of interest for looking at skilled birth attendance:
-```{r d1}
+```{r d1, cache=TRUE}
 d <- read_dta(here("data-clean", "hh_female_impact_rpt.dta")) %>%
     mutate(district = as_factor(hh1, levels = "labels"),
          time = as.numeric(delwave) + 1,
@@ -41,7 +41,7 @@ d_ind <- d %>%
 ```
 
 Next let's aggregate up to the district level
-```{r d2}
+```{r d2, cache=TRUE}
 d_sba <- d_ind %>%
   group_by(district, dist_id, time) %>%
   summarise(tsba = sum(sba_birth),
@@ -104,9 +104,9 @@ d_agg %>% filter(time < 3) %>%
             psba = tsba / tpop) %>%
   select(g22, time, psba) %>%
   pivot_wider(names_from = time, values_from = psba) %>%
-  mutate(Diff = `2` - `1`) %>%
+  mutate(`Long diff` = `2` - `1`) %>%
   group_by() %>%
-  mutate(ATT_2_2 = Diff - lag(Diff, default = NA)) %>%
+  mutate(ATT_2_2 = `Long diff` - lag(`Long diff`, default = NA)) %>%
   kable(digits=3) %>%
   column_spec(5, bold=TRUE) %>%
   kable_minimal()
@@ -137,9 +137,138 @@ d_agg %>% filter((time==1 | time==3) & group!=3) %>%
             psba = tsba / tpop) %>%
   select(g23, time, psba) %>%
   pivot_wider(names_from = time, values_from = psba) %>%
-  mutate(Diff = `3` - `1`) %>%
+  mutate(`Long diff` = `3` - `1`) %>%
   group_by() %>%
-  mutate(ATT_2_3 = Diff - lag(Diff, default = NA)) %>%
+  mutate(ATT_2_3 = `Long diff` - lag(`Long diff`, default = NA)) %>%
+  kable(digits=3) %>%
+  column_spec(5, bold=TRUE) %>%
+  kable_minimal()
+```
+
+We can of course extend our view of how the treatment effect evolves for Group 2 by calculating the effect of being treated at time 4 for the group that was first treated at time 2, i.e., ATT(2,4). This is comparing:
+```{r gt24}
+gt %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling() %>%
+  column_spec(c(2,5), color = "black", background = "red") %>%
+  row_spec(2:3, background = "white") %>%
+  row_spec(4, background  = "lightgray") %>%
+  column_spec(6, background = "white") %>%
+  column_spec(c(1,3,4), background = "white") %>%
+  kable_minimal() %>%
+  footnote(general = "Red = treated, Gray = untreated")
+```
+
+Note that the control group here also changes, since at $t=4$ group 4 has now been treated, so we exclude them from the control group for this comparison. And the estimate is:
+```{r att24}
+d_agg %>% filter((time==1 | time==4) & group!=3 & group!=4) %>%
+  mutate(g24 = if_else(group==2,1,0)) %>%
+  group_by(g24, time) %>%
+  summarise(tsba = sum(tsba),
+            tpop = sum(tpop),
+            psba = tsba / tpop) %>%
+  select(g24, time, psba) %>%
+  pivot_wider(names_from = time, values_from = psba) %>%
+  mutate(`Long diff` = `4` - `1`) %>%
+  group_by() %>%
+  mutate(ATT_2_4 = `Long diff` - lag(`Long diff`, default = NA)) %>%
+  kable(digits=3) %>%
+  column_spec(5, bold=TRUE) %>%
+  kable_minimal()
+```
+
+## Group 3
+Now, what about the groups that are first treated at time 3, i.e., ($t=3$)? Since we actually have more than one pre-period for this group, we can also see whether there is some evidence of non-parallel trends by looking at, for example, the ATT(3,2), which is the effect of being treated at **time=2** for the group that is first treated at time 3. In essence, we are comparing the pre-intervention 'long difference' between $t=1$ and $t=2$ for the group eventually treated at time 3 with the same long difference among the controls:
+
+```{r gt32}
+gt %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling() %>%
+  column_spec(2:3, color = "black", background = "red") %>%
+  row_spec(3:4, background  = "lightgray") %>%
+  row_spec(1, background = "white") %>%
+  column_spec(4:6, background = "white") %>%
+  column_spec(1, background = "white") %>%
+  kable_minimal() %>%
+  footnote(general = "Red = treated, Gray = untreated")
+```
+
+The estimate of the ATT(3,2) is:
+```{r att32}
+d_agg %>% filter(time < 3 & group != 2) %>%
+  mutate(g32 = if_else(group==3,1,0)) %>%
+  group_by(g32, time) %>%
+  summarise(tsba = sum(tsba),
+            tpop = sum(tpop),
+            psba = tsba / tpop) %>%
+  select(g32, time, psba) %>%
+  pivot_wider(names_from = time, values_from = psba) %>%
+  mutate(`Long diff` = `2` - `1`) %>%
+  group_by() %>%
+  mutate(ATT_3_2 = `Long diff` - lag(`Long diff`, default = NA)) %>%
+  kable(digits=3) %>%
+  column_spec(5, bold=TRUE) %>%
+  kable_minimal()
+```
+
+Now for the treatment effect at time 3 for the groups first treated at time 3 we are comparing:
+```{r gt33}
+gt %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling() %>%
+  column_spec(3:4, color = "black", background = "red") %>%
+  row_spec(3:4, background  = "lightgray") %>%
+  row_spec(1, background = "white") %>%
+  column_spec(c(1,2,5,6), background = "white") %>%
+  column_spec(1, background = "white") %>%
+  kable_minimal() %>%
+  footnote(general = "Red = treated, Gray = untreated")
+```
+
+The estimate of the ATT(3,3) is:
+```{r att33}
+d_agg %>% filter(time >1 & time < 4 & group != 2) %>%
+  mutate(g33 = if_else(group==3,1,0)) %>%
+  group_by(g33, time) %>%
+  summarise(tsba = sum(tsba),
+            tpop = sum(tpop),
+            psba = tsba / tpop) %>%
+  select(g33, time, psba) %>%
+  pivot_wider(names_from = time, values_from = psba) %>%
+  mutate(`Long diff` = `3` - `2`) %>%
+  group_by() %>%
+  mutate(ATT_3_3 = `Long diff` - lag(`Long diff`, default = NA)) %>%
+  kable(digits=3) %>%
+  column_spec(5, bold=TRUE) %>%
+  kable_minimal()
+```
+
+The groups for comparison for the estimated treatment effect at time 4 for the groups first treated at time 3 now also need to exclude group 4, since it has received the treatment at time 4:
+```{r gt34}
+gt %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling() %>%
+  column_spec(4:5, color = "black", background = "red") %>%
+  row_spec(c(1,3,4), background = "white") %>%
+  row_spec(4, background  = "lightgray") %>%
+  column_spec(c(1,2,3,6), background = "white") %>%
+  kable_minimal() %>%
+  footnote(general = "Red = treated, Gray = untreated")
+```
+
+The estimate of the ATT(3,3) is:
+```{r att33}
+d_agg %>% filter(time >1 & time < 4 & group != 2) %>%
+  mutate(g33 = if_else(group==3,1,0)) %>%
+  group_by(g33, time) %>%
+  summarise(tsba = sum(tsba),
+            tpop = sum(tpop),
+            psba = tsba / tpop) %>%
+  select(g33, time, psba) %>%
+  pivot_wider(names_from = time, values_from = psba) %>%
+  mutate(`Long diff` = `3` - `2`) %>%
+  group_by() %>%
+  mutate(ATT_3_3 = `Long diff` - lag(`Long diff`, default = NA)) %>%
   kable(digits=3) %>%
   column_spec(5, bold=TRUE) %>%
   kable_minimal()
