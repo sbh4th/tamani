@@ -4,14 +4,17 @@
 %
 \documentclass[
 ]{article}
+\title{Group-Time ATTs}
+\author{Sam Harper}
+\date{2021-11-02}
+
+\usepackage{amsmath,amssymb}
 \usepackage{lmodern}
-\usepackage{amsmath}
-\usepackage{ifxetex,ifluatex}
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+\usepackage{iftex}
+\ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
-  \usepackage{amssymb}
 \else % if luatex or xetex
   \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
@@ -114,13 +117,11 @@
 \usepackage[normalem]{ulem}
 \usepackage{makecell}
 \usepackage{xcolor}
-\ifluatex
+\usepackage{siunitx}
+\newcolumntype{d}{S[input-symbols = ()]}
+\ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-
-\title{Group-Time ATTs}
-\author{Sam Harper}
-\date{2021-11-02}
 
 \begin{document}
 \maketitle
@@ -205,15 +206,23 @@ workhorse of most DD applications with differential treatment timing.
 ## Observations: 5,555 
 ## Fixed-effects: district: 8,  time: 5
 ## Standard-errors: Clustered (district) 
-##       Estimate Std. Error t value Pr(>|t|)) 
-## txdel  0.05976   0.037325   1.601    0.1534 
+##       Estimate Std. Error t value Pr(>|t|) 
+## txdel  0.05976   0.037325 1.60105   0.1534 
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## RMSE: 0.425631     Adj. R2: 0.057514
 ##                  Within R2: 5.313e-4
 \end{verbatim}
 
-Next let's aggregate up to the district level
+Specifying this using an OLS model with standard errors clustered at the
+district level, we get a DD estimate that we would interpret as showing
+that the intervention increased the probability of skilled birth
+attendance by 6 percentage points (95\% CI -0.7 to 12.7).
+
+Because the treatment is assigned at the cluster level and we aren't
+adjusting for any covariates, we can also analyze this at the cluster
+level. Next let's aggregate up to the district level. Here is a look at
+the dataset:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -328,9 +337,76 @@ Igunga DC & 8 & 5 & 94 & 131 & 0.718 & 1 & 3\\
 \end{tabular}
 \end{table}
 
-Since the CS DiD approach functions by aggregating different kinds of
-group-time DDs, we can also aggregate up to the group level, since we
-have 2 groups being treated at each wave post-baseline:
+You can see that we are aggregating up to the district level, and how we
+have the total population (\texttt{tpop}) and the total number of births
+with a skilled attendant (\texttt{tsba}), as well as the proportion by
+district.
+
+Now, we can also fit the TWFE model to this aggregate data, controlling
+for district fixed effects and survey wave.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Compare to pooled sample}
+\NormalTok{twfep }\OtherTok{\textless{}{-}}\NormalTok{ fixest}\SpecialCharTok{::}\FunctionTok{feols}\NormalTok{(psba }\SpecialCharTok{\textasciitilde{}}\NormalTok{ txdel }\SpecialCharTok{|}\NormalTok{ district }\SpecialCharTok{+}\NormalTok{ time, }
+                      \AttributeTok{data =}\NormalTok{ d\_sba,}
+                      \AttributeTok{weights =} \SpecialCharTok{\textasciitilde{}}\NormalTok{tpop, }
+                      \AttributeTok{cluster =} \SpecialCharTok{\textasciitilde{}}\NormalTok{district)}
+
+\NormalTok{twfep}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## OLS estimation, Dep. Var.: psba
+## Observations: 40 
+## Fixed-effects: district: 8,  time: 5
+## Standard-errors: Clustered (district) 
+##       Estimate Std. Error t value Pr(>|t|) 
+## txdel  0.05976   0.039958 1.49557  0.17842 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## RMSE: 0.466034     Adj. R2: 0.826702
+##                  Within R2: 0.058009
+\end{verbatim}
+
+The estimates from these two models are identical (SEs are very
+minimally different), which is just to say that it is fine to work with
+the aggregate data to estimate the impact of the intervention (absent
+control for covariates):
+
+\begin{table}
+\centering
+\begin{tabular}[t]{lcc}
+\toprule
+  & Individual & Aggregate\\
+\midrule
+txdel & \num{0.060} & \num{0.060}\\
+ & (\num{0.037}) & (\num{0.040})\\
+\midrule
+Num.Obs. & \num{5555} & \num{40}\\
+Std.Errors & by: district & by: district\\
+FE: district & X & X\\
+FE: time & X & X\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\hypertarget{callawaysantanna-approach}{%
+\subsection{Callaway/Sant'Anna
+Approach}\label{callawaysantanna-approach}}
+
+Okay so we have the traditional DD estimate of around a 6 percentage
+point increase in SBA. Now let's look at the Callaway-Sant'Anna DD
+estimate. Since the CS DD approach functions by aggregating different
+kinds of group-time DDs, we can also aggregate up to the group level,
+since we have 2 groups being treated at each wave post-baseline. Let's
+define a new variable \texttt{group} that indicates the time at which
+each group was \emph{first} treated. So for Kaliua DC and\\
+Urambo DC that were the first groups to be treated post-baseline (what
+we will call time=2), they are assigned a value of \texttt{group=2}, and
+so on for the other groups. Meanwhile, we are still aggregating up the
+number of births with SBA and the total population of each group.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -340,8 +416,61 @@ have 2 groups being treated at each wave post-baseline:
          \AttributeTok{tpop =} \FunctionTok{sum}\NormalTok{(tpop),}
          \AttributeTok{psba =}\NormalTok{ tsba }\SpecialCharTok{/}\NormalTok{ tpop, }\CommentTok{\# \% SBA}
          \AttributeTok{txdel =} \FunctionTok{mean}\NormalTok{(txdel))}
+
+\NormalTok{d\_agg }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{, }\AttributeTok{escape =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{kable\_styling}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{table}
+\centering
+\begin{tabular}[t]{r|r|r|r|r|r}
+\hline
+group & time & tsba & tpop & psba & txdel\\
+\hline
+2 & 1 & 567 & 898 & 0.631 & 0\\
+\hline
+2 & 2 & 64 & 90 & 0.711 & 1\\
+\hline
+2 & 3 & 83 & 102 & 0.814 & 1\\
+\hline
+2 & 4 & 11 & 13 & 0.846 & 1\\
+\hline
+2 & 5 & 119 & 144 & 0.826 & 1\\
+\hline
+3 & 1 & 987 & 1455 & 0.678 & 0\\
+\hline
+3 & 2 & 127 & 165 & 0.770 & 0\\
+\hline
+3 & 3 & 83 & 125 & 0.664 & 1\\
+\hline
+3 & 4 & 24 & 30 & 0.800 & 1\\
+\hline
+3 & 5 & 182 & 232 & 0.784 & 1\\
+\hline
+4 & 1 & 878 & 1128 & 0.778 & 0\\
+\hline
+4 & 2 & 113 & 140 & 0.807 & 0\\
+\hline
+4 & 3 & 68 & 101 & 0.673 & 0\\
+\hline
+4 & 4 & 12 & 16 & 0.750 & 1\\
+\hline
+4 & 5 & 145 & 167 & 0.868 & 1\\
+\hline
+5 & 1 & 475 & 556 & 0.854 & 0\\
+\hline
+5 & 2 & 62 & 66 & 0.939 & 0\\
+\hline
+5 & 3 & 35 & 41 & 0.854 & 0\\
+\hline
+5 & 4 & 8 & 10 & 0.800 & 0\\
+\hline
+5 & 5 & 65 & 76 & 0.855 & 1\\
+\hline
+\end{tabular}
+\end{table}
 
 Now, just to get a look at what we are comparing when we run the
 group-time DDs, let's reshape this data to wide (just to see it):
@@ -363,8 +492,84 @@ group & psba_t1 & psba_t2 & psba_t3 & psba_t4 & psba_t5 & tpop_t1 & tpop_t2 & tp
 \end{tabular}
 \end{table}
 
+Okay, now let's estimate the impact using the CS DD method:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Use not{-}yet{-}treated as comparison group}
+\NormalTok{atts\_cs }\OtherTok{\textless{}{-}}\NormalTok{ did}\SpecialCharTok{::}\FunctionTok{att\_gt}\NormalTok{(}\AttributeTok{yname =} \StringTok{"psba"}\NormalTok{, }\CommentTok{\# name of the LHS variable}
+                       \AttributeTok{tname =} \StringTok{"time"}\NormalTok{, }\CommentTok{\# name of the time variable}
+                       \AttributeTok{idname =} \StringTok{"dist\_id"}\NormalTok{, }\CommentTok{\# name of the id variable}
+                       \AttributeTok{gname =} \StringTok{"group"}\NormalTok{, }\CommentTok{\# name of the first treatment period}
+                       \AttributeTok{data =}\NormalTok{ d\_sba, }\CommentTok{\# name of the data}
+                       \AttributeTok{xformla =} \ConstantTok{NULL}\NormalTok{,}
+                       \AttributeTok{weightsname =} \StringTok{"tpop"}\NormalTok{,}
+                       \AttributeTok{est\_method =} \StringTok{"reg"}\NormalTok{, }\CommentTok{\# estimation method.}
+                       \AttributeTok{control\_group =} \StringTok{"notyettreated"}\NormalTok{, }\CommentTok{\# set the control group}
+                       \AttributeTok{bstrap =} \ConstantTok{TRUE}\NormalTok{, }\CommentTok{\# if TRUE compute boostrapped SE}
+                       \AttributeTok{biters =} \DecValTok{1000}\NormalTok{, }\CommentTok{\# number of boostrap interations}
+                       \AttributeTok{print\_details =} \ConstantTok{FALSE}\NormalTok{, }\CommentTok{\# if TRUE, print detailed results}
+                       \AttributeTok{panel =} \ConstantTok{FALSE}\NormalTok{) }\CommentTok{\# panel or repeated cross{-}sectional}
+\FunctionTok{summary}\NormalTok{(atts\_cs)}
+\end{Highlighting}
+\end{Shaded}
+
+A summary of the estimates, SEs, and 95\% CIs (based on 1000
+bootstrapped replications) is below:
+
+\begin{table}
+\centering
+\begin{tabular}[t]{l|r|r|r|r|r|r}
+\hline
+term & group & time & estimate & std.error & conf.low & conf.high\\
+\hline
+ATT(2,2) & 2 & 2 & 0.011 & 0.095 & -0.197 & 0.219\\
+\hline
+ATT(2,3) & 2 & 3 & 0.260 & 0.143 & -0.052 & 0.573\\
+\hline
+ATT(2,4) & 2 & 4 & 0.269 & 0.096 & 0.059 & 0.479\\
+\hline
+ATT(3,2) & 3 & 2 & 0.045 & 0.090 & -0.151 & 0.241\\
+\hline
+ATT(3,3) & 3 & 3 & 0.018 & 0.147 & -0.304 & 0.341\\
+\hline
+ATT(3,4) & 3 & 4 & 0.170 & 0.063 & 0.032 & 0.308\\
+\hline
+ATT(4,2) & 4 & 2 & -0.062 & 0.115 & -0.315 & 0.190\\
+\hline
+ATT(4,3) & 4 & 3 & -0.048 & 0.144 & -0.363 & 0.267\\
+\hline
+ATT(4,4) & 4 & 4 & 0.130 & 0.275 & -0.472 & 0.733\\
+\hline
+\end{tabular}
+\end{table}
+
+One thing that is immediately different from the TWFE method is that we
+get an entire suite of ATTs for each group and time period, which allows
+us to see:
+
+\begin{itemize}
+\tightlist
+\item
+  heterogeneity across both groups treated at different times (e.g., the
+  ATT in the first year of treatment is much larger for the group first
+  treated at time=2 (ATT(2,2) = 0.01) relative to the estimated effect
+  in the first year of treatment for the group first treated at time 4,
+  i.e., ATT(4,4) = 0.13, though both estimates are imprecise); and
+\item
+  as well as different times for each treatment group, e.g.., the impact
+  at time 3 for the group first treated at time 2 is 0.26 relative to
+  0.01 for the first year of treatment.
+\end{itemize}
+
+Let's take a quick detour to understand where these estimates are coming
+from.
+
 \hypertarget{group-time-atts}{%
 \subsection{Group Time ATTs}\label{group-time-atts}}
+
+The core of the CS estimator is the group-time ATT. They define groups
+based on when they were first treated and
 
 \hypertarget{group-2}{%
 \subsubsection{Group 2}\label{group-2}}
@@ -376,20 +581,6 @@ time=2, we calculate the `long' difference, i.e., post minus pre for the
 treated group (\(G=2\)) and the difference for all groups \emph{not
 already treated} for the same period. Thus, the groups we are comparing
 to estimate ATT(2,2) are:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{gt }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{, }\AttributeTok{escape =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_styling}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{2}\SpecialCharTok{:}\DecValTok{3}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{background =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{2}\SpecialCharTok{:}\DecValTok{4}\NormalTok{, }\AttributeTok{background  =} \StringTok{"lightgray"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{4}\SpecialCharTok{:}\DecValTok{6}\NormalTok{, }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{1}\NormalTok{, }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{footnote}\NormalTok{(}\AttributeTok{general =} \StringTok{"Red = treated, Gray = untreated"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{table}
 \centering
@@ -412,26 +603,6 @@ group & time1 & time2 & time3 & time4 & time5\\
 
 If we take the population-weighted average SBA proportions for these two
 groups, we get
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{d\_agg }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(time }\SpecialCharTok{\textless{}} \DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{g22 =} \FunctionTok{if\_else}\NormalTok{(group}\SpecialCharTok{==}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(g22, time) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{tsba =} \FunctionTok{sum}\NormalTok{(tsba),}
-            \AttributeTok{tpop =} \FunctionTok{sum}\NormalTok{(tpop),}
-            \AttributeTok{psba =}\NormalTok{ tsba }\SpecialCharTok{/}\NormalTok{ tpop) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(g22, time, psba) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ time, }\AttributeTok{values\_from =}\NormalTok{ psba,}
-              \AttributeTok{names\_prefix =} \StringTok{"time"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{\textasciigrave{}}\AttributeTok{time2}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \StringTok{\textasciigrave{}}\AttributeTok{time1}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ATT\_2\_2 =} \StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \FunctionTok{lag}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{default =} \ConstantTok{NA}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{5}\NormalTok{, }\AttributeTok{bold=}\ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{verbatim}
 ## `summarise()` has grouped output by 'g22'. You can override using the `.groups` argument.

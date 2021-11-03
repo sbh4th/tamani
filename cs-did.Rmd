@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 library(here) 
 library(tidyverse)
 library(haven)
@@ -25,7 +25,7 @@ library(did)
 
 # Standard Two-Way Fixed Effects 
 First, let's read in the Stata dataset, and create a smaller version with just the variables of interest for looking at skilled birth attendance:
-```{r d1, cache=TRUE}
+```{r d1, cache=FALSE}
 d <- read_dta(here("data-clean", "hh_female_impact_rpt.dta")) %>%
     mutate(district = as_factor(hh1, levels = "labels"),
          time = as.numeric(delwave) + 1,
@@ -47,7 +47,7 @@ kable(head(d_ind)) %>%
 ```
 Using this data, let's now run the standard TWFE analysis that is the workhorse of most DD applications with differential treatment timing. 
 
-```{r twfei, cache=TRUE}
+```{r twfei, cache=FALSE}
 # Get TWFE coefficient from individual-level dataset
 twfe <- fixest::feols(sba_birth ~ txdel | district + time, 
                       data = d,
@@ -95,8 +95,7 @@ modelsummary(models, gof_omit = 'DF|Deviance|R2|AIC|BIC|Log.Lik')
 
 
 ## Callaway/Sant'Anna Approach
-Okay so we have the traditional DD estimate of around a 6 percentage point increase in SBA. Now let's look at the Callaway-Sant'Anna DD estimate. Since the CS DD approach functions by aggregating different kinds of group-time DDs, we can also aggregate up to the group level, since we have 2 groups being treated at each wave post-baseline. Let's define a new variable `group` that indicates the time at which each group was *first* treated. So for Kaliua DC and 	
-Urambo DC that were the first groups to be treated post-baseline (what we will call time=2), they are assigned a value of `group=2`, and so on for the other groups. Meanwhile, we are still aggregating up the number of births with SBA and the total population of each group.
+Okay so we have the traditional DD estimate of around a 6 percentage point increase in SBA. Now let's look at the Callaway-Sant'Anna DD estimate. Since the CS DD approach functions by aggregating different kinds of group-time DDs, we can also aggregate up to the group level, since we have 2 groups being treated at each wave post-baseline. Let's define a new variable `group` that indicates the time at which each group was *first* treated. So for Kaliua DC and Urambo DC that were the first groups to be treated post-baseline (what we will call time=2), they are assigned a value of `group=2`, and so on for the other groups. Meanwhile, we are still aggregating up the number of births with SBA and the total population of each group.
 
 ```{r gt, message=FALSE}
 # create group-time aggregate data
@@ -128,7 +127,7 @@ gt <- d_agg %>% select(group, time, psba) %>%
 ```
 
 Okay, now let's estimate the impact using the CS DD method:
-```{r csdid, message=FALSE, warning=FALSE, results=FALSE}
+```{r csdid, message=FALSE, warning=FALSE, results=FALSE, echo=TRUE}
 # Use not-yet-treated as comparison group
 atts_cs <- did::att_gt(yname = "psba", # name of the LHS variable
                        tname = "time", # name of the time variable
@@ -180,7 +179,7 @@ gt %>%
 
 If we take the population-weighted average SBA proportions for these two groups, we get
 
-```{r att22, echo=FALSE}
+```{r att22, echo=FALSE, message=FALSE, results=FALSE}
 d_agg %>% filter(time < 3) %>%
   mutate(g22 = if_else(group==2,1,0)) %>%
   group_by(g22, time) %>%
@@ -214,7 +213,7 @@ gt %>%
 ```
 
 And we get:
-```{r att23}
+```{r att23, message=FALSE, results=FALSE}
 d_agg %>% filter((time==1 | time==3) & group!=3) %>%
   mutate(g23 = if_else(group==2,1,0)) %>%
   group_by(g23, time) %>%
@@ -247,7 +246,7 @@ gt %>%
 ```
 
 Note that the control group here also changes, since at $t=4$ group 4 has now been treated, so we exclude them from the control group for this comparison. And the estimate is:
-```{r att24}
+```{r att24, message=FALSE, results=FALSE}
 d_agg %>% filter((time==1 | time==4) & group!=3 & group!=4) %>%
   mutate(g24 = if_else(group==2,1,0)) %>%
   group_by(g24, time) %>%
@@ -282,7 +281,7 @@ gt %>%
 ```
 
 The estimate of the ATT(3,2) is:
-```{r att32}
+```{r att32, message=FALSE, results=FALSE}
 d_agg %>% filter(time < 3 & group != 2) %>%
   mutate(g32 = if_else(group==3,1,0)) %>%
   group_by(g32, time) %>%
@@ -301,7 +300,7 @@ d_agg %>% filter(time < 3 & group != 2) %>%
 ```
 
 Now for the treatment effect at time 3 for the groups first treated at time 3 we are comparing:
-```{r gt33}
+```{r gt33, message=FALSE, results=FALSE}
 gt %>%
   kbl(digits=3, escape = FALSE) %>%
   kable_styling() %>%
@@ -315,7 +314,7 @@ gt %>%
 ```
 
 The estimate of the ATT(3,3) is:
-```{r att33}
+```{r att33, message=FALSE, results=FALSE}
 d_agg %>% filter(time >1 & time < 4 & group != 2) %>%
   mutate(g33 = if_else(group==3,1,0)) %>%
   group_by(g33, time) %>%
@@ -347,7 +346,7 @@ gt %>%
 ```
 
 The estimate of the ATT(3,4) is:
-```{r att34, message=FALSE}
+```{r att34, message=FALSE, results=FALSE}
 d_agg %>% filter((time == 2 | time == 4) & (group == 3 | group == 5)) %>%
   mutate(g34 = if_else(group==3,1,0)) %>%
   group_by(g34, time) %>%
@@ -380,7 +379,7 @@ gt %>%
 ```
 
 Again, taking the population-weighted estimate for the control group and the estimates for Group 4, we can calculate the ATT at time 2 for the group first treated at time 4, i.e., ATT(4,2):
-```{r att42, message=FALSE}
+```{r att42, message=FALSE, results=FALSE}
 d_agg %>% filter(time < 3 & group >= 3) %>%
   mutate(g42 = if_else(group==4,1,0)) %>%
   group_by(g42, time) %>%
@@ -411,7 +410,7 @@ gt %>%
 ```
 
 And the resulting ATT(4,3) is:
-```{r att43, message=FALSE}
+```{r att43, message=FALSE, results=FALSE}
 d_agg %>% filter((time ==2 | time == 3) & group >= 4) %>%
   mutate(g43 = if_else(group==4,1,0)) %>%
   group_by(g43, time) %>%
@@ -442,7 +441,7 @@ gt %>%
 ```
 
 And the resulting ATT(4,3) is:
-```{r att44, message=FALSE}
+```{r att44, message=FALSE, results=FALSE}
 d_agg %>% filter((time ==3 | time == 4) & group >= 4) %>%
   mutate(g44 = if_else(group==4,1,0)) %>%
   group_by(g44, time) %>%
