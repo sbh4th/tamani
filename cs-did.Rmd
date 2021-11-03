@@ -1,7 +1,7 @@
 ---
-title: "Untitled"
+title: "Group-Time ATTs"
 author: "Sam Harper"
-date: "29/10/2021"
+date: "2021-11-02"
 output:
   html_document: default
   pdf_document: default
@@ -23,6 +23,7 @@ devtools::install_github("bcallaway11/did")
 library(did)
 ```
 
+# Standard Two-Way Fixed Effects 
 First, let's read in the Stata dataset, and create a smaller version with just the variables of interest for looking at skilled birth attendance:
 ```{r d1, cache=TRUE}
 d <- read_dta(here("data-clean", "hh_female_impact_rpt.dta")) %>%
@@ -40,9 +41,24 @@ d_ind <- d %>%
          g2 = if_else(group==2, 1, 0),
          g3 = if_else(group==3, 1, 0),
          g4 = if_else(group==4, 1, 0)) 
-```
 
-Next let's aggregate up to the district level
+kable(head(d_ind)) %>%
+  kable_styling()
+```
+Using this data, let's now run the standard TWFE analysis that is the workhorse of most DD applications with differential treatment timing. 
+
+```{r twfei, cache=TRUE}
+# Get TWFE coefficient from individual-level dataset
+twfe <- fixest::feols(sba_birth ~ txdel | district + time, 
+                      data = d,
+                      weights = NULL, 
+                      cluster = ~district)
+
+twfe
+```
+Specifying this using an OLS model with standard errors clustered at the district level, we get a DD estimate that we would interpret as showing that the intervention increased the probability of skilled birth attendance by 6 percentage points (95% CI -0.7 to 12.7). 
+
+Because the treatment is assigned at the cluster level and we aren't adjusting for any covariates, we can also analyze this at the cluster level. Next let's aggregate up to the district level. Here is a look at the dataset:
 ```{r d2, cache=TRUE}
 d_sba <- d_ind %>%
   group_by(district, dist_id, time) %>%
@@ -54,11 +70,33 @@ d_sba <- d_ind %>%
 
 d_sba %>%
   kbl(digits=3, escape = FALSE) %>%
-  kable_styling() %>%
-  kable_minimal()
+  kable_styling()
+```
+You can see that we are aggregating up to the district level, and how we have the total population (`tpop`) and the total number of births with a skilled attendant (`tsba`), as well as the proportion by district. 
+
+Now, we can also fit the TWFE model to this aggregate data, controlling for district fixed effects and survey wave. 
+```{r twfea}
+# Compare to pooled sample
+twfep <- fixest::feols(psba ~ txdel | district + time, 
+                      data = d_sba,
+                      weights = ~tpop, 
+                      cluster = ~district)
+
+twfep
 ```
 
-Since the CS DiD approach functions by aggregating different kinds of group-time DDs, we can also aggregate up to the group level, since we have 2 groups being treated at each wave post-baseline:
+The estimates from these two models are identical (SEs are very minimally different), which is just to say that it is fine to work with the aggregate data to estimate the impact of the intervention (absent control for covariates):
+
+```{r twfecomp, echo=FALSE}
+# summary of TWFE models
+models <- list("Individual" = twfe, "Aggregate" = twfep)
+modelsummary(models, gof_omit = 'DF|Deviance|R2|AIC|BIC|Log.Lik')
+```
+
+
+## Callaway/Sant'Anna Approach
+Okay so we have the traditional DD estimate of around a 6 percentage point increase in SBA. Now let's look at the Callaway-Sant'Anna DD estimate. Since the CS DD approach functions by aggregating different kinds of group-time DDs, we can also aggregate up to the group level, since we have 2 groups being treated at each wave post-baseline. Let's define a new variable `group` that indicates the time at which each group was *first* treated. So for Kaliua DC and 	
+Urambo DC that were the first groups to be treated post-baseline (what we will call time=2), they are assigned a value of `group=2`, and so on for the other groups. Meanwhile, we are still aggregating up the number of births with SBA and the total population of each group.
 
 ```{r gt, message=FALSE}
 # create group-time aggregate data
@@ -67,6 +105,10 @@ d_agg <- d_sba %>% group_by(group, time) %>%
          tpop = sum(tpop),
          psba = tsba / tpop, # % SBA
          txdel = mean(txdel))
+
+d_agg %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling()
 ```
 
 Now, just to get a look at what we are comparing when we run the group-time DDs, let's reshape this data to wide (just to see it):
@@ -84,10 +126,47 @@ gt <- d_agg %>% select(group, time, psba) %>%
   pivot_wider(names_from = time, names_prefix = "time",
               values_from = psba)
 ```
+
+Okay, now let's estimate the impact using the CS DD method:
+```{r csdid, message=FALSE, warning=FALSE, results=FALSE}
+# Use not-yet-treated as comparison group
+atts_cs <- did::att_gt(yname = "psba", # name of the LHS variable
+                       tname = "time", # name of the time variable
+                       idname = "dist_id", # name of the id variable
+                       gname = "group", # name of the first treatment period
+                       data = d_sba, # name of the data
+                       xformla = NULL,
+                       weightsname = "tpop",
+                       est_method = "reg", # estimation method.
+                       control_group = "notyettreated", # set the control group
+                       bstrap = TRUE, # if TRUE compute boostrapped SE
+                       biters = 1000, # number of boostrap interations
+                       print_details = FALSE, # if TRUE, print detailed results
+                       panel = FALSE) # panel or repeated cross-sectional
+summary(atts_cs)
+```
+
+A summary of the estimates, SEs, and 95% CIs (based on 1000 bootstrapped replications) is below:
+```{r csdidt, message=FALSE, echo=FALSE}
+cstable <- tidy(atts_cs)
+cstable %>% select(-point.conf.low, -point.conf.high) %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling()
+```
+
+One thing that is immediately different from the TWFE method is that we get an entire suite of ATTs for each group and time period, which allows us to see: 
+
+- heterogeneity across both groups treated at different times (e.g., the ATT in the first year of treatment is much larger for the group first treated at time=2 (ATT(2,2) = 0.01) relative to the estimated effect in the first year of treatment for the group first treated at time 4, i.e., ATT(4,4) = 0.13, though both estimates are imprecise); and 
+- as well as different times for each treatment group, e.g.., the impact at time 3 for the group first treated at time 2 is 0.26 relative to 0.01 for the first year of treatment. 
+
+Let's take a quick detour to understand where these estimates are coming from. 
+
 ## Group Time ATTs
+The core of the CS estimator is the group-time ATT. They define groups based on when they were first treated and 
+
 ### Group 2
 The basic idea of the group-time ATTs is to estimate a series of ATTs for each group $G$ that is treated at time $T$. So if we wanted to estimate the ATT at time=2 for the group that is first treated at time=2, we calculate the 'long' difference, i.e., post minus pre for the treated group ($G=2$) and the difference for all groups *not already treated* for the same period. Thus, the groups we are comparing to estimate ATT(2,2) are:
-```{r gt22}
+```{r gt22, echo=FALSE}
 gt %>%
   kbl(digits=3, escape = FALSE) %>%
   kable_styling() %>%
@@ -101,7 +180,7 @@ gt %>%
 
 If we take the population-weighted average SBA proportions for these two groups, we get
 
-```{r att22}
+```{r att22, echo=FALSE}
 d_agg %>% filter(time < 3) %>%
   mutate(g22 = if_else(group==2,1,0)) %>%
   group_by(g22, time) %>%
