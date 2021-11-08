@@ -1,12 +1,13 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.10.25)  3 NOV 2021 10:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.10.25)  8 NOV 2021 14:13
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
 **cs-did.tex
 (./cs-did.tex
 LaTeX2e <2021-06-01> patch level 1
-L3 programming layer <2021-10-18> (/Users/samharper/Library/TinyTeX/texmf-dist/
-tex/latex/base/article.cls
+L3 programming layer <2021-10-18>
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2021/02/12 v1.4n Standard LaTeX document class
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/base/size10.clo
 File: size10.clo 2021/02/12 v1.4n Standard LaTeX file (size option)
@@ -22,20 +23,25 @@ File: size10.clo 2021/02/12 v1.4n Standard LaTeX file (size option)
 \abovecaptionskip=\skip47
 \belowcaptionskip=\skip48
 \bibindent=\dimen138
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2021/04/20 v2.17j AMS math features
 \@mathmargin=\skip49
+
 For additional information on amsmath, use the `?' option.
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty
 Package: amstext 2000/06/29 v2.01 AMS text
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks16
 \ex@=\dimen139
-)) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty
+))
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 \pmbraise@=\dimen140
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 2016/03/08 v2.02 operator names
 )
 \inf@bad=\count190
@@ -75,8 +81,10 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
 \mathdisplay@stack=\toks20
 LaTeX Info: Redefining \[ on input line 2923.
 LaTeX Info: Redefining \] on input line 2924.
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/amssymb.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
@@ -84,7 +92,8 @@ Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-)) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/lm/lmodern.sty
+))
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/lm/lmodern.sty
 Package: lmodern 2015/05/01 v1.6.1 Latin Modern Fonts
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/cmr/m/n --> OT1/lmr/m/n on input line 22.
@@ -118,26 +127,34 @@ LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
 (Font)                  OT1/cmr/bx/it --> OT1/lmr/bx/it on input line 37.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 (Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 38.
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
 Package: iftex 2020/03/06 v1.0d TeX engine tests
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty
 Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
 LaTeX Font Info:    Trying to load font information for T1+lmr on input line 11
 2.
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/base/inputenc.sty
+))
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/base/inputenc.sty
 Package: inputenc 2021/02/14 v1.3d Input encoding file
 \inpenc@prehook=\toks21
 \inpenc@posthook=\toks22
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/base/textcomp.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/base/textcomp.sty
 Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty
 Package: xcolor 2021/10/31 v2.13 LaTeX color extensions (UK)
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg
 File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package xcolor Info: Driver file: pdftex.def on input line 227.
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def
 File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
 )
@@ -152,6 +169,7 @@ Package xcolor Info: Model `Gray' substituted by `gray' on input line 1374.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1375.
 ) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2021-06-07 v7.00m Hypertext links for LaTeX
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
 Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
 )
@@ -190,8 +208,8 @@ sty
 Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
 ) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/auxhook/auxhook.sty
 Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.st
-y
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty
 Package: kvoptions 2020-10-07 v3.14 Key value format for package options (HO)
 )
 \@linkdim=\dimen148
@@ -206,10 +224,11 @@ Now handling font encoding PD1 ...
 tches.def
 File: hyperref-langpatches.def 2021-06-07 v7.00m Hyperref: patches for babel la
 nguages
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/generic/etexcmds/etexcmds.st
-y
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/generic/etexcmds/etexcmds.sty
 Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
 )
 \Hy@SavedSpaceFactor=\count270
@@ -227,12 +246,14 @@ Package hyperref Info: Backreferencing OFF on input line 4212.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4445.
 \c@Hy@tempcnt=\count271
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip17
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 4804.
 \XeTeXLinkMargin=\dimen149
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/generic/bitset/bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
 
@@ -253,6 +274,7 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6101.
 Package hyperref Info: PDF/A mode OFF on input line 6106.
 LaTeX Info: Redefining \ref on input line 6146.
 LaTeX Info: Redefining \pageref on input line 6150.
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/base/atbegshi-ltx.sty
 Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
 package with kernel methods
@@ -262,8 +284,10 @@ package with kernel methods
 \c@Hfootnote=\count275
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def
 File: hpdftex.def 2021-06-07 v7.00m Hyperref driver for pdfTeX
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/base/atveryend-ltx.sty
 Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atvery packag
 e
@@ -284,8 +308,10 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 86.
 )
 \Hy@SectionHShift=\skip52
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/geometry/geometry.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/generic/iftex/ifvtex.sty
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 )
@@ -301,7 +327,8 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 \Gm@layouthoffset=\dimen158
 \Gm@layoutvoffset=\dimen159
 \Gm@dimlist=\toks24
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/fancyvrb/fancyvrb.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/fancyvrb/fancyvrb.sty
 Package: fancyvrb 2021/10/15 v3.9 verbatim text (tvz,hv)
 \FV@CodeLineNo=\count281
 \FV@InFile=\read2
@@ -309,17 +336,21 @@ Package: fancyvrb 2021/10/15 v3.9 verbatim text (tvz,hv)
 \c@FancyVerbLine=\count282
 \FV@StepNumber=\count283
 \FV@OutFile=\write3
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/framed/framed.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/framed/framed.sty
 Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
 \OuterFrameSep=\skip53
 \fb@frw=\dimen160
 \fb@frh=\dimen161
 \FrameRule=\dimen162
 \FrameSep=\dimen163
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2020/12/05 v1.2c Enhanced LaTeX Graphics (DPC,SPQR)
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/graphics/graphics.sty
 Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
 )
@@ -331,7 +362,8 @@ Package graphics Info: Driver file: pdftex.def on input line 107.
 )
 \Gin@req@height=\dimen164
 \Gin@req@width=\dimen165
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \heavyrulewidth=\dimen166
 \lightrulewidth=\dimen167
@@ -350,7 +382,8 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \@thisruleclass=\count286
 \@lastruleclass=\count287
 \@thisrulewidth=\dimen178
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/tools/longtable.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/tools/longtable.sty
 Package: longtable 2021-05-07 v4.16 Multi-page Table package (DPC)
 \LTleft=\skip54
 \LTright=\skip55
@@ -368,7 +401,8 @@ Package: longtable 2021-05-07 v4.16 Multi-page Table package (DPC)
 \c@LT@tables=\count291
 \c@LT@chunks=\count292
 \LT@p@ftn=\toks25
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/tools/array.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/tools/array.sty
 Package: array 2021/04/20 v2.5e Tabular extension package (FMi)
 \col@sep=\dimen180
 \ar@mcellbox=\box58
@@ -377,39 +411,46 @@ Package: array 2021/04/20 v2.5e Tabular extension package (FMi)
 \extratabsurround=\skip58
 \backup@length=\skip59
 \ar@cellbox=\box59
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/multirow/multirow.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/multirow/multirow.sty
 Package: multirow 2021/03/15 v2.8 Span multiple rows of a table
 \multirow@colwidth=\skip60
 \multirow@cntb=\count293
 \multirow@dima=\skip61
 \bigstrutjot=\dimen182
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/wrapfig/wrapfig.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/wrapfig/wrapfig.sty
 \wrapoverhang=\dimen183
 \WF@size=\dimen184
 \c@WF@wrappedlines=\count294
 \WF@box=\box60
 \WF@everypar=\toks27
 Package: wrapfig 2003/01/31  v 3.6
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/float/float.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \c@float@type=\count295
 \float@exts=\toks28
 \float@box=\box61
 \@float@everytoks=\toks29
 \@floatcapt=\box62
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/colortbl/colortbl.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/colortbl/colortbl.sty
 Package: colortbl 2020/01/04 v1.0e Color table columns (DPC)
 \everycr=\toks30
 \minrowclearance=\skip62
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/pdflscape/pdflscape.st
-y
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/pdflscape/pdflscape.sty
 Package: pdflscape 2019/12/05 v0.12 Display of landscape pages in PDF (HO)
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/graphics/lscape.sty
 Package: lscape 2020/05/28 v3.02 Landscape Pages (DPC)
 )
 Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/tabu/tabu.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/tabu/tabu.sty
 Package: tabu 2019/01/11 v2.9 - flexible LaTeX tabulars (FC+tabu-fixed)
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/varwidth/varwidth.sty
 Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 \@vwid@box=\box63
@@ -448,6 +489,7 @@ Package: threeparttable 2003/06/13  v 3.0
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/threeparttablex/threepar
 ttablex.sty
 Package: threeparttablex 2013/07/23 v0.3 by daleif
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/environ/environ.sty
 Package: environ 2014/05/04 v0.3 A new way to define environments
 
@@ -467,13 +509,15 @@ Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 \ULC@box=\box71
 Package: ulem 2019/11/18
 \ULdepth=\dimen198
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/makecell/makecell.sty
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/makecell/makecell.sty
 Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
 \rotheadsize=\dimen199
 \c@nlinenum=\count304
 \TeXr@lab=\toks34
-) (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/siunitx/siunitx.sty
-Package: siunitx 2021-10-26 v3.0.34 A comprehensive (SI) units package
+)
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/siunitx/siunitx.sty
+Package: siunitx 2021-11-03 v3.0.35 A comprehensive (SI) units package
 \l__siunitx_angle_tmp_dim=\dimen256
 \l__siunitx_angle_marker_box=\box72
 \l__siunitx_angle_unit_box=\box73
@@ -497,8 +541,8 @@ Package: siunitx 2021-10-26 v3.0.34 A comprehensive (SI) units package
 \l__siunitx_unit_total_int=\count313
 
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/l3packages/l3keys2e/l3ke
-ys2e.sty (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/l3kernel/expl3.
-sty
+ys2e.sty
+(/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/l3kernel/expl3.sty
 Package: expl3 2021-10-18 L3 programming layer (loader) 
 
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdft
@@ -542,8 +586,10 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 Package hyperref Info: Link coloring OFF on input line 126.
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty
 Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 )
@@ -558,6 +604,7 @@ LaTeX Info: Redefining \pageref on input line 126.
 LaTeX Info: Redefining \nameref on input line 126.
 \@outlinefile=\write4
 \openout4 = `cs-did.out'.
+
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -600,16 +647,19 @@ File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 1
 28.
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
 128.
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
 128.
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
@@ -621,52 +671,234 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <6> on input line 128.
 LaTeX Font Info:    Trying to load font information for U+msa on input line 128
 .
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Trying to load font information for U+msb on input line 128
 .
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 139.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 139.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 139.
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
-38.
+61.
+
 (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 162.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 162.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 162.
-
-Overfull \hbox (13.24358pt too wide) in paragraph at lines 196--196
+Overfull \hbox (13.24358pt too wide) in paragraph at lines 163--163
 []\T1/lmtt/m/n/10 ## NOTE: 2,327 observations removed because of NA values (LHS
 : 2,327, Fixed-effects: 2,312).[] 
  []
 
-[1
 
-{/Users/samharper/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
-]
-Overfull \hbox (97.24333pt too wide) in paragraph at lines 241--241
+Overfull \hbox (97.24333pt too wide) in paragraph at lines 190--190
 []\T1/lmtt/m/n/10 ## `summarise()` has grouped output by 'district', 'dist_id'.
  You can override using the `.groups` argument.[] 
  []
 
-! Missing $ inserted.
+./cs-did.tex:196: Missing $ inserted.
 <inserted text> 
                 $
-l.255 district & dist_
-                      id & time & tsba & tpop & psba & txdel & group\\ 
-Here is how much of TeX's memory you used:
- 14412 strings out of 480539
- 249142 string characters out of 5901723
- 555445 words of memory out of 5000000
- 31812 multiletter control sequences out of 15000+600000
- 443466 words of font info for 66 fonts, out of 8000000 for 9000
- 14 hyphenation exceptions out of 8191
- 70i,9n,81p,424b,894s stack positions out of 5000i,500n,10000p,200000b,80000s
+l.196 district & dist_
+                      id & time & tsba & tpop & psba & txdel & group\\
+? 
+./cs-did.tex:196: Missing $ inserted.
+<inserted text> 
+                $
+l.196 district & dist_id &
+                           time & tsba & tpop & psba & txdel & group\\
+? 
+[1
 
-!  ==> Fatal error occurred, no output PDF file produced!
+{/Users/samharper/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+] [2]
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 group & psba_
+                   t1 & psba_t2 & psba_t3 & psba_t4 & psba_t5 & tpop_t1 & tp...
+
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 group & psba_t1 &
+                        psba_t2 & psba_t3 & psba_t4 & psba_t5 & tpop_t1 & tp...
+
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 group & psba_t1 & psba_
+                             t2 & psba_t3 & psba_t4 & psba_t5 & tpop_t1 & tp...
+
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 group & psba_t1 & psba_t2 &
+                                  psba_t3 & psba_t4 & psba_t5 & tpop_t1 & tp...
+
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 group & psba_t1 & psba_t2 & psba_
+                                       t3 & psba_t4 & psba_t5 & tpop_t1 & tp...
+
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 group & psba_t1 & psba_t2 & psba_t3 &
+                                            psba_t4 & psba_t5 & tpop_t1 & tp...
+
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 group & psba_t1 & psba_t2 & psba_t3 & psba_
+                                                 t4 & psba_t5 & tpop_t1 & tp...
+
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 ...& psba_t1 & psba_t2 & psba_t3 & psba_t4 &
+                                                   psba_t5 & tpop_t1 & tpop_...
+
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 ..._t1 & psba_t2 & psba_t3 & psba_t4 & psba_
+                                                  t5 & tpop_t1 & tpop_t2 & t...
+
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 ...& psba_t2 & psba_t3 & psba_t4 & psba_t5 &
+                                                   tpop_t1 & tpop_t2 & tpop_...
+
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 ..._t2 & psba_t3 & psba_t4 & psba_t5 & tpop_
+                                                  t1 & tpop_t2 & tpop_t3 & t...
+
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 ...& psba_t3 & psba_t4 & psba_t5 & tpop_t1 &
+                                                   tpop_t2 & tpop_t3 & tpop_...
+
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 ..._t3 & psba_t4 & psba_t5 & tpop_t1 & tpop_
+                                                  t2 & tpop_t3 & tpop_t4 & t...
+
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 ...& psba_t4 & psba_t5 & tpop_t1 & tpop_t2 &
+                                                   tpop_t3 & tpop_t4 & tpop_...
+
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 ..._t4 & psba_t5 & tpop_t1 & tpop_t2 & tpop_
+                                                  t3 & tpop_t4 & tpop_t5\\
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 ...& psba_t5 & tpop_t1 & tpop_t2 & tpop_t3 &
+                                                   tpop_t4 & tpop_t5\\
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 ..._t5 & tpop_t1 & tpop_t2 & tpop_t3 & tpop_
+                                                  t4 & tpop_t5\\
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 ...& tpop_t1 & tpop_t2 & tpop_t3 & tpop_t4 &
+                                                   tpop_t5\\
+? 
+./cs-did.tex:396: Missing $ inserted.
+<inserted text> 
+                $
+l.396 ..._t1 & tpop_t2 & tpop_t3 & tpop_t4 & tpop_
+                                                  t5\\
+? 
+./cs-did.tex:397: Missing $ inserted.
+<inserted text> 
+                $
+l.397 \hline
+            
+? 
+[3] [4]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 4
+68.
+ (/Users/samharper/Library/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
+File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+[5] [6] [7] [8] (./cs-did.aux)
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `cs-did.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `cs-did.out':
+(rerunfilecheck)             Before: <no file>
+(rerunfilecheck)             After:  A7849856AF36C0E72A9121E0B11E0B40;918.
+ ) 
+Here is how much of TeX's memory you used:
+ 14476 strings out of 480539
+ 250357 string characters out of 5901723
+ 574414 words of memory out of 5000000
+ 31849 multiletter control sequences out of 15000+600000
+ 454087 words of font info for 70 fonts, out of 8000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 70i,10n,81p,256b,899s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/Users/samharper/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/U
+sers/samharper/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/Users
+/samharper/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/samh
+arper/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}</Users/samha
+rper/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/samhar
+per/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/samharp
+er/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/samharpe
+r/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></Users/samharper/
+Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/samharper/Li
+brary/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/samharper/Libr
+ary/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/samharper/Librar
+y/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/samharper/Library
+/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/samharper/Library/
+TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
+Output written on cs-did.pdf (8 pages, 229925 bytes).
+PDF statistics:
+ 121 PDF objects out of 1000 (max. 8388607)
+ 88 compressed objects within 1 object stream
+ 23 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+

@@ -31,28 +31,29 @@ devtools::install_github("bcallaway11/did")
 library(did)
 
 d <- read_dta(here("data-clean", "hh_female_impact_rpt.dta")) %>%
-    mutate(district = as_factor(hh1, levels = "labels"),
+  mutate(district = as_factor(hh1, levels = "labels"),
          time = as.numeric(delwave) + 1,
          sba_birth = as.numeric(sba_birth))
 
-# restrict to variables for decomp
-d_sba <- d %>% 
+# restrict to variables for analysis
+d_ind <- d %>% 
   select(district, sba_birth, txdel, time) %>%
+  mutate(dist_id = as.numeric(district)) %>%
   drop_na() %>%
-  group_by(district) %>%
+  group_by(district, dist_id) %>%
   mutate(group = min(if_else(txdel==1, time, 5)),
          g2 = if_else(group==2, 1, 0),
          g3 = if_else(group==3, 1, 0),
-         g4 = if_else(group==4, 1, 0)) %>%
-  group_by(district, time) %>%
+         g4 = if_else(group==4, 1, 0)) 
+
+# aggregate dataset
+d_sba <- d_ind %>%
+  group_by(district, dist_id, time) %>%
   summarise(tsba = sum(sba_birth),
-         tpop = n(),
-         psba = tsba / tpop, # % SBA
-         txdel = mean(txdel),
-         group = mean(group),
-         g2 = mean(g2),
-         g3 = mean(g3),
-         g4 = mean(g4))
+            tpop = n(),
+            psba = tsba / tpop, # % SBA
+            txdel = mean(txdel),
+            group = mean(group))
 
 #--------------------------- End of SECTION 0 --------------------------#
 
@@ -78,9 +79,16 @@ twfep <- fixest::feols(psba ~ txdel | district + time,
 
 summary(twfep)
 
+# Without weights
+twfepu <- fixest::feols(psba ~ txdel | district + time, 
+                       data = d_sba,
+                       weights =NULL, 
+                       cluster = ~district)
+
 # summary of TWFE models
-models <- list("Individual" = twfe, "Aggregate" = twfep)
-modelsummary(models)
+models <- list("Individual" = twfe, "Aggregate" = twfep, 
+               "Unweighted" = twfepu)
+modelsummary(models, gof_omit = 'DF|Deviance|R2|AIC|BIC|Log.Lik')
 
 #--------------------------- End of SECTION 1 --------------------------#
 
@@ -138,7 +146,7 @@ d_agg %>% filter(time > 2 & time < 5) %>%
 #-----------------------------------------------------------------------
 
 df_bacon <- bacon(psba ~ txdel,
-                  data = d,
+                  data = d_sba,
                   id_var = "district",
                   time_var = "time")
 
@@ -165,4 +173,23 @@ dCDH_negative <- sum(dCDH_decomp$weight[dCDH_decomp$weight<0])
 
 
 
-# TWFE estimate
+# CS approach
+# Use not-yet-treated as comparison group
+atts_cs <- did::att_gt(yname = "psba", # name of the LHS variable
+                       tname = "time", # name of the time variable
+                       idname = "dist_id", # name of the id variable
+                       gname = "group", # name of the first treatment period
+                       data = d_sba, # name of the data
+                       xformla = NULL,
+                       weightsname = "tpop",
+                       est_method = "reg", # estimation method.
+                       control_group = "notyettreated", # set the control group
+                       bstrap = TRUE, # if TRUE compute boostrapped SE
+                       biters = 1000, # number of boostrap interations
+                       print_details = FALSE, # if TRUE, print detailed results
+                       panel = FALSE) # panel or repeated cross-sectional
+summary(atts_cs)
+
+agg_effects_cs <- aggte(atts_cs, type = "dynamic", min_e = -2, max_e = 2)
+summary(agg_effects_cs)
+

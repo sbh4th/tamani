@@ -134,29 +134,6 @@ First, let's read in the Stata dataset, and create a smaller version
 with just the variables of interest for looking at skilled birth
 attendance:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{d }\OtherTok{\textless{}{-}} \FunctionTok{read\_dta}\NormalTok{(}\FunctionTok{here}\NormalTok{(}\StringTok{"data{-}clean"}\NormalTok{, }\StringTok{"hh\_female\_impact\_rpt.dta"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{district =} \FunctionTok{as\_factor}\NormalTok{(hh1, }\AttributeTok{levels =} \StringTok{"labels"}\NormalTok{),}
-         \AttributeTok{time =} \FunctionTok{as.numeric}\NormalTok{(delwave) }\SpecialCharTok{+} \DecValTok{1}\NormalTok{,}
-         \AttributeTok{sba\_birth =} \FunctionTok{as.numeric}\NormalTok{(sba\_birth))}
-
-\CommentTok{\# restrict to variables for analysis}
-\NormalTok{d\_ind }\OtherTok{\textless{}{-}}\NormalTok{ d }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{select}\NormalTok{(district, sba\_birth, txdel, time) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{dist\_id =} \FunctionTok{as.numeric}\NormalTok{(district)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{drop\_na}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(district, dist\_id) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{group =} \FunctionTok{min}\NormalTok{(}\FunctionTok{if\_else}\NormalTok{(txdel}\SpecialCharTok{==}\DecValTok{1}\NormalTok{, time, }\DecValTok{5}\NormalTok{)),}
-         \AttributeTok{g2 =} \FunctionTok{if\_else}\NormalTok{(group}\SpecialCharTok{==}\DecValTok{2}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{),}
-         \AttributeTok{g3 =} \FunctionTok{if\_else}\NormalTok{(group}\SpecialCharTok{==}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{),}
-         \AttributeTok{g4 =} \FunctionTok{if\_else}\NormalTok{(group}\SpecialCharTok{==}\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{)) }
-
-\FunctionTok{kable}\NormalTok{(}\FunctionTok{head}\NormalTok{(d\_ind)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_styling}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{table}
 \centering
 \begin{tabular}{l|r|r|r|r|r|r|r|r}
@@ -181,25 +158,9 @@ Kaliua DC & 1 & 1 & 5 & 1 & 2 & 1 & 0 & 0\\
 Using this data, let's now run the standard TWFE analysis that is the
 workhorse of most DD applications with differential treatment timing.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Get TWFE coefficient from individual{-}level dataset}
-\NormalTok{twfe }\OtherTok{\textless{}{-}}\NormalTok{ fixest}\SpecialCharTok{::}\FunctionTok{feols}\NormalTok{(sba\_birth }\SpecialCharTok{\textasciitilde{}}\NormalTok{ txdel }\SpecialCharTok{|}\NormalTok{ district }\SpecialCharTok{+}\NormalTok{ time, }
-                      \AttributeTok{data =}\NormalTok{ d,}
-                      \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{, }
-                      \AttributeTok{cluster =} \SpecialCharTok{\textasciitilde{}}\NormalTok{district)}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{verbatim}
 ## NOTE: 2,327 observations removed because of NA values (LHS: 2,327, Fixed-effects: 2,312).
 \end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{twfe}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{verbatim}
 ## OLS estimation, Dep. Var.: sba_birth
@@ -224,29 +185,9 @@ adjusting for any covariates, we can also analyze this at the cluster
 level. Next let's aggregate up to the district level. Here is a look at
 the dataset:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{d\_sba }\OtherTok{\textless{}{-}}\NormalTok{ d\_ind }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(district, dist\_id, time) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{tsba =} \FunctionTok{sum}\NormalTok{(sba\_birth),}
-         \AttributeTok{tpop =} \FunctionTok{n}\NormalTok{(),}
-         \AttributeTok{psba =}\NormalTok{ tsba }\SpecialCharTok{/}\NormalTok{ tpop, }\CommentTok{\# \% SBA}
-         \AttributeTok{txdel =} \FunctionTok{mean}\NormalTok{(txdel),}
-         \AttributeTok{group =} \FunctionTok{mean}\NormalTok{(group))}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{verbatim}
 ## `summarise()` has grouped output by 'district', 'dist_id'. You can override using the `.groups` argument.
 \end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{d\_sba }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{, }\AttributeTok{escape =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_styling}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{table}
 \centering
@@ -345,18 +286,6 @@ district.
 Now, we can also fit the TWFE model to this aggregate data, controlling
 for district fixed effects and survey wave.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Compare to pooled sample}
-\NormalTok{twfep }\OtherTok{\textless{}{-}}\NormalTok{ fixest}\SpecialCharTok{::}\FunctionTok{feols}\NormalTok{(psba }\SpecialCharTok{\textasciitilde{}}\NormalTok{ txdel }\SpecialCharTok{|}\NormalTok{ district }\SpecialCharTok{+}\NormalTok{ time, }
-                      \AttributeTok{data =}\NormalTok{ d\_sba,}
-                      \AttributeTok{weights =} \SpecialCharTok{\textasciitilde{}}\NormalTok{tpop, }
-                      \AttributeTok{cluster =} \SpecialCharTok{\textasciitilde{}}\NormalTok{district)}
-
-\NormalTok{twfep}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{verbatim}
 ## OLS estimation, Dep. Var.: psba
 ## Observations: 40 
@@ -402,26 +331,11 @@ estimate. Since the CS DD approach functions by aggregating different
 kinds of group-time DDs, we can also aggregate up to the group level,
 since we have 2 groups being treated at each wave post-baseline. Let's
 define a new variable \texttt{group} that indicates the time at which
-each group was \emph{first} treated. So for Kaliua DC and\\
-Urambo DC that were the first groups to be treated post-baseline (what
-we will call time=2), they are assigned a value of \texttt{group=2}, and
-so on for the other groups. Meanwhile, we are still aggregating up the
-number of births with SBA and the total population of each group.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# create group{-}time aggregate data}
-\NormalTok{d\_agg }\OtherTok{\textless{}{-}}\NormalTok{ d\_sba }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{group\_by}\NormalTok{(group, time) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{tsba =} \FunctionTok{sum}\NormalTok{(tsba),}
-         \AttributeTok{tpop =} \FunctionTok{sum}\NormalTok{(tpop),}
-         \AttributeTok{psba =}\NormalTok{ tsba }\SpecialCharTok{/}\NormalTok{ tpop, }\CommentTok{\# \% SBA}
-         \AttributeTok{txdel =} \FunctionTok{mean}\NormalTok{(txdel))}
-
-\NormalTok{d\_agg }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{, }\AttributeTok{escape =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_styling}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
+each group was \emph{first} treated. So for Kaliua DC and Urambo DC that
+were the first groups to be treated post-baseline (what we will call
+time=2), they are assigned a value of \texttt{group=2}, and so on for
+the other groups. Meanwhile, we are still aggregating up the number of
+births with SBA and the total population of each group.
 
 \begin{table}
 \centering
@@ -523,23 +437,23 @@ bootstrapped replications) is below:
 \hline
 term & group & time & estimate & std.error & conf.low & conf.high\\
 \hline
-ATT(2,2) & 2 & 2 & 0.011 & 0.095 & -0.197 & 0.219\\
+ATT(2,2) & 2 & 2 & 0.011 & 0.090 & -0.203 & 0.226\\
 \hline
-ATT(2,3) & 2 & 3 & 0.260 & 0.143 & -0.052 & 0.573\\
+ATT(2,3) & 2 & 3 & 0.260 & 0.143 & -0.078 & 0.599\\
 \hline
-ATT(2,4) & 2 & 4 & 0.269 & 0.096 & 0.059 & 0.479\\
+ATT(2,4) & 2 & 4 & 0.269 & 0.072 & 0.098 & 0.440\\
 \hline
-ATT(3,2) & 3 & 2 & 0.045 & 0.090 & -0.151 & 0.241\\
+ATT(3,2) & 3 & 2 & 0.045 & 0.086 & -0.158 & 0.249\\
 \hline
-ATT(3,3) & 3 & 3 & 0.018 & 0.147 & -0.304 & 0.341\\
+ATT(3,3) & 3 & 3 & 0.018 & 0.142 & -0.319 & 0.356\\
 \hline
-ATT(3,4) & 3 & 4 & 0.170 & 0.063 & 0.032 & 0.308\\
+ATT(3,4) & 3 & 4 & 0.170 & 0.062 & 0.022 & 0.318\\
 \hline
-ATT(4,2) & 4 & 2 & -0.062 & 0.115 & -0.315 & 0.190\\
+ATT(4,2) & 4 & 2 & -0.062 & 0.117 & -0.339 & 0.214\\
 \hline
-ATT(4,3) & 4 & 3 & -0.048 & 0.144 & -0.363 & 0.267\\
+ATT(4,3) & 4 & 3 & -0.048 & 0.149 & -0.403 & 0.306\\
 \hline
-ATT(4,4) & 4 & 4 & 0.130 & 0.275 & -0.472 & 0.733\\
+ATT(4,4) & 4 & 4 & 0.130 & 0.275 & -0.522 & 0.783\\
 \hline
 \end{tabular}
 \end{table}
@@ -604,23 +518,6 @@ group & time1 & time2 & time3 & time4 & time5\\
 If we take the population-weighted average SBA proportions for these two
 groups, we get
 
-\begin{verbatim}
-## `summarise()` has grouped output by 'g22'. You can override using the `.groups` argument.
-\end{verbatim}
-
-\begin{table}
-\centering
-\begin{tabular}{r|r|r|r|>{}r}
-\hline
-g22 & time1 & time2 & Long diff & ATT\_2\_2\\
-\hline
-0 & 0.745 & 0.814 & 0.069 & \textbf{NA}\\
-\hline
-1 & 0.631 & 0.711 & 0.080 & \textbf{0.011}\\
-\hline
-\end{tabular}
-\end{table}
-
 Now, we can ask about how the effect in Group 2 changes with time after
 the intervention. The ATT(2,3) asks about the estimated treatment effect
 at time 3 (\(t=3\)) for the group that was first treated at time 2
@@ -630,21 +527,6 @@ are using time 3 as the `post' estimate. But note here that, since group
 of our control group, we that means we restrict our control comparison
 to only those groups that are \textbf{not} treated by time 3. So we are
 comparing:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{gt }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{, }\AttributeTok{escape =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_styling}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{4}\NormalTok{), }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{background =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{2}\NormalTok{, }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{3}\SpecialCharTok{:}\DecValTok{4}\NormalTok{, }\AttributeTok{background  =} \StringTok{"lightgray"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{5}\NormalTok{,}\DecValTok{6}\NormalTok{), }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{1}\NormalTok{, }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{footnote}\NormalTok{(}\AttributeTok{general =} \StringTok{"Red = treated, Gray = untreated"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{table}
 \centering
@@ -667,62 +549,10 @@ group & time1 & time2 & time3 & time4 & time5\\
 
 And we get:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{d\_agg }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{((time}\SpecialCharTok{==}\DecValTok{1} \SpecialCharTok{|}\NormalTok{ time}\SpecialCharTok{==}\DecValTok{3}\NormalTok{) }\SpecialCharTok{\&}\NormalTok{ group}\SpecialCharTok{!=}\DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{g23 =} \FunctionTok{if\_else}\NormalTok{(group}\SpecialCharTok{==}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(g23, time) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{tsba =} \FunctionTok{sum}\NormalTok{(tsba),}
-            \AttributeTok{tpop =} \FunctionTok{sum}\NormalTok{(tpop),}
-            \AttributeTok{psba =}\NormalTok{ tsba }\SpecialCharTok{/}\NormalTok{ tpop) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(g23, time, psba) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ time, }\AttributeTok{values\_from =}\NormalTok{ psba,}
-              \AttributeTok{names\_prefix =} \StringTok{"time"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{\textasciigrave{}}\AttributeTok{time3}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \StringTok{\textasciigrave{}}\AttributeTok{time1}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ATT\_2\_3 =} \StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \FunctionTok{lag}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{default =} \ConstantTok{NA}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{5}\NormalTok{, }\AttributeTok{bold=}\ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## `summarise()` has grouped output by 'g23'. You can override using the `.groups` argument.
-\end{verbatim}
-
-\begin{table}
-\centering
-\begin{tabular}{r|r|r|r|>{}r}
-\hline
-g23 & time1 & time3 & Long diff & ATT\_2\_3\\
-\hline
-0 & 0.803 & 0.725 & -0.078 & \textbf{NA}\\
-\hline
-1 & 0.631 & 0.814 & 0.182 & \textbf{0.26}\\
-\hline
-\end{tabular}
-\end{table}
-
 We can of course extend our view of how the treatment effect evolves for
 Group 2 by calculating the effect of being treated at time 4 for the
 group that was first treated at time 2, i.e., ATT(2,4). This is
 comparing:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{gt }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{, }\AttributeTok{escape =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_styling}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{5}\NormalTok{), }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{background =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{2}\SpecialCharTok{:}\DecValTok{3}\NormalTok{, }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{4}\NormalTok{, }\AttributeTok{background  =} \StringTok{"lightgray"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{6}\NormalTok{, }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{4}\NormalTok{), }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{footnote}\NormalTok{(}\AttributeTok{general =} \StringTok{"Red = treated, Gray = untreated"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{table}
 \centering
@@ -747,43 +577,6 @@ Note that the control group here also changes, since at \(t=4\) group 4
 has now been treated, so we exclude them from the control group for this
 comparison. And the estimate is:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{d\_agg }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{((time}\SpecialCharTok{==}\DecValTok{1} \SpecialCharTok{|}\NormalTok{ time}\SpecialCharTok{==}\DecValTok{4}\NormalTok{) }\SpecialCharTok{\&}\NormalTok{ group}\SpecialCharTok{!=}\DecValTok{3} \SpecialCharTok{\&}\NormalTok{ group}\SpecialCharTok{!=}\DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{g24 =} \FunctionTok{if\_else}\NormalTok{(group}\SpecialCharTok{==}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(g24, time) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{tsba =} \FunctionTok{sum}\NormalTok{(tsba),}
-            \AttributeTok{tpop =} \FunctionTok{sum}\NormalTok{(tpop),}
-            \AttributeTok{psba =}\NormalTok{ tsba }\SpecialCharTok{/}\NormalTok{ tpop) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(g24, time, psba) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ time, }\AttributeTok{values\_from =}\NormalTok{ psba,}
-              \AttributeTok{names\_prefix =} \StringTok{"time"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{\textasciigrave{}}\AttributeTok{time4}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \StringTok{\textasciigrave{}}\AttributeTok{time1}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ATT\_2\_4 =} \StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \FunctionTok{lag}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{default =} \ConstantTok{NA}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{5}\NormalTok{, }\AttributeTok{bold=}\ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## `summarise()` has grouped output by 'g24'. You can override using the `.groups` argument.
-\end{verbatim}
-
-\begin{table}
-\centering
-\begin{tabular}{r|r|r|r|>{}r}
-\hline
-g24 & time1 & time4 & Long diff & ATT\_2\_4\\
-\hline
-0 & 0.854 & 0.800 & -0.054 & \textbf{NA}\\
-\hline
-1 & 0.631 & 0.846 & 0.215 & \textbf{0.269}\\
-\hline
-\end{tabular}
-\end{table}
-
 \hypertarget{group-3}{%
 \subsubsection{Group 3}\label{group-3}}
 
@@ -795,21 +588,6 @@ being treated at \textbf{time=2} for the group that is first treated at
 time 3. In essence, we are comparing the pre-intervention `long
 difference' between \(t=1\) and \(t=2\) for the group eventually treated
 at time 3 with the same long difference among the controls:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{gt }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{, }\AttributeTok{escape =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_styling}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{2}\SpecialCharTok{:}\DecValTok{3}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{background =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{3}\SpecialCharTok{:}\DecValTok{4}\NormalTok{, }\AttributeTok{background  =} \StringTok{"lightgray"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{1}\NormalTok{, }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{4}\SpecialCharTok{:}\DecValTok{6}\NormalTok{, }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{1}\NormalTok{, }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{footnote}\NormalTok{(}\AttributeTok{general =} \StringTok{"Red = treated, Gray = untreated"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{table}
 \centering
@@ -832,138 +610,16 @@ group & time1 & time2 & time3 & time4 & time5\\
 
 The estimate of the ATT(3,2) is:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{d\_agg }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(time }\SpecialCharTok{\textless{}} \DecValTok{3} \SpecialCharTok{\&}\NormalTok{ group }\SpecialCharTok{!=} \DecValTok{2}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{g32 =} \FunctionTok{if\_else}\NormalTok{(group}\SpecialCharTok{==}\DecValTok{3}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(g32, time) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{tsba =} \FunctionTok{sum}\NormalTok{(tsba),}
-            \AttributeTok{tpop =} \FunctionTok{sum}\NormalTok{(tpop),}
-            \AttributeTok{psba =}\NormalTok{ tsba }\SpecialCharTok{/}\NormalTok{ tpop) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(g32, time, psba) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ time, }\AttributeTok{values\_from =}\NormalTok{ psba,}
-              \AttributeTok{names\_prefix =} \StringTok{"time"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{\textasciigrave{}}\AttributeTok{time2}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \StringTok{\textasciigrave{}}\AttributeTok{time1}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ATT\_3\_2 =} \StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \FunctionTok{lag}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{default =} \ConstantTok{NA}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{5}\NormalTok{, }\AttributeTok{bold=}\ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## `summarise()` has grouped output by 'g32'. You can override using the `.groups` argument.
-\end{verbatim}
-
-\begin{table}
-\centering
-\begin{tabular}{r|r|r|r|>{}r}
-\hline
-g32 & time1 & time2 & Long diff & ATT\_3\_2\\
-\hline
-0 & 0.803 & 0.85 & 0.046 & \textbf{NA}\\
-\hline
-1 & 0.678 & 0.77 & 0.091 & \textbf{0.045}\\
-\hline
-\end{tabular}
-\end{table}
-
 Now for the treatment effect at time 3 for the groups first treated at
 time 3 we are comparing:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{gt }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{, }\AttributeTok{escape =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_styling}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{3}\SpecialCharTok{:}\DecValTok{4}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{background =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{3}\SpecialCharTok{:}\DecValTok{4}\NormalTok{, }\AttributeTok{background  =} \StringTok{"lightgray"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{1}\NormalTok{, }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{5}\NormalTok{,}\DecValTok{6}\NormalTok{), }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{1}\NormalTok{, }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{footnote}\NormalTok{(}\AttributeTok{general =} \StringTok{"Red = treated, Gray = untreated"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{table}
-\centering
-\begin{tabular}[t]{>{}r|>{}r|>{}r|>{}r|>{}r|>{}r}
-\hline
-group & time1 & time2 & time3 & time4 & time5\\
-\hline
-\cellcolor{white}{2} & \cellcolor{white}{0.631} & \cellcolor{white}{\textcolor{black}{0.711}} & \cellcolor{white}{\textcolor{black}{0.814}} & \cellcolor{white}{0.846} & \cellcolor{white}{0.826}\\
-\hline
-\cellcolor{white}{3} & \cellcolor{white}{0.678} & \cellcolor{red}{\textcolor{black}{0.770}} & \cellcolor{red}{\textcolor{black}{0.664}} & \cellcolor{white}{0.800} & \cellcolor{white}{0.784}\\
-\hline
-\cellcolor{white}{4} & \cellcolor{white}{0.778} & \cellcolor{lightgray}{\textcolor{black}{0.807}} & \cellcolor{lightgray}{\textcolor{black}{0.673}} & \cellcolor{white}{0.750} & \cellcolor{white}{0.868}\\
-\hline
-\cellcolor{white}{5} & \cellcolor{white}{0.854} & \cellcolor{lightgray}{\textcolor{black}{0.939}} & \cellcolor{lightgray}{\textcolor{black}{0.854}} & \cellcolor{white}{0.800} & \cellcolor{white}{0.855}\\
-\hline
-\multicolumn{6}{l}{\rule{0pt}{1em}\textit{Note: }}\\
-\multicolumn{6}{l}{\rule{0pt}{1em}Red = treated, Gray = untreated}\\
-\end{tabular}
-\end{table}
-
 The estimate of the ATT(3,3) is:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{d\_agg }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(time }\SpecialCharTok{\textgreater{}}\DecValTok{1} \SpecialCharTok{\&}\NormalTok{ time }\SpecialCharTok{\textless{}} \DecValTok{4} \SpecialCharTok{\&}\NormalTok{ group }\SpecialCharTok{!=} \DecValTok{2}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{g33 =} \FunctionTok{if\_else}\NormalTok{(group}\SpecialCharTok{==}\DecValTok{3}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(g33, time) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{tsba =} \FunctionTok{sum}\NormalTok{(tsba),}
-            \AttributeTok{tpop =} \FunctionTok{sum}\NormalTok{(tpop),}
-            \AttributeTok{psba =}\NormalTok{ tsba }\SpecialCharTok{/}\NormalTok{ tpop) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(g33, time, psba) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ time, }\AttributeTok{values\_from =}\NormalTok{ psba,}
-              \AttributeTok{names\_prefix =} \StringTok{"time"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{\textasciigrave{}}\AttributeTok{time3}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \StringTok{\textasciigrave{}}\AttributeTok{time2}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ATT\_3\_3 =} \StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \FunctionTok{lag}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{default =} \ConstantTok{NA}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{5}\NormalTok{, }\AttributeTok{bold=}\ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## `summarise()` has grouped output by 'g33'. You can override using the `.groups` argument.
-\end{verbatim}
-
-\begin{table}
-\centering
-\begin{tabular}{r|r|r|r|>{}r}
-\hline
-g33 & time2 & time3 & Long diff & ATT\_3\_3\\
-\hline
-0 & 0.85 & 0.725 & -0.124 & \textbf{NA}\\
-\hline
-1 & 0.77 & 0.664 & -0.106 & \textbf{0.018}\\
-\hline
-\end{tabular}
-\end{table}
 
 The groups for comparison for the estimated treatment effect at time 4
 for the groups first treated at time 3 now also need to exclude group 4,
 since it has received the treatment at time 4, but note also that the
 `pre-intervention' period is still (\(t=2\)) since group 3 was actually
 treated at time 3. So, we care comparing:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{gt }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{, }\AttributeTok{escape =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_styling}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{5}\NormalTok{), }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{background =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{), }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{4}\NormalTok{, }\AttributeTok{background  =} \StringTok{"lightgray"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{6}\NormalTok{), }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{footnote}\NormalTok{(}\AttributeTok{general =} \StringTok{"Red = treated, Gray = untreated"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{table}
 \centering
@@ -986,39 +642,6 @@ group & time1 & time2 & time3 & time4 & time5\\
 
 The estimate of the ATT(3,4) is:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{d\_agg }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{((time }\SpecialCharTok{==} \DecValTok{2} \SpecialCharTok{|}\NormalTok{ time }\SpecialCharTok{==} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\&}\NormalTok{ (group }\SpecialCharTok{==} \DecValTok{3} \SpecialCharTok{|}\NormalTok{ group }\SpecialCharTok{==} \DecValTok{5}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{g34 =} \FunctionTok{if\_else}\NormalTok{(group}\SpecialCharTok{==}\DecValTok{3}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(g34, time) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{tsba =} \FunctionTok{sum}\NormalTok{(tsba),}
-            \AttributeTok{tpop =} \FunctionTok{sum}\NormalTok{(tpop),}
-            \AttributeTok{psba =}\NormalTok{ tsba }\SpecialCharTok{/}\NormalTok{ tpop) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(g34, time, psba) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ time, }\AttributeTok{values\_from =}\NormalTok{ psba,}
-              \AttributeTok{names\_prefix =} \StringTok{"time"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{\textasciigrave{}}\AttributeTok{time4}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \StringTok{\textasciigrave{}}\AttributeTok{time2}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ATT\_3\_4 =} \StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \FunctionTok{lag}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{default =} \ConstantTok{NA}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{5}\NormalTok{, }\AttributeTok{bold=}\ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{table}
-\centering
-\begin{tabular}{r|r|r|r|>{}r}
-\hline
-g34 & time2 & time4 & Long diff & ATT\_3\_4\\
-\hline
-0 & 0.939 & 0.8 & -0.139 & \textbf{NA}\\
-\hline
-1 & 0.770 & 0.8 & 0.030 & \textbf{0.17}\\
-\hline
-\end{tabular}
-\end{table}
-
 \hypertarget{group-4}{%
 \subsubsection{Group 4}\label{group-4}}
 
@@ -1031,20 +654,6 @@ treated group, i.e., the group first treated at time 4, and a control
 group. In this case the control group will only include Group 3 and
 Group 5, since Group 2 is treated at (\(t=2\)) and we have to exclude
 it. So our comparison groups are:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{gt }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{, }\AttributeTok{escape =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_styling}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{), }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{background =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{1}\NormalTok{, }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{4}\NormalTok{), }\AttributeTok{background =} \StringTok{"lightgray"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{5}\NormalTok{,}\DecValTok{6}\NormalTok{), }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{footnote}\NormalTok{(}\AttributeTok{general =} \StringTok{"Red = treated, Gray = untreated"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{table}
 \centering
@@ -1069,59 +678,12 @@ Again, taking the population-weighted estimate for the control group and
 the estimates for Group 4, we can calculate the ATT at time 2 for the
 group first treated at time 4, i.e., ATT(4,2):
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{d\_agg }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(time }\SpecialCharTok{\textless{}} \DecValTok{3} \SpecialCharTok{\&}\NormalTok{ group }\SpecialCharTok{\textgreater{}=} \DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{g42 =} \FunctionTok{if\_else}\NormalTok{(group}\SpecialCharTok{==}\DecValTok{4}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(g42, time) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{tsba =} \FunctionTok{sum}\NormalTok{(tsba),}
-            \AttributeTok{tpop =} \FunctionTok{sum}\NormalTok{(tpop),}
-            \AttributeTok{psba =}\NormalTok{ tsba }\SpecialCharTok{/}\NormalTok{ tpop) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(g42, time, psba) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ time, }\AttributeTok{values\_from =}\NormalTok{ psba,}
-              \AttributeTok{names\_prefix =} \StringTok{"time"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{\textasciigrave{}}\AttributeTok{time2}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \StringTok{\textasciigrave{}}\AttributeTok{time1}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ATT\_4\_2 =} \StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \FunctionTok{lag}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{default =} \ConstantTok{NA}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{5}\NormalTok{, }\AttributeTok{bold=}\ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{table}
-\centering
-\begin{tabular}{r|r|r|r|>{}r}
-\hline
-g42 & time1 & time2 & Long diff & ATT\_4\_2\\
-\hline
-0 & 0.727 & 0.818 & 0.091 & \textbf{NA}\\
-\hline
-1 & 0.778 & 0.807 & 0.029 & \textbf{-0.062}\\
-\hline
-\end{tabular}
-\end{table}
-
 As you might expect, we now make the same progression for the addition
 ATTs for the the group first treated at time 4. First, for the next ATT
 for the pre-intervention period we want the treatment effect at time 3
 for the group that is first treated at time 4. That means comparing only
 Groups 4 and 5 (since group 3 is treated at time 3, it has to be
 excluded from the control population):
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{gt }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{, }\AttributeTok{escape =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_styling}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{4}\NormalTok{), }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{background =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{, }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{4}\NormalTok{, }\AttributeTok{background =} \StringTok{"lightgray"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{5}\NormalTok{,}\DecValTok{6}\NormalTok{), }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{footnote}\NormalTok{(}\AttributeTok{general =} \StringTok{"Red = treated, Gray = untreated"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{table}
 \centering
@@ -1144,57 +706,10 @@ group & time1 & time2 & time3 & time4 & time5\\
 
 And the resulting ATT(4,3) is:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{d\_agg }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{((time }\SpecialCharTok{==}\DecValTok{2} \SpecialCharTok{|}\NormalTok{ time }\SpecialCharTok{==} \DecValTok{3}\NormalTok{) }\SpecialCharTok{\&}\NormalTok{ group }\SpecialCharTok{\textgreater{}=} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{g43 =} \FunctionTok{if\_else}\NormalTok{(group}\SpecialCharTok{==}\DecValTok{4}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(g43, time) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{tsba =} \FunctionTok{sum}\NormalTok{(tsba),}
-            \AttributeTok{tpop =} \FunctionTok{sum}\NormalTok{(tpop),}
-            \AttributeTok{psba =}\NormalTok{ tsba }\SpecialCharTok{/}\NormalTok{ tpop) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(g43, time, psba) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ time, }\AttributeTok{values\_from =}\NormalTok{ psba,}
-              \AttributeTok{names\_prefix =} \StringTok{"time"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{\textasciigrave{}}\AttributeTok{time3}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \StringTok{\textasciigrave{}}\AttributeTok{time2}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ATT\_4\_3 =} \StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \FunctionTok{lag}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{default =} \ConstantTok{NA}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{5}\NormalTok{, }\AttributeTok{bold=}\ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{table}
-\centering
-\begin{tabular}{r|r|r|r|>{}r}
-\hline
-g43 & time2 & time3 & Long diff & ATT\_4\_3\\
-\hline
-0 & 0.939 & 0.854 & -0.086 & \textbf{NA}\\
-\hline
-1 & 0.807 & 0.673 & -0.134 & \textbf{-0.048}\\
-\hline
-\end{tabular}
-\end{table}
-
 Finally, the last ATT we can estimate is the effect of being treated at
 time 4 for the group that is first treated at time 4. Again, we can only
 compare groups 4 and 5 here, since every other group has already been
 treated. So we are comparing:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{gt }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kbl}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{, }\AttributeTok{escape =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_styling}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{5}\NormalTok{), }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{background =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{, }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{row\_spec}\NormalTok{(}\DecValTok{4}\NormalTok{, }\AttributeTok{background =} \StringTok{"lightgray"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{,}\DecValTok{6}\NormalTok{), }\AttributeTok{background =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{footnote}\NormalTok{(}\AttributeTok{general =} \StringTok{"Red = treated, Gray = untreated"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{table}
 \centering
@@ -1216,39 +731,6 @@ group & time1 & time2 & time3 & time4 & time5\\
 \end{table}
 
 And the resulting ATT(4,3) is:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{d\_agg }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{((time }\SpecialCharTok{==}\DecValTok{3} \SpecialCharTok{|}\NormalTok{ time }\SpecialCharTok{==} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\&}\NormalTok{ group }\SpecialCharTok{\textgreater{}=} \DecValTok{4}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{g44 =} \FunctionTok{if\_else}\NormalTok{(group}\SpecialCharTok{==}\DecValTok{4}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(g44, time) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{tsba =} \FunctionTok{sum}\NormalTok{(tsba),}
-            \AttributeTok{tpop =} \FunctionTok{sum}\NormalTok{(tpop),}
-            \AttributeTok{psba =}\NormalTok{ tsba }\SpecialCharTok{/}\NormalTok{ tpop) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(g44, time, psba) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ time, }\AttributeTok{values\_from =}\NormalTok{ psba,}
-              \AttributeTok{names\_prefix =} \StringTok{"time"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \OtherTok{=} \StringTok{\textasciigrave{}}\AttributeTok{time4}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \StringTok{\textasciigrave{}}\AttributeTok{time3}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{ATT\_4\_4 =} \StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \FunctionTok{lag}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Long diff}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{default =} \ConstantTok{NA}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable}\NormalTok{(}\AttributeTok{digits=}\DecValTok{3}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{column\_spec}\NormalTok{(}\DecValTok{5}\NormalTok{, }\AttributeTok{bold=}\ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{kable\_minimal}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{table}
-\centering
-\begin{tabular}{r|r|r|r|>{}r}
-\hline
-g44 & time3 & time4 & Long diff & ATT\_4\_4\\
-\hline
-0 & 0.854 & 0.80 & -0.054 & \textbf{NA}\\
-\hline
-1 & 0.673 & 0.75 & 0.077 & \textbf{0.13}\\
-\hline
-\end{tabular}
-\end{table}
 
 \hypertarget{weighted-atts}{%
 \section{Weighted ATTs}\label{weighted-atts}}
