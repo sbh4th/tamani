@@ -1,7 +1,7 @@
 ---
 title: "Group-Time ATTs"
 author: "Sam Harper"
-date: "2021-11-02"
+date: "2021-11-09"
 output:
   html_document: default
   pdf_document: default
@@ -15,7 +15,7 @@ library(haven)
 library(bacondecomp)
 library(ggplot2)
 library(fixest)
-library(glue)
+# library(glue)
 library(modelsummary)
 library(TwoWayFEWeights)
 library(kableExtra)
@@ -37,17 +37,15 @@ d_ind <- d %>%
   mutate(dist_id = as.numeric(district)) %>%
   drop_na() %>%
   group_by(district, dist_id) %>%
-  mutate(group = min(if_else(txdel==1, time, 5)),
-         g2 = if_else(group==2, 1, 0),
-         g3 = if_else(group==3, 1, 0),
-         g4 = if_else(group==4, 1, 0)) 
+  mutate(group = min(if_else(txdel == 1, time, 5)))
 
 kable(head(d_ind)) %>%
   kable_styling()
 ```
-Using this data, let's now run the standard TWFE analysis that is the workhorse of most DD applications with differential treatment timing. 
+Using this data, let's now run the standard TWFE analysis that is the workhorse of most DD applications with differential treatment timing.
+$$y_{sba} = \alpha + \beta*txdel + \gamma_{district} + \delta_{time} + \epsilon$$
 
-```{r twfei, cache=FALSE}
+```{r twfei, cache=FALSE, message=FALSE}
 # Get TWFE coefficient from individual-level dataset
 twfe <- fixest::feols(sba_birth ~ txdel | district + time, 
                       data = d,
@@ -56,10 +54,10 @@ twfe <- fixest::feols(sba_birth ~ txdel | district + time,
 
 twfe
 ```
-Specifying this using an OLS model with standard errors clustered at the district level, we get a DD estimate that we would interpret as showing that the intervention increased the probability of skilled birth attendance by 6 percentage points (95% CI -0.7 to 12.7). 
+Specifying this using an OLS model with standard errors clustered at the district level, we get a DD estimate that we would interpret as showing that the intervention increased the probability of skilled birth attendance by 6 percentage points (95% CI -0.7 to 12.7 percentage points). 
 
 Because the treatment is assigned at the cluster level and we aren't adjusting for any covariates, we can also analyze this at the cluster level. Next let's aggregate up to the district level. Here is a look at the dataset:
-```{r d2, cache=TRUE}
+```{r d2, cache=TRUE, message=FALSE}
 d_sba <- d_ind %>%
   group_by(district, dist_id, time) %>%
   summarise(tsba = sum(sba_birth),
@@ -156,13 +154,13 @@ cstable %>% select(-point.conf.low, -point.conf.high) %>%
 
 One thing that is immediately different from the TWFE method is that we get an entire suite of ATTs for each group and time period, which allows us to see: 
 
-- heterogeneity across both groups treated at different times (e.g., the ATT in the first year of treatment is much larger for the group first treated at time=2 (ATT(2,2) = 0.01) relative to the estimated effect in the first year of treatment for the group first treated at time 4, i.e., ATT(4,4) = 0.13, though both estimates are imprecise); and 
-- as well as different times for each treatment group, e.g.., the impact at time 3 for the group first treated at time 2 is 0.26 relative to 0.01 for the first year of treatment. 
+- heterogeneity across both groups treated at different times (e.g., the ATT in the first year of treatment is much smaller for the group first treated at time=2 (ATT(2,2) = 0.01) relative to the estimated effect in the first year of treatment for the group first treated at time 4, i.e., ATT(4,4) = 0.13, though both estimates are imprecise); and 
+- as well as different times for each treatment group, e.g.., the impact at time 3 for the group first treated at time 2 is 0.26 relative to 0.01 for the first year of treatment. Again, there is a lot of uncertainty, but there is a suggestion of a delayed treatment effect. 
 
 Let's take a quick detour to understand where these estimates are coming from. 
 
 ## Group Time ATTs
-The core of the CS estimator is the group-time ATT. They define groups based on when they were first treated and 
+The core of the CS estimator is the group-time ATT. They define groups based on when they were first treated and use as controls either groups that are never treated, not-yet-treated, or both. In our case, since we don't have any groups that are never treated, we have to use the not-yet-treated groups as controls for each 2x2 DD. The key difference, of course, is that we *do not* use any groups that have already been treated to estimate any of the group-time DDs. This was the key idea that Bacon and others showed in 'decomposing' the OLS TWFE DD estimate.  
 
 ### Group 2
 The basic idea of the group-time ATTs is to estimate a series of ATTs for each group $G$ that is treated at time $T$. So if we wanted to estimate the ATT at time=2 for the group that is first treated at time=2, we calculate the 'long' difference, i.e., post minus pre for the treated group ($G=2$) and the difference for all groups *not already treated* for the same period. Thus, the groups we are comparing to estimate ATT(2,2) are:
@@ -178,9 +176,9 @@ gt %>%
   footnote(general = "Red = treated, Gray = untreated")
 ```
 
-If we take the population-weighted average SBA proportions for these two groups, we get
+If we take the population-weighted average SBA proportions for these two groups, we get 0.011, which is exactly what the CS DiD table above showed for ATT(2,2).
 
-```{r att22, echo=FALSE, message=FALSE, results=FALSE}
+```{r att22, echo=FALSE, message=FALSE}
 d_agg %>% filter(time < 3) %>%
   mutate(g22 = if_else(group==2,1,0)) %>%
   group_by(g22, time) %>%
@@ -214,7 +212,7 @@ gt %>%
 ```
 
 And we get:
-```{r att23, message=FALSE, results=FALSE}
+```{r att23, message=FALSE}
 d_agg %>% filter((time==1 | time==3) & group!=3) %>%
   mutate(g23 = if_else(group==2,1,0)) %>%
   group_by(g23, time) %>%
@@ -232,7 +230,7 @@ d_agg %>% filter((time==1 | time==3) & group!=3) %>%
   kable_minimal()
 ```
 
-We can of course extend our view of how the treatment effect evolves for Group 2 by calculating the effect of being treated at time 4 for the group that was first treated at time 2, i.e., ATT(2,4). This is comparing:
+We can of course extend our view of how the treatment effect evolves for Group 2 by calculating the effect of being treated at time 4 for the group that was first treated at time 2, i.e., ATT(2,4). This is comparing the first *pre-intervention* period for group 2, which is at time 1, and the estimate of SBA at time 4:
 ```{r gt24}
 gt %>%
   kbl(digits=3, escape = FALSE) %>%
@@ -247,7 +245,7 @@ gt %>%
 ```
 
 Note that the control group here also changes, since at $t=4$ group 4 has now been treated, so we exclude them from the control group for this comparison. And the estimate is:
-```{r att24, message=FALSE, results=FALSE}
+```{r att24, message=FALSE}
 d_agg %>% filter((time==1 | time==4) & group!=3 & group!=4) %>%
   mutate(g24 = if_else(group==2,1,0)) %>%
   group_by(g24, time) %>%
@@ -282,7 +280,7 @@ gt %>%
 ```
 
 The estimate of the ATT(3,2) is:
-```{r att32, message=FALSE, results=FALSE}
+```{r att32, message=FALSE}
 d_agg %>% filter(time < 3 & group != 2) %>%
   mutate(g32 = if_else(group==3,1,0)) %>%
   group_by(g32, time) %>%
@@ -301,7 +299,7 @@ d_agg %>% filter(time < 3 & group != 2) %>%
 ```
 
 Now for the treatment effect at time 3 for the groups first treated at time 3 we are comparing:
-```{r gt33, message=FALSE, results=FALSE}
+```{r gt33, message=FALSE}
 gt %>%
   kbl(digits=3, escape = FALSE) %>%
   kable_styling() %>%
@@ -315,7 +313,7 @@ gt %>%
 ```
 
 The estimate of the ATT(3,3) is:
-```{r att33, message=FALSE, results=FALSE}
+```{r att33, message=FALSE}
 d_agg %>% filter(time >1 & time < 4 & group != 2) %>%
   mutate(g33 = if_else(group==3,1,0)) %>%
   group_by(g33, time) %>%
@@ -347,7 +345,7 @@ gt %>%
 ```
 
 The estimate of the ATT(3,4) is:
-```{r att34, message=FALSE, results=FALSE}
+```{r att34, message=FALSE}
 d_agg %>% filter((time == 2 | time == 4) & (group == 3 | group == 5)) %>%
   mutate(g34 = if_else(group==3,1,0)) %>%
   group_by(g34, time) %>%
@@ -380,7 +378,7 @@ gt %>%
 ```
 
 Again, taking the population-weighted estimate for the control group and the estimates for Group 4, we can calculate the ATT at time 2 for the group first treated at time 4, i.e., ATT(4,2):
-```{r att42, message=FALSE, results=FALSE}
+```{r att42, message=FALSE}
 d_agg %>% filter(time < 3 & group >= 3) %>%
   mutate(g42 = if_else(group==4,1,0)) %>%
   group_by(g42, time) %>%
@@ -411,7 +409,7 @@ gt %>%
 ```
 
 And the resulting ATT(4,3) is:
-```{r att43, message=FALSE, results=FALSE}
+```{r att43, message=FALSE}
 d_agg %>% filter((time ==2 | time == 3) & group >= 4) %>%
   mutate(g43 = if_else(group==4,1,0)) %>%
   group_by(g43, time) %>%
@@ -441,8 +439,8 @@ gt %>%
   footnote(general = "Red = treated, Gray = untreated")
 ```
 
-And the resulting ATT(4,3) is:
-```{r att44, message=FALSE, results=FALSE}
+And the resulting ATT(4,4) is:
+```{r att44, message=FALSE}
 d_agg %>% filter((time ==3 | time == 4) & group >= 4) %>%
   mutate(g44 = if_else(group==4,1,0)) %>%
   group_by(g44, time) %>%
@@ -479,6 +477,7 @@ agg.gs <- aggte(atts_cs, type = "group")
 summary(agg.gs)
 ggdid(agg.gs)
 ```
+
 From this we can see that the point estimates range from 0.09 to 0.18, though the group first treated at time 4 clearly has much greater uncertainty, which makes sense given the relatively short follow-up time for this group. 
 
 But we can also look at how the average effects change over time, by looking at *dynamic* ATTs.
@@ -489,6 +488,7 @@ agg.es <- aggte(atts_cs, type = "dynamic")
 summary(agg.es)
 ggdid(agg.es)
 ```
+
 These effects are based on length of exposure to the intervention and allow us to see whether the interventions impacts are sustained. 
 
 ### Calendar Time ATTs
@@ -500,4 +500,4 @@ ggdid(agg.ct)
 ```
 
 ## Summary
-
+Okay, there is a lot to upack here, but the bottom line is that the TWFE approch to estimating DD in this context probably introduces bias (I tried to work a bit on the Goodman-Bacon decomposition, but it is a bit hard to sort out in the context of weights like we have). Regardless of how we aggregate the group time ATTs, it seems clear that our estimate is somewhere in the range of 0.10 to 0.20, which is higher than the TWFE estimate, though probably not statistically distinguishable. 
