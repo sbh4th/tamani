@@ -92,52 +92,6 @@ modelsummary(models, gof_omit = 'DF|Deviance|R2|AIC|BIC|Log.Lik')
 
 #--------------------------- End of SECTION 1 --------------------------#
 
-# create group-time aggregate data
-d_agg <- d_sba %>% group_by(group, time) %>%
-  summarise(tsba = sum(tsba),
-         tpop = sum(tpop),
-         psba = tsba / tpop, # % SBA
-         txdel = mean(txdel),
-         g2 = mean(g2),
-         g3 = mean(g3),
-         g4 = mean(g4))
-  
-d_agg %>% select(group, time, psba) %>%
-  pivot_wider(names_from = time, values_from = psba) 
-
-d_agg %>% filter(time < 3) %>%
-  group_by(g2, time) %>%
-  summarise(tsba = sum(tsba),
-            tpop = sum(tpop),
-            psba = tsba / tpop) %>%
-  select(g2, time, psba) %>%
-  pivot_wider(names_from = time, values_from = psba) %>%
-  mutate(D = `2` - `1`) %>%
-  group_by() %>%
-  mutate(DD = D - lag(D, default = NA))
-
-d_agg %>% filter(time > 1 & time < 4) %>%
-  group_by(g3, time) %>%
-  summarise(tsba = sum(tsba),
-            tpop = sum(tpop),
-            psba = tsba / tpop) %>%
-  select(g3, time, psba) %>%
-  pivot_wider(names_from = time, values_from = psba) %>%
-  mutate(D = `3` - `2`) %>%
-  group_by() %>%
-  mutate(DD = D - lag(D, default = NA))
-  
-d_agg %>% filter(time > 2 & time < 5) %>%
-  group_by(g4, time) %>%
-  summarise(tsba = sum(tsba),
-            tpop = sum(tpop),
-            psba = tsba / tpop) %>%
-  select(g4, time, psba) %>%
-  pivot_wider(names_from = time, values_from = psba) %>%
-  mutate(D = `4` - `3`) %>%
-  group_by() %>%
-  mutate(DD = D - lag(D, default = NA))
-  
 
 
 #-----------------------------------------------------------------------
@@ -171,8 +125,6 @@ dCDH_negative <- sum(dCDH_decomp$weight[dCDH_decomp$weight<0])
 #--------------------------- End of SECTION 2 --------------------------#
 
 
-
-
 # CS approach
 # Use not-yet-treated as comparison group
 atts_cs <- did::att_gt(yname = "psba", # name of the LHS variable
@@ -192,4 +144,75 @@ summary(atts_cs)
 
 agg_effects_cs <- aggte(atts_cs, type = "dynamic", min_e = -2, max_e = 2)
 summary(agg_effects_cs)
+
+# Simple aggregation by population size
+agg.simple <- aggte(atts_cs, type = "simple")
+summary(agg.simple)
+
+# Dynamic effects
+agg.es <- aggte(atts_cs, type = "dynamic")
+summary(agg.es)
+ggdid(agg.es)
+
+# Group-specific effects
+agg.gs <- aggte(atts_cs, type = "group")
+summary(agg.gs)
+ggdid(agg.gs)
+
+# Calendar time effects
+agg.ct <- aggte(atts_cs, type = "calendar")
+summary(agg.ct)
+ggdid(agg.ct)
+
+
+## event study estimates
+# put estimates into a table
+es_df <- data.frame(
+  type          = "dynamic",
+  term = paste0('ATT(', agg_effects_cs$egt, ")"),
+  event.time= agg_effects_cs$egt,
+  estimate  = agg_effects_cs$att.egt,
+  std.error = agg_effects_cs$se.egt,
+  conf.low  = agg_effects_cs$att.egt - 
+    agg_effects_cs$crit.val.egt * agg_effects_cs$se.egt,
+  conf.high = agg_effects_cs$att.egt 
+  + agg_effects_cs$crit.val.egt  * agg_effects_cs$se.egt,
+  point.conf.low  = agg_effects_cs$att.egt - 
+    stats::qnorm(1 - agg_effects_cs$DIDparams$alp/2) * 
+    agg_effects_cs$se.egt,
+  point.conf.high = agg_effects_cs$att.egt + 
+    stats::qnorm(1 - agg_effects_cs$DIDparams$alp/2) * 
+    agg_effects_cs$se.egt
+)
+
+# Graph it. 
+p_es <- ggplot(data = es_df,
+  mapping = aes(x = event.time, y = estimate)) +
+  geom_vline(xintercept = 0-0.05, color = 'grey', 
+             size = 1.2, linetype = "dotted") + 
+  geom_ribbon(aes(ymin= point.conf.low, ymax=  point.conf.high), 
+              alpha = 0.5, size = 1, fill = "steelblue") +
+  geom_ribbon(aes(ymin=  conf.low, ymax =  conf.high), 
+              alpha =  0.3, size = 1, fill = "steelblue") +
+  geom_line(mapping = aes(x = event.time, y=estimate), 
+            colour = "black", size = 0.6, linetype = "dashed") +
+  geom_line(size = 1.2, alpha = 2, colour = "darkblue") +
+  geom_hline(yintercept = 0, colour="black", size = 0.25,
+             linetype = "dotted") +
+  xlab('Event time') + ylab("Event-Study Estimate") +
+  scale_x_continuous(breaks = c(-5:5)) +
+  theme(axis.text.y = element_text(size = 12))+
+  theme(axis.text.x = element_text(size = 12)) +
+  theme(axis.title = element_text(color="black",  size = 12))+
+  theme(plot.title=ggtext::element_markdown(size = 12,
+                                            #face = "bold",
+                                            color="black",
+                                            hjust=0,
+                                            lineheight=1.2)) +
+  annotate(geom="text", x=3, y=-0.01, 
+  label="Average of post-treatment ES coef's:
+           0.0758 (0.0124)",
+           color="black")
+
+p_es
 

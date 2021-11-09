@@ -23,7 +23,7 @@ devtools::install_github("bcallaway11/did")
 library(did)
 ```
 
-# Standard Two-Way Fixed Effects 
+## Standard Two-Way Fixed Effects 
 First, let's read in the Stata dataset, and create a smaller version with just the variables of interest for looking at skilled birth attendance:
 ```{r d1, cache=FALSE}
 d <- read_dta(here("data-clean", "hh_female_impact_rpt.dta")) %>%
@@ -125,6 +125,7 @@ gt <- d_agg %>% select(group, time, psba) %>%
   pivot_wider(names_from = time, names_prefix = "time",
               values_from = psba)
 ```
+Note that we can see the core pieces that are going to contribute to the DD estimates, which are the outcomes in each group and the total population sizes. 
 
 Okay, now let's estimate the impact using the CS DD method:
 ```{r csdid, message=FALSE, warning=FALSE, results=FALSE, echo=TRUE}
@@ -459,5 +460,44 @@ d_agg %>% filter((time ==3 | time == 4) & group >= 4) %>%
   kable_minimal()
 ```
 
-# Weighted ATTs
-Instead of taking a weighted average estimate of the ATT with more-or-less arbitrary weights derived from the TWFE OLS approach. The CS DD approch considers several different ways of combinging the group-time ATTs we calculated above. 
+
+## Weighted ATTs
+Instead of taking a weighted average estimate of the ATT with more-or-less arbitrary weights derived from the TWFE OLS approach. The CS DD approch considers several different ways of combining the group-time ATTs we calculated above. 
+
+### Simple Average
+The most straightforward way of getting a *single* estimate of the ATT from the CS approach is just to weight each of the group-time ATTs by population size:
+```{r simple, message=FALSE}
+agg.simple <- aggte(atts_cs, type = "simple")
+summary(agg.simple)
+```
+We can compare this with the estimate we got from the TWFE approach, which was 0.06 with a 95% CI of -0.02 to 0.14. Obviously, this aggregate estimate can hide considerable heterogeneity, but we can also look at other ways of examining heterogeneity in the ATTs.
+
+### Group-specific ATTs
+One question we might ask is whether each of our treated groups, which were treated at different times, may have exhibited different treatment effects. We could look at each group's average (population-weighted) ATT:
+```{r grouped, message = FALSE}
+agg.gs <- aggte(atts_cs, type = "group")
+summary(agg.gs)
+ggdid(agg.gs)
+```
+From this we can see that the point estimates range from 0.09 to 0.18, though the group first treated at time 4 clearly has much greater uncertainty, which makes sense given the relatively short follow-up time for this group. 
+
+But we can also look at how the average effects change over time, by looking at *dynamic* ATTs.
+
+### Dynamic ATTs
+```{r dynamic, message=FALSE}
+agg.es <- aggte(atts_cs, type = "dynamic")
+summary(agg.es)
+ggdid(agg.es)
+```
+These effects are based on length of exposure to the intervention and allow us to see whether the interventions impacts are sustained. 
+
+### Calendar Time ATTs
+Finally, one could also aggregate the ATTs not by length of exposure, but by calendar time, looking at whether there is heterogeneity by time period. 
+```{r calendar, message = FALSE}
+agg.ct <- aggte(atts_cs, type = "calendar")
+summary(agg.ct)
+ggdid(agg.ct)
+```
+
+## Summary
+
