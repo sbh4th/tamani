@@ -41,10 +41,7 @@ d_ind <- d %>%
   mutate(dist_id = as.numeric(district)) %>%
   drop_na() %>%
   group_by(district, dist_id) %>%
-  mutate(group = min(if_else(txdel==1, time, 5)),
-         g2 = if_else(group==2, 1, 0),
-         g3 = if_else(group==3, 1, 0),
-         g4 = if_else(group==4, 1, 0)) 
+  mutate(group = min(if_else(txdel==1, time, 5))) 
 
 # aggregate dataset
 d_sba <- d_ind %>%
@@ -138,7 +135,7 @@ atts_cs <- did::att_gt(yname = "psba", # name of the LHS variable
                        control_group = "notyettreated", # set the control group
                        bstrap = TRUE, # if TRUE compute boostrapped SE
                        biters = 1000, # number of boostrap interations
-                       print_details = FALSE, # if TRUE, print detailed results
+                       print_details = TRUE, # if TRUE, print detailed results
                        panel = FALSE) # panel or repeated cross-sectional
 summary(atts_cs)
 
@@ -215,4 +212,33 @@ p_es <- ggplot(data = es_df,
            color="black")
 
 p_es
+
+d_i <- d %>% 
+  select(district, sba_birth, txdel, time, personid) %>%
+  mutate(dist_id = as.numeric(district),
+         p_id = row_number(personid)) %>%
+  drop_na() %>%
+  group_by(district, dist_id) %>%
+  mutate(group = min(if_else(txdel==1, time, 5))) 
+
+atts_csi <- did::att_gt(yname = "sba_birth", # name of the LHS variable
+                       tname = "time", # name of the time variable
+                       idname = "p_id", # name of the id variable
+                       gname = "group", # name of the first treatment period
+                       data = d_i, # name of the data
+                       xformla = NULL,
+                       weightsname = NULL,
+                       est_method = "reg", # estimation method.
+                       control_group = "notyettreated", # set the control group
+                       bstrap = TRUE, # if TRUE compute boostrapped SE
+                       biters = 1000, # number of boostrap interations
+                       print_details = TRUE, # if TRUE, print detailed results
+                       panel = FALSE) # panel or repeated cross-sectional
+summary(atts_csi)
+
+agg.simplei <- aggte(atts_csi, type = "simple")
+summary(agg.simplei)
+
+agg.dynamici <- aggte(atts_csi, type = "dynamic")
+summary(agg.dynamici)
 
