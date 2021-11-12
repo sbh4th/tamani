@@ -500,4 +500,4 @@ ggdid(agg.ct)
 ```
 
 ## Summary
-Okay, there is a lot to upack here, but the bottom line is that the TWFE approch to estimating DD in this context probably introduces bias (I tried to work a bit on the Goodman-Bacon decomposition, but it is a bit hard to sort out in the context of weights like we have). Regardless of how we aggregate the group time ATTs, it seems clear that our estimate is somewhere in the range of 0.10 to 0.20, which is higher than the TWFE estimate, though probably not statistically distinguishable. 
+Okay, there is a lot to unpack here, but the bottom line is that the TWFE approach to estimating DD in this context probably introduces bias (I tried to work a bit on the Goodman-Bacon decomposition, but it is a bit hard to sort out in the context of weights like we have). Regardless of how we aggregate the group time ATTs, it seems clear that our estimate is somewhere in the range of 0.10 to 0.20, which is higher than the TWFE estimate, though probably not statistically distinguishable. 

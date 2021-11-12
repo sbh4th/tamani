@@ -37,8 +37,9 @@ d <- read_dta(here("data-clean", "hh_female_impact_rpt.dta")) %>%
 
 # restrict to variables for analysis
 d_ind <- d %>% 
-  select(district, sba_birth, txdel, time) %>%
-  mutate(dist_id = as.numeric(district)) %>%
+  select(district, sba_birth, txdel, time, personid) %>%
+  mutate(dist_id = as.numeric(district),
+         p_id = row_number(personid)) %>% # unique ID for each individual
   drop_na() %>%
   group_by(district, dist_id) %>%
   mutate(group = min(if_else(txdel==1, time, 5))) 
@@ -72,7 +73,7 @@ summary(twfe)
 twfep <- fixest::feols(psba ~ txdel | district + time, 
                       data = d_sba,
                       weights = ~tpop, 
-                      cluster = ~district)
+                      cluster = NULL)
 
 summary(twfep)
 
@@ -80,7 +81,7 @@ summary(twfep)
 twfepu <- fixest::feols(psba ~ txdel | district + time, 
                        data = d_sba,
                        weights =NULL, 
-                       cluster = ~district)
+                       cluster = NULL)
 
 # summary of TWFE models
 models <- list("Individual" = twfe, "Aggregate" = twfep, 
@@ -135,8 +136,8 @@ atts_cs <- did::att_gt(yname = "psba", # name of the LHS variable
                        control_group = "notyettreated", # set the control group
                        bstrap = TRUE, # if TRUE compute boostrapped SE
                        biters = 1000, # number of boostrap interations
-                       print_details = TRUE, # if TRUE, print detailed results
-                       panel = FALSE) # panel or repeated cross-sectional
+                       print_details = FALSE, # if TRUE, print detailed results
+                       panel = TRUE) # panel or repeated cross-sectional
 summary(atts_cs)
 
 agg_effects_cs <- aggte(atts_cs, type = "dynamic", min_e = -2, max_e = 2)
@@ -225,14 +226,14 @@ atts_csi <- did::att_gt(yname = "sba_birth", # name of the LHS variable
                        tname = "time", # name of the time variable
                        idname = "p_id", # name of the id variable
                        gname = "group", # name of the first treatment period
-                       data = d_i, # name of the data
+                       data = d_ind, # name of the data
                        xformla = NULL,
                        weightsname = NULL,
                        est_method = "reg", # estimation method.
                        control_group = "notyettreated", # set the control group
                        bstrap = TRUE, # if TRUE compute boostrapped SE
                        biters = 1000, # number of boostrap interations
-                       print_details = TRUE, # if TRUE, print detailed results
+                       print_details = FALSE, # if TRUE, print detailed results
                        panel = FALSE) # panel or repeated cross-sectional
 summary(atts_csi)
 
@@ -241,4 +242,61 @@ summary(agg.simplei)
 
 agg.dynamici <- aggte(atts_csi, type = "dynamic")
 summary(agg.dynamici)
+ggdid(agg.dynamici)
 
+agg.cti <- aggte(atts_csi, type = "calendar")
+summary(agg.cti)
+ggdid(agg.cti)
+
+atts_csic <- did::att_gt(yname = "sba_birth", # name of the LHS variable
+                        tname = "time", # name of the time variable
+                        idname = "p_id", # name of the id variable
+                        gname = "group", # name of the first treatment period
+                        data = d_ind, # name of the data
+                        xformla = NULL,
+                        weightsname = NULL,
+                        est_method = "reg", # estimation method.
+                        control_group = "notyettreated", # set the control group
+                        clustervars = "dist_id",
+                        bstrap = TRUE, # if TRUE compute boostrapped SE
+                        biters = 1000, # number of boostrap iterations
+                        print_details = FALSE, # if TRUE, print detailed results
+                        panel = FALSE) # panel or repeated cross-sectional
+summary(atts_csic)
+
+atts_csac <- did::att_gt(yname = "psba", # name of the LHS variable
+                       tname = "time", # name of the time variable
+                       idname = "dist_id", # name of the id variable
+                       gname = "group", # name of the first treatment period
+                       data = d_sba, # name of the data
+                       xformla = NULL,
+                       weightsname = "tpop",
+                       est_method = "reg", # estimation method.
+                       control_group = "notyettreated", # set the control group
+                       bstrap = FALSE, # if TRUE compute boostrapped SE
+                       biters = 1000, # number of boostrap interations
+                       print_details = FALSE, # if TRUE, print detailed results
+                       panel = TRUE) # panel or repeated cross-sectional
+summary(atts_csac)
+
+
+# Asymptotic inference at individual-level 
+atts_csi <- did::att_gt(yname = "sba_birth", # name of the LHS variable
+                        tname = "time", # name of the time variable
+                        idname = "p_id", # name of the id variable
+                        gname = "group", # name of the first treatment period
+                        data = d_i, # name of the data
+                        xformla = NULL,
+                        weightsname = NULL,
+                        est_method = "reg", # estimation method.
+                        control_group = "notyettreated", # set the control group
+                        bstrap = FALSE, # if TRUE compute boostrapped SE
+                        biters = 1000, # number of boostrap interations
+                        print_details = FALSE, # if TRUE, print detailed results
+                        panel = FALSE) # panel or repeated cross-sectional
+summary(atts_csi)
+
+cs_est <- rbind(atts_cs$att, atts_csi$att)
+
+# try and calculate the SE by hand for each ATT
+d_ind %>% filter(dist_id==)
