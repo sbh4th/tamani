@@ -214,14 +214,7 @@ p_es <- ggplot(data = es_df,
 
 p_es
 
-d_i <- d %>% 
-  select(district, sba_birth, txdel, time, personid) %>%
-  mutate(dist_id = as.numeric(district),
-         p_id = row_number(personid)) %>%
-  drop_na() %>%
-  group_by(district, dist_id) %>%
-  mutate(group = min(if_else(txdel==1, time, 5))) 
-
+# individual-level analysis
 atts_csi <- did::att_gt(yname = "sba_birth", # name of the LHS variable
                        tname = "time", # name of the time variable
                        idname = "p_id", # name of the id variable
@@ -248,6 +241,8 @@ agg.cti <- aggte(atts_csi, type = "calendar")
 summary(agg.cti)
 ggdid(agg.cti)
 
+# individual-level analysis
+# accounting for clustering by district
 atts_csic <- did::att_gt(yname = "sba_birth", # name of the LHS variable
                         tname = "time", # name of the time variable
                         idname = "p_id", # name of the id variable
@@ -299,4 +294,75 @@ summary(atts_csi)
 cs_est <- rbind(atts_cs$att, atts_csi$att)
 
 # try and calculate the SE by hand for each ATT
-d_ind %>% filter(dist_id==)
+# ATT(2,2)
+di_22 <- d_ind %>% filter(time < 3) %>%
+  mutate(g22 = if_else(group==2,1,0))
+
+twfe_22 <- fixest::feols(sba_birth ~ txdel | g22 + time, 
+                      data = di_22,
+                      weights = NULL, 
+                      cluster = ~district)
+summary(twfe_22)
+
+# ATT(2,3)
+di_23 <- d_ind %>% filter((time==1 | time==3) & group!=3) %>%
+  mutate(g23 = if_else(group==2,1,0))
+
+twfe_23 <- fixest::feols(sba_birth ~ txdel | g23 + time, 
+                      data = di_23,
+                      weights = NULL, 
+                      cluster = ~district)
+summary(twfe_23)
+
+
+# ATT(4,4)
+di_44 <- d_ind %>% filter((time ==3 | time == 4) & group >= 4) %>%
+  mutate(g44 = if_else(group==4,1,0)) 
+
+di_44 %>%
+  group_by(g44, time) %>%
+  summarise(tsba = mean(sba_birth))
+
+twfe_44 <- fixest::feols(sba_birth ~ txdel | g44 + time, 
+                      data = di_44,
+                      weights = NULL, 
+                      cluster = NULL)
+summary(twfe_44)
+
+# Bayesian implementation for ATT(4,4)
+# random effects for each cluster
+b44 <-
+  brm(data = di_44, 
+      family = bernoulli(),
+      sba_birth ~ 1 + (1 | dist_id) + txdel + g44 + time,
+      prior = c(prior(normal(0, 10), class = Intercept),  # bar alpha
+                prior(normal(0, 10), class = b),          # betas
+                prior(exponential(1), class = sd)),        # sigma
+      iter = 5000, warmup = 1000, chains = 4, cores = 4,
+      sample_prior = "yes",
+      seed = 13)
+
+plot(b44)
+print(b44)
+
+
+b44f <-
+  brm(data = di_44, 
+      family = bernoulli(),
+      sba_birth ~ 1 + txdel + g44 + time,
+      prior = c(prior(normal(0, 10), class = Intercept),  # bar alpha
+                prior(normal(0, 10), class = b)),          # betas
+      iter = 5000, warmup = 1000, chains = 4, cores = 4,
+      sample_prior = "yes",
+      seed = 13)
+
+print(b44f)
+
+library(RStata)
+options("RStata.StataVersion" = 16)
+options("RStata.StataPath"= '/Applications/Stata/StataMP.app/Contents/MacOS/stata-mp')
+
+s_od1 <- '
+prtest sba_birth if g44==1, by(time)
+'
+stata(s_od1, data.in=di_44)
