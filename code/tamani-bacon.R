@@ -19,6 +19,7 @@
 #-----------------------------------------------------------------------
 library(here) 
 library(tidyverse)
+library(tidybayes)
 library(haven)
 library(bacondecomp)
 library(ggplot2)
@@ -135,7 +136,7 @@ atts_cs <- did::att_gt(yname = "psba", # name of the LHS variable
                        est_method = "reg", # estimation method.
                        control_group = "notyettreated", # set the control group
                        bstrap = TRUE, # if TRUE compute boostrapped SE
-                       biters = 1000, # number of boostrap interations
+                       biters = 1000, # number of boostrap iterations
                        print_details = FALSE, # if TRUE, print detailed results
                        panel = TRUE) # panel or repeated cross-sectional
 summary(atts_cs)
@@ -331,7 +332,9 @@ summary(twfe_44)
 
 # Bayesian implementation for ATT(4,4)
 # random effects for each cluster
-b44 <-
+library(brms)
+library(cmdstanr)
+b44_flat <-
   brm(data = di_44, 
       family = bernoulli(),
       sba_birth ~ 1 + (1 | dist_id) + txdel + g44 + time,
@@ -340,23 +343,75 @@ b44 <-
                 prior(exponential(1), class = sd)),        # sigma
       iter = 5000, warmup = 1000, chains = 4, cores = 4,
       sample_prior = "yes",
-      seed = 13)
+      seed = 13,
+      file = "code/fits/b44_flat")
 
-plot(b44)
-print(b44)
+plot(b44_flat)
 
 
-b44f <-
+# Same model with regularizing priors
+b44_reg <-
   brm(data = di_44, 
       family = bernoulli(),
-      sba_birth ~ 1 + txdel + g44 + time,
-      prior = c(prior(normal(0, 10), class = Intercept),  # bar alpha
-                prior(normal(0, 10), class = b)),          # betas
+      sba_birth ~ 1 + (1 | dist_id) + txdel + g44 + time,
+      prior = c(prior(normal(0, 2), class = Intercept),  # bar alpha
+                prior(normal(0, 1), class = b),          # betas
+                prior(exponential(1), class = sd)),        # sigma
       iter = 5000, warmup = 1000, chains = 4, cores = 4,
       sample_prior = "yes",
-      seed = 13)
+      seed = 24,
+      file = "code/fits/b44_reg")
 
-print(b44f)
+# Visualize prior distributions for baseline value of SBA
+bind_rows(prior_draws(b44_flat),
+          prior_draws(b44_reg)) %>% 
+  mutate(p = inv_logit_scaled(Intercept),
+         w = factor(rep(c(10, 2), each = n() / 2),
+                    levels = c(10, 2))) %>% 
+  
+  # plot
+  ggplot(aes(x = p, fill = w)) +
+  geom_density(size = 0, alpha = 3/4, adjust = 0.1) +
+  scale_fill_manual(expression(italic(prior)), values = c("red", "blue")) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  labs(title = expression(alpha%~%Normal(0*", "*italic(prior))),
+       x = "prior prob SBA") + theme_bw() +
+  ggsave("output/b44_intercept_priors.png")
+
+# Visualize prior distributions for ATT(4,4)
+bind_rows(prior_draws(b44_flat),
+          prior_draws(b44_reg)) %>% 
+  mutate(p = inv_logit_scaled(Intercept),
+         b = inv_logit_scaled(Intercept + b),
+         w = factor(rep(c(10, 1), each = n() / 2),
+                    levels = c(10, 1))) %>%
+  mutate(diff = abs(b - p)) %>%
+  
+  # plot
+  ggplot(aes(x = diff, fill = w)) +
+  geom_density(size = 0, alpha = 3/4, adjust = 0.1) +
+  scale_fill_manual(expression(italic(prior)), values = c("red", "blue")) +
+  scale_y_continuous(NULL, breaks = NULL) +
+  labs(title = expression(beta%~%Normal(0*", "*italic(prior))),
+       x = "prior prob SBA") + theme_bw() +
+  ggsave("output/b44_beta_priors.png")
+
+
+# Compare models
+b44_flat <- add_criterion(b44_flat, c("loo", "waic"))
+b44_reg <- add_criterion(b44_reg, c("loo", "waic"))
+
+loo_compare(b44_flat, b44_reg, criterion = "loo") %>% print(simplify = F)
+model_weights(b44_flat, b44_reg, weights = "loo") %>% round(digits = 2)
+
+
+b44_reg %>%
+  spread_draws(b_txdel) %>%
+  head(10)
+
+bind_rows(spread_draws(b44_flat),
+          spread_draws(b44_reg)) %>%
+  head(20)
 
 library(RStata)
 options("RStata.StataVersion" = 16)
@@ -364,5 +419,12 @@ options("RStata.StataPath"= '/Applications/Stata/StataMP.app/Contents/MacOS/stat
 
 s_od1 <- '
 prtest sba_birth if g44==1, by(time)
+scalar d1 = r(P_diff)
+scalar d1_se = r(se_diff)
+prtest sba_birth if g44==0, by(time)
+scalar d0 = r(P_diff)
+scalar d0_se = r(se_diff)
+display "ATT(4,4)= " d1 - d0
+display "ATT(4,4) SE = " sqrt(d1_se^2 + d0_se^2)
 '
 stata(s_od1, data.in=di_44)
