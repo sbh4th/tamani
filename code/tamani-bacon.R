@@ -225,8 +225,8 @@ atts_csi <- did::att_gt(yname = "sba_birth", # name of the LHS variable
                        weightsname = NULL,
                        est_method = "reg", # estimation method.
                        control_group = "notyettreated", # set the control group
-                       bstrap = TRUE, # if TRUE compute boostrapped SE
-                       biters = 1000, # number of boostrap interations
+                       bstrap = TRUE, # if TRUE compute bootstrapped SE
+                       biters = 1000, # number of bootstrap iterations
                        print_details = FALSE, # if TRUE, print detailed results
                        panel = FALSE) # panel or repeated cross-sectional
 summary(atts_csi)
@@ -333,6 +333,7 @@ summary(twfe_44)
 # Bayesian implementation for ATT(4,4)
 # random effects for each cluster
 library(brms)
+library(modelr)
 library(cmdstanr)
 b44_flat <-
   brm(data = di_44, 
@@ -376,7 +377,7 @@ bind_rows(prior_draws(b44_flat),
   scale_y_continuous(NULL, breaks = NULL) +
   labs(title = expression(alpha%~%Normal(0*", "*italic(prior))),
        x = "prior prob SBA") + theme_bw() +
-  ggsave("output/b44_intercept_priors.png")
+  ggsave("output/b44_intercept_priors.png", width = 9, height = 6)
 
 # Visualize prior distributions for ATT(4,4)
 bind_rows(prior_draws(b44_flat),
@@ -394,7 +395,7 @@ bind_rows(prior_draws(b44_flat),
   scale_y_continuous(NULL, breaks = NULL) +
   labs(title = expression(beta%~%Normal(0*", "*italic(prior))),
        x = "prior prob SBA") + theme_bw() +
-  ggsave("output/b44_beta_priors.png")
+  ggsave("output/b44_beta_priors.png", width = 9, height = 6)
 
 
 # Compare models
@@ -403,6 +404,88 @@ b44_reg <- add_criterion(b44_reg, c("loo", "waic"))
 
 loo_compare(b44_flat, b44_reg, criterion = "loo") %>% print(simplify = F)
 model_weights(b44_flat, b44_reg, weights = "loo") %>% round(digits = 2)
+
+
+mf_0 <- di_44 %>% mutate(txdel = 0)
+mf_1 <- di_44 %>% mutate(txdel = 1)
+mf_me <- bind_rows(mf_0, mf_1)
+
+mf_mpp0 <- di_44 %>%
+  data_grid(dist_id, txdel, g44, time) %>%
+  add_epred_draws(b44_flat, allow_new_levels = TRUE) %>%
+  group_by(txdel, .draw) %>%
+  summarise(`Pr(y)` = mean(`.epred`)) %>%
+  ungroup()
+
+mf_try <- add_epred_draws(b44_flat, newdata=mf_me) %>%
+  mutate(txdel = recode_factor(txdel, `0` = "Control", `1` = "Treated")) %>%
+  group_by(txdel, .draw) %>%
+  summarise(`Pr(y)` = mean(`.epred`))
+
+mf_try %>% group_by(txdel) %>%
+  median_qi(`Pr(y)`)
+
+p1 <- mf_try %>% group_by(txdel) %>%
+  mutate(q05 = quantile(`Pr(y)`, probs = 0.025),
+         q50 = quantile(`Pr(y)`, probs = 0.50 ),
+         q95 = quantile(`Pr(y)`, probs = 0.975 )) %>%
+  ggplot(aes(x = `Pr(y)`, fill = `txdel`)) +
+  geom_density(alpha = 0.25, aes(y = ..scaled..)) + 
+  geom_segment(aes(x = q05, xend = q95, y = 0, yend = 0, color = `txdel`), 
+               position = position_nudge(y = -0.025)) +
+  geom_point(aes(x = q50, y = 0, color = `txdel`), 
+             position = position_nudge(y = -0.025)) +
+  annotate("text", x = 0.72, y = 1.1, label="Control") +
+  annotate("text", x = 0.85, y = 1.1, label="Treated") +
+  scale_x_continuous(limits=c(0,1)) +
+  scale_y_continuous("Density") +
+  scale_fill_manual(values = c('#1b9e77','#d95f02')) +
+  theme_classic() + 
+  theme(legend.position = "none", axis.text.y = element_blank(),
+        axis.ticks = element_blank())
+
+
+p2 <- mf_try %>% 
+  pivot_wider(names_from = txdel, values_from = `Pr(y)`) %>%
+  mutate(diff = `Treated` - `Control`) %>%
+  mutate(q05 = quantile(`diff`, probs = 0.025),
+         q50 = quantile(`diff`, probs = 0.50 ),
+         q95 = quantile(`diff`, probs = 0.975 )) %>%
+  ggplot(aes(x = `diff`)) +
+  geom_density(alpha = 0.25, fill='#7570b3',  aes(y = ..scaled..)) + 
+  geom_segment(aes(x = q05, xend = q95, y = 0, yend = 0), 
+               position = position_nudge(y = -0.025)) +
+  geom_point(aes(x = q50, y = 0), 
+             position = position_nudge(y = -0.025)) +
+  annotate("text", x = 0.5, y = 1.1, label="Difference") +
+  scale_x_continuous(limits=c(-0.5,0.5)) +
+  scale_y_continuous("") +
+  theme_classic() + 
+  theme(legend.position = "none", axis.text.y = element_blank(),
+        axis.line.y = element_blank(),
+        axis.ticks = element_blank())
+
+f2 <- p1 + p2 + plot_layout(widths = c(2, 1))
+f2
+
+ggsave(here("output", "u2s-fig2.png"), plot = f2,
+       width = 6.5, height = 3)
+
+
+# estimate marginal effects
+mf <- model.frame(di_44)
+mf$txdel <- 0
+yhat0b <- fitted(b44_reg,
+                 mf,
+                 scale = "response", summary = FALSE)
+mf$txdel <- 1
+yhat1b <- fitted(b44_reg,
+                 mf,
+                 scale = "response", summary = FALSE)
+
+describe_posterior(rowMeans(yhat0b))
+describe_posterior(rowMeans(yhat1b))
+describe_posterior(rowMeans(yhat1b - yhat0b))
 
 
 b44_reg %>%
@@ -426,5 +509,9 @@ scalar d0 = r(P_diff)
 scalar d0_se = r(se_diff)
 display "ATT(4,4)= " d1 - d0
 display "ATT(4,4) SE = " sqrt(d1_se^2 + d0_se^2)
+qui logit sba_birth i.txdel i.g44 i.time
+margins(r.txdel)
+qui logit sba_birth i.txdel i.g44 i.time, vce(cl dist_id)
+margins(r.txdel)
 '
 stata(s_od1, data.in=di_44)
