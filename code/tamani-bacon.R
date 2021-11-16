@@ -30,6 +30,9 @@ library(TwoWayFEWeights)
 library(kableExtra)
 devtools::install_github("bcallaway11/did")
 library(did)
+library(RStata)
+options("RStata.StataVersion" = 16)
+options("RStata.StataPath"= '/Applications/Stata/StataMP.app/Contents/MacOS/stata-mp')
 
 d <- read_dta(here("data-clean", "hh_female_impact_rpt.dta")) %>%
   mutate(district = as_factor(hh1, levels = "labels"),
@@ -41,6 +44,7 @@ d_ind <- d %>%
   select(district, sba_birth, txdel, time, personid) %>%
   mutate(dist_id = as.numeric(district),
          p_id = row_number(personid)) %>% # unique ID for each individual
+  select(-personid) %>%
   drop_na() %>%
   group_by(district, dist_id) %>%
   mutate(group = min(if_else(txdel==1, time, 5))) 
@@ -135,7 +139,7 @@ atts_cs <- did::att_gt(yname = "psba", # name of the LHS variable
                        weightsname = "tpop",
                        est_method = "reg", # estimation method.
                        control_group = "notyettreated", # set the control group
-                       bstrap = TRUE, # if TRUE compute boostrapped SE
+                       bstrap = FALSE, # if TRUE compute boostrapped SE
                        biters = 1000, # number of boostrap iterations
                        print_details = FALSE, # if TRUE, print detailed results
                        panel = TRUE) # panel or repeated cross-sectional
@@ -304,6 +308,29 @@ twfe_22 <- fixest::feols(sba_birth ~ txdel | g22 + time,
                       weights = NULL, 
                       cluster = ~district)
 summary(twfe_22)
+
+# check the comparison of proportions 'by hand' in Stata
+# as well as regression estimates with different functional 
+# form and SEs
+
+s_cs22 <- '
+prtest sba_birth if g22==1, by(time)
+scalar d1 = r(P_diff)
+scalar d1_se = r(se_diff)
+prtest sba_birth if g22==0, by(time)
+scalar d0 = r(P_diff)
+scalar d0_se = r(se_diff)
+display "ATT(2,2)= " %5.4f d1 - d0 "  SE = " %5.4f sqrt(d1_se^2 + d0_se^2)
+reg sba_birth i.txdel i.g22 i.time, robust
+reg sba_birth i.txdel i.g22 i.time, vce(cl dist_id)
+qui logit sba_birth i.txdel i.g22 i.time
+margins(r.txdel)
+qui logit sba_birth i.txdel i.g22 i.time, vce(cl dist_id)
+margins(r.txdel)
+'
+stata(s_cs22, data.in=di_22)
+
+## use the survey setup to adjust for clustering and test equality of proportions
 
 # ATT(2,3)
 di_23 <- d_ind %>% filter((time==1 | time==3) & group!=3) %>%
@@ -496,11 +523,9 @@ bind_rows(spread_draws(b44_flat),
           spread_draws(b44_reg)) %>%
   head(20)
 
-library(RStata)
-options("RStata.StataVersion" = 16)
-options("RStata.StataPath"= '/Applications/Stata/StataMP.app/Contents/MacOS/stata-mp')
 
-s_od1 <- '
+
+s_cs44 <- '
 prtest sba_birth if g44==1, by(time)
 scalar d1 = r(P_diff)
 scalar d1_se = r(se_diff)
@@ -509,9 +534,16 @@ scalar d0 = r(P_diff)
 scalar d0_se = r(se_diff)
 display "ATT(4,4)= " d1 - d0
 display "ATT(4,4) SE = " sqrt(d1_se^2 + d0_se^2)
+reg sba_birth i.txdel i.g44 i.time, robust
+reg sba_birth i.txdel i.g44 i.time, vce(cl dist_id)
 qui logit sba_birth i.txdel i.g44 i.time
 margins(r.txdel)
 qui logit sba_birth i.txdel i.g44 i.time, vce(cl dist_id)
 margins(r.txdel)
 '
-stata(s_od1, data.in=di_44)
+stata(s_cs44, data.in=di_44)
+
+s_cs <- '
+csdid psba [weight=tpop], ivar(dist_id) time(time) gvar(group) method(reg) notyet
+'
+stata(s_cs, data.in=d_sba)

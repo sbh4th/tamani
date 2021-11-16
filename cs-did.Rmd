@@ -33,11 +33,13 @@ d <- read_dta(here("data-clean", "hh_female_impact_rpt.dta")) %>%
 
 # restrict to variables for analysis
 d_ind <- d %>% 
-  select(district, sba_birth, txdel, time) %>%
-  mutate(dist_id = as.numeric(district)) %>%
+  select(district, sba_birth, txdel, time, personid) %>%
+  mutate(dist_id = as.numeric(district),
+         p_id = row_number(personid)) %>% # unique ID for each individual
+  select(-personid) %>%
   drop_na() %>%
   group_by(district, dist_id) %>%
-  mutate(group = min(if_else(txdel == 1, time, 5)))
+  mutate(group = min(if_else(txdel==1, time, 5))) 
 
 kable(head(d_ind)) %>%
   kable_styling()
