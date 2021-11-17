@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>TAMANI Project DiD</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Sam Harper" />
+    <meta name="date" content="2021-11-23" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# TAMANI Project DiD
+## 3PO Meeting
+### Sam Harper
+### <br> </br>
+### 2021-11-23
+
+---
+
+
+
+
+
+
+
+# CIHR study objectives
+## Impact of the combined coal ban and heat pump subsidy on:
+
+.right-column[
+
+1. Community and personal air pollution;
+
+2. Indoor temperatures in homes;
+
+3. Health outcomes.
+
+]
+
+---
+### Next phase of project (HEI grant)
+
+---
+## HEI study objectives
+.right-column[
+### Aim 1.
+#### Estimate the total effect of the intervention.
+
+### Aim 2. 
+#### Estimate the contribution of changes in the chemical composition of `\(PM_{2.5}\)` to the overall effect on health outcomes.
+
+### Aim 3. 
+#### Examine alternative (i.e., non `\(PM_{2.5}\)`) .orange[pathways and mechanisms] that may contribute to the intervention’s impact.
+]
+
+---
+## Basic idea for mediation study
+
+
+### To understand the pathways, mechanisms, and intermediates through which a treatment affects an outcome.
+
+--
+
+.right-column[
+###How much of the policy effect is through:
+#### Reduced exposure to `\(PM_{2.5}\)`
+#### Other pathways (behavioral changes?)
+#### Also consider multiple mediators
+]
+
+---
+## New measurements proposed for HEI study
+.right-column[
+### 3rd data campaign in winter ~~2020/21~~ 2021/22. 
+- Objective measurement of household stove use.
+
+- 24h indoor (household) `\(PM_{2.5}\)` concentrations. 
+
+- Analysis of community, indoor, and personal exposure PM2.5 samples for chemical composition and molecular tracers for household coal burning. 
+]
+
+---
+# First part of mediation: total effect
+.left-column[
+Basic idea is to understand pathways of effects  
+
+First step is to estimate the total effect of exposure `\(T\)` on outcomes.
+]
+
+.right-column[
+![](tamani-3po_files/figure-html/dag1-1.png)&lt;!-- --&gt;
+]
+
+---
+# Second part of mediation: decomposition
+.left-column[
+Basic idea is to understand pathways of effects  
+
+How much of the effect is due to `\(PM_{2.5}\)` vs. other pathways?
+]
+
+.right-column[
+![](tamani-3po_files/figure-html/dag2-1.png)&lt;!-- --&gt;
+]
+
+---
+# Basic DAG for mediation
+.pull-left[
+### `\(X\)` = pre-treatment covariates
+### `\(T\)` = exposure
+### `\(M\)` = mediator
+### `\(W\)` = confounders
+### `\(Y\)` = outcome
+]
+
+.pull-right[
+![](tamani-3po_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+]
+
+---
+# Basic DAG for mediation
+.pull-left[
+### `\(X\)` = pre-treatment covariates
+### `\(T\)` = exposure
+### `\(M\)` = mediator
+### `\(W\)` = confounders
+### `\(Y\)` = outcome
+]
+
+.pull-right[
+![](tamani-3po_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+]
+
+---
+background-image: url(basic-dag.png)
+background-position: top right
+background-size: 450px 275px
+# Quantities of interest
+## Estimate two regressions:
+`$$\color{red}{E[Y|T,X]=\beta_{0}+\beta_{1}T +\beta_{2}X}$$`
+`$$E[Y|T,X,M] = \gamma_{0} + \gamma_{1}T + \gamma_{2}M + \gamma_{3}TM + \gamma_{4}X + \gamma_{5}W$$`
+
+--
+
+### First equation estimates the total effect of the ban:
+`$$\color{red}{TE=\beta_{1}(T^{*}-T)}$$`
+where `\(T^{*}\)` is exposure to ban and `\(T\)` is no exposure.
+
+---
+background-image: url(basic-dag.png)
+background-position: top right
+background-size: 450px 275px
+# Quantities of interest
+## Estimate two regressions:
+`$$E[Y|T,X]=\beta_{0}+\beta_{1}T +\beta_{2}X$$`
+`$$\color{red}{E[Y|T,X,M] = \gamma_{0} + \gamma_{1}T + \gamma_{2}M + \gamma_{3}TM + \gamma_{4}X + \gamma_{5}W}$$`
+
+
+### Second equation estimates the "Controlled Direct Effect":
+`$$\color{red}{CDE=\gamma_{1}+\gamma_{3}TM}$$`
+
+---
+# Key assumptions
+.right-column[
+### Assumptions for valid CDE:
+#### No confounding of the total effect.
+#### No confounding of the mediator-outcome effect.
+#### No confounding of the exposure-mediator effect.
+]
+---
+# What the hell is the CDE?
+
+.pull-left[
+*This effect is the contrast between the counterfactual outcome if the individual were exposed at `\(T=t\)` and the counterfactual outcome if the same individual were exposed at* `\(T=t*\)`, *with the mediator set to a fixed level* `\(M=m\)`.
+]
+
+--
+
+.pull-right[
+English:
+### "By how much would blood pressure change if the policy were implemented and we held `\(PM_{2.5}\)` fixed?"
+]
+
+---
+.left-column[
+### Extension to multiple mediators
+More complicated
+
+Sequential mediatiors?
+
+Interactions between mediators?
+
+]
+
+.right-column[
+![](tamani-3po_files/figure-html/mm-1.png)&lt;!-- --&gt;
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
