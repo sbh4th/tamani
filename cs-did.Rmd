@@ -501,5 +501,107 @@ summary(agg.ct)
 ggdid(agg.ct)
 ```
 
+## Standard Errors
+The CS-DiD approach also facilitates the estimation of a few different ways of calculating standard errors for the group-time ATTs. The main options are whether the design is considered to be a 'panel', i.e., 
+```{r allagg, cache=TRUE}
+# CS approach
+# Use not-yet-treated as comparison group, aggregate data, panel structure, no clustering, no bootstrap
+atts_1 <- did::att_gt(yname = "psba", tname = "time", 
+  idname = "dist_id", gname = "group", data = d_sba, 
+  xformla = NULL, weightsname = "tpop", est_method = "reg",
+  control_group = "notyettreated", bstrap = FALSE, 
+  biters = 1000, print_details = FALSE, panel = TRUE)
+
+# Use not-yet-treated as comparison group, aggregate data, panel structure, no clustering, bootstrap
+atts_2 <- did::att_gt(yname = "psba", tname = "time", 
+  idname = "dist_id", gname = "group", data = d_sba, 
+  xformla = NULL, weightsname = "tpop", est_method = "reg",
+  control_group = "notyettreated", bstrap = TRUE, 
+  biters = 1000, print_details = FALSE, panel = TRUE)
+
+# Use not-yet-treated as comparison group, aggregate data, panel structure, clustering, bootstrap
+atts_3 <- did::att_gt(yname = "psba", tname = "time", 
+  idname = "dist_id", gname = "group", data = d_sba, 
+  xformla = NULL, weightsname = "tpop", est_method = "reg",
+  control_group = "notyettreated", bstrap = TRUE, 
+  biters = 1000, print_details = FALSE, panel = TRUE, 
+  clustervars = "dist_id")
+
+# Use not-yet-treated as comparison group, aggregate data, repeated cross section structure, no clustering, no bootstrap
+atts_4 <- did::att_gt(yname = "psba", tname = "time", 
+  idname = "dist_id", gname = "group", data = d_sba, 
+  xformla = NULL, weightsname = "tpop", est_method = "reg",
+  control_group = "notyettreated", bstrap = FALSE, 
+  biters = 1000, print_details = FALSE, panel = FALSE)
+
+# Use not-yet-treated as comparison group, aggregate data, repeated cross section structure, no clustering, bootstrap
+atts_5 <- did::att_gt(yname = "psba", tname = "time", 
+  idname = "dist_id", gname = "group", data = d_sba, 
+  xformla = NULL, weightsname = "tpop", est_method = "reg",
+  control_group = "notyettreated", bstrap = TRUE, 
+  biters = 1000, print_details = FALSE, panel = FALSE)
+
+# Use not-yet-treated as comparison group, aggregate data, repeated cross section structure, clustering, bootstrap
+atts_6 <- did::att_gt(yname = "psba", tname = "time", 
+  idname = "dist_id", gname = "group", data = d_sba, 
+  xformla = NULL, weightsname = "tpop", est_method = "reg",
+  control_group = "notyettreated", bstrap = TRUE, 
+  biters = 1000, print_details = FALSE, panel = FALSE, 
+  clustervars = "dist_id")
+
+df1 <- data.frame(group = atts_1$group, 
+  time = atts_1$t, type = "panel", method = "asm", 
+  att = atts_1$att, se = atts_1$se)
+
+df2 <- data.frame(group = atts_2$group, 
+  time = atts_2$t, type = "panel", method = "boot", 
+  att = atts_2$att, se = atts_2$se)
+
+df3 <- data.frame(group = atts_3$group, 
+  time = atts_3$t, type = "panel", method = "bootc", 
+  att = atts_2$att, se = atts_2$se)
+
+df4 <- data.frame(group = atts_4$group, 
+  time = atts_4$t, type = "rc", method = "asm", 
+  att = atts_4$att, se = atts_4$se)
+
+df5 <- data.frame(group = atts_5$group, 
+  time = atts_5$t, type = "rc", method = "boot", 
+  att = atts_5$att, se = atts_5$se)
+
+df6 <- data.frame(group = atts_6$group, 
+  time = atts_6$t, type = "rc", method = "bootc", 
+  att = atts_6$att, se = atts_6$se)
+
+atts <- bind_rows(df1,df2,df3,df4,df5,df6)
+```
+
+```{r table_att}
+atts %>% 
+  select(-se) %>% 
+  pivot_wider(names_from=c(type, method), values_from = att) %>%
+
+  kable(digits=3, 
+        col.names = c("Group", "Time", "Asym", "Boot",
+          "Bootc", "Asym", "Boot", "Bootc")) %>%
+  kable_minimal() %>%
+  add_header_above(c(" " = 2, "Panel" = 3, "Repeated XS" = 3))
+```
+
+And the differences in standard errors across different methods of constructing SEs and assumed study designs:
+```{r table_se}
+atts %>% 
+  select(-att) %>% 
+  pivot_wider(names_from=c(type, method), values_from = se) %>%
+
+  kable(digits=3, 
+        col.names = c("Group", "Time", "Asym", "Boot",
+          "Bootc", "Asym", "Boot", "Bootc")) %>%
+  kable_minimal() %>%
+  add_header_above(c(" " = 2, "Panel" = 3, "Repeated XS" = 3))
+```
+
+Okay, so the ATTs are identical when using either the aggregate or the individual level data, as long as you specify that the data should be treated as repeated cross sections. 
+
 ## Summary
 Okay, there is a lot to unpack here, but the bottom line is that the TWFE approach to estimating DD in this context probably introduces bias (I tried to work a bit on the Goodman-Bacon decomposition, but it is a bit hard to sort out in the context of weights like we have). Regardless of how we aggregate the group time ATTs, it seems clear that our estimate is somewhere in the range of 0.10 to 0.20, which is higher than the TWFE estimate, though probably not statistically distinguishable. 

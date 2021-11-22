@@ -127,9 +127,8 @@ dCDH_negative <- sum(dCDH_decomp$weight[dCDH_decomp$weight<0])
 
 #--------------------------- End of SECTION 2 --------------------------#
 
-
 # CS approach
-# Use not-yet-treated as comparison group
+# Use not-yet-treated as comparison group, aggregate data, panel structure, no clustering, no bootstrap
 atts_cs <- did::att_gt(yname = "psba", # name of the LHS variable
                        tname = "time", # name of the time variable
                        idname = "dist_id", # name of the id variable
@@ -143,6 +142,22 @@ atts_cs <- did::att_gt(yname = "psba", # name of the LHS variable
                        biters = 1000, # number of boostrap iterations
                        print_details = FALSE, # if TRUE, print detailed results
                        panel = TRUE) # panel or repeated cross-sectional
+summary(atts_cs)
+
+# Use not-yet-treated as comparison group, aggregate data, repeated cross section structure, no clustering, no bootstrap
+atts_cs_rc <- did::att_gt(yname = "psba", # name of the LHS variable
+                       tname = "time", # name of the time variable
+                       idname = "dist_id", # name of the id variable
+                       gname = "group", # name of the first treatment period
+                       data = d_sba, # name of the data
+                       xformla = NULL,
+                       weightsname = "tpop",
+                       est_method = "reg", # estimation method.
+                       control_group = "notyettreated", # set the control group
+                       bstrap = FALSE, # if TRUE compute boostrapped SE
+                       biters = 1000, # number of boostrap iterations
+                       print_details = FALSE, # if TRUE, print detailed results
+                       panel = FALSE) # panel or repeated cross-sectional
 summary(atts_cs)
 
 agg_effects_cs <- aggte(atts_cs, type = "dynamic", min_e = -2, max_e = 2)
@@ -323,6 +338,7 @@ scalar d0_se = r(se_diff)
 display "ATT(2,2)= " %5.4f d1 - d0 "  SE = " %5.4f sqrt(d1_se^2 + d0_se^2)
 reg sba_birth i.txdel i.g22 i.time, robust
 reg sba_birth i.txdel i.g22 i.time, vce(cl dist_id)
+xtreg sba_birth i.txdel i.g22 i.time, 
 qui logit sba_birth i.txdel i.g22 i.time
 margins(r.txdel)
 qui logit sba_birth i.txdel i.g22 i.time, vce(cl dist_id)
@@ -351,15 +367,16 @@ di_44 %>%
   group_by(g44, time) %>%
   summarise(tsba = mean(sba_birth))
 
-twfe_44 <- fixest::feols(sba_birth ~ txdel | g44 + time, 
-                      data = di_44,
+twfe_23 <- fixest::feols(sba_birth ~ att | group + time, 
+                      data = di_23,
                       weights = NULL, 
-                      cluster = NULL)
-summary(twfe_44)
+                      cluster = ~dist_id)
+summary(twfe_23)
 
 # Bayesian implementation for ATT(4,4)
 # random effects for each cluster
 library(brms)
+library(bayestestR)
 library(modelr)
 library(cmdstanr)
 b44_flat <-
@@ -372,7 +389,10 @@ b44_flat <-
       iter = 5000, warmup = 1000, chains = 4, cores = 4,
       sample_prior = "yes",
       seed = 13,
-      file = "code/fits/b44_flat")
+      file = "code/fits/b44_flat.rda")
+
+# if fit already exists
+# b44_flat <- readRDS("code/fits/b44_flat.rds")
 
 plot(b44_flat)
 
@@ -389,6 +409,9 @@ b44_reg <-
       sample_prior = "yes",
       seed = 24,
       file = "code/fits/b44_reg")
+
+# if fit already exists
+# b44_reg <- readRDS("code/fits/b44_reg.rds")
 
 # Visualize prior distributions for baseline value of SBA
 bind_rows(prior_draws(b44_flat),
@@ -429,8 +452,10 @@ bind_rows(prior_draws(b44_flat),
 b44_flat <- add_criterion(b44_flat, c("loo", "waic"))
 b44_reg <- add_criterion(b44_reg, c("loo", "waic"))
 
-loo_compare(b44_flat, b44_reg, criterion = "loo") %>% print(simplify = F)
-model_weights(b44_flat, b44_reg, weights = "loo") %>% round(digits = 2)
+loo_compare(b44_flat, b44_reg, criterion = "loo") %>% 
+  print(simplify = F)
+model_weights(b44_flat, b44_reg, weights = "loo") %>% 
+  round(digits = 2)
 
 
 mf_0 <- di_44 %>% mutate(txdel = 0)
@@ -502,17 +527,31 @@ ggsave(here("output", "u2s-fig2.png"), plot = f2,
 # estimate marginal effects
 mf <- model.frame(di_44)
 mf$txdel <- 0
-yhat0b <- fitted(b44_reg,
+yhat0b <- fitted(b44_flat,
                  mf,
                  scale = "response", summary = FALSE)
 mf$txdel <- 1
-yhat1b <- fitted(b44_reg,
+yhat1b <- fitted(b44_flat,
                  mf,
                  scale = "response", summary = FALSE)
 
 describe_posterior(rowMeans(yhat0b))
 describe_posterior(rowMeans(yhat1b))
 describe_posterior(rowMeans(yhat1b - yhat0b))
+
+test2 <- tibble(param = "ATT(2,3)", est = test)
+ggplot(test2, aes(y = param, x=est)) + stat_pointinterval()
+
+di_23 %>%
+  data_grid(group, time, att) %>%
+  add_epred_draws(b23_reg) %>%
+  ggplot(aes(x = .epred, y = att)) +
+  stat_pointinterval(.width = c(.68, .95)) 
+
++
+  coord_flip() +
+  xlab("predicted probability") +
+  scale_x_continuous(breaks = seq(0, 0.24, 0.02))
 
 
 b44_reg %>%
