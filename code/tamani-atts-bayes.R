@@ -3,7 +3,7 @@
 #  input:    hh_female_impact_man.dta
 #  output:   none
 #  project:  TAMANI
-#  author:   sam harper \ 2021-11-19
+#  author:   sam harper \ 2021-11-22
 
 ## Assumes the following file structure: 
 
@@ -193,6 +193,19 @@ b33_reg <- brm(data = di_33, family = bernoulli(),
       prior = preg, iter = 5000, warmup = 1000,
       chains = 4, cores = 4, seed = 331,
       file = "code/fits/b33_reg")
+
+# ATT(4,2)
+b42_flat <- brm(data = di_42, family = bernoulli(),
+                sba_birth ~ 1 + (1 | dist_id) + group + time + att,
+                prior = pflat, iter = 5000, warmup = 1000,
+                chains = 4, cores = 4, seed = 420,
+                file = "code/fits/b42_flat")
+
+b42_reg <- brm(data = di_42, family = bernoulli(),
+               sba_birth ~ 1 + (1 | dist_id) + group + time + att,
+               prior = preg, iter = 5000, warmup = 1000,
+               chains = 4, cores = 4, seed = 421,
+               file = "code/fits/b42_reg")
 
 #--------------------------- End of SECTION 2--------------------------#
 
