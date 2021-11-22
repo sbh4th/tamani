@@ -503,7 +503,7 @@ ggdid(agg.ct)
 
 ## Standard Errors
 The CS-DiD approach also facilitates the estimation of a few different ways of calculating standard errors for the group-time ATTs. The main options are whether the design is considered to be a 'panel', i.e., 
-```{r allagg, cache=TRUE}
+```{r allagg, cache=TRUE, message=FALSE}
 # CS approach
 # Use not-yet-treated as comparison group, aggregate data, panel structure, no clustering, no bootstrap
 atts_1 <- did::att_gt(yname = "psba", tname = "time", 
@@ -576,7 +576,7 @@ df6 <- data.frame(group = atts_6$group,
 atts <- bind_rows(df1,df2,df3,df4,df5,df6)
 ```
 
-```{r table_att}
+```{r table_att, message=FALSE}
 atts %>% 
   select(-se) %>% 
   pivot_wider(names_from=c(type, method), values_from = att) %>%
@@ -589,7 +589,7 @@ atts %>%
 ```
 
 And the differences in standard errors across different methods of constructing SEs and assumed study designs:
-```{r table_se}
+```{r table_se, message=FALSE}
 atts %>% 
   select(-att) %>% 
   pivot_wider(names_from=c(type, method), values_from = se) %>%

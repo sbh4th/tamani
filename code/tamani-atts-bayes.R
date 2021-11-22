@@ -194,6 +194,21 @@ b33_reg <- brm(data = di_33, family = bernoulli(),
       chains = 4, cores = 4, seed = 331,
       file = "code/fits/b33_reg")
 
+# ATT(3,4)
+b34_flat <- brm(data = di_34, family = bernoulli(),
+      sba_birth ~ 1 + (1 | dist_id) + group + time + att,
+      prior = pflat, iter = 5000, warmup = 1000,
+      chains = 4, cores = 4, seed = 340,
+      control = list(adapt_delta = 0.9),
+      file = "code/fits/b34_flat")
+
+b34_reg <- brm(data = di_34, family = bernoulli(),
+      sba_birth ~ 1 + (1 | dist_id) + group + time + att,
+      prior = preg, iter = 5000, warmup = 1000,
+      chains = 4, cores = 4, seed = 341,
+      control = list(adapt_delta = 0.9),
+      file = "code/fits/b34_reg")
+
 # ATT(4,2)
 b42_flat <- brm(data = di_42, family = bernoulli(),
                 sba_birth ~ 1 + (1 | dist_id) + group + time + att,
@@ -206,6 +221,34 @@ b42_reg <- brm(data = di_42, family = bernoulli(),
                prior = preg, iter = 5000, warmup = 1000,
                chains = 4, cores = 4, seed = 421,
                file = "code/fits/b42_reg")
+
+
+# ATT(4,3)
+b43_flat <- brm(data = di_43, family = bernoulli(),
+                sba_birth ~ 1 + (1 | dist_id) + group + time + att,
+                prior = pflat, iter = 5000, warmup = 1000,
+                chains = 4, cores = 4, seed = 430,
+                file = "code/fits/b43_flat")
+
+b43_reg <- brm(data = di_43, family = bernoulli(),
+               sba_birth ~ 1 + (1 | dist_id) + group + time + att,
+               prior = preg, iter = 5000, warmup = 1000,
+               chains = 4, cores = 4, seed = 431,
+               file = "code/fits/b43_reg")
+
+
+# ATT(4,4)
+b44_flat <- brm(data = di_44, family = bernoulli(),
+                sba_birth ~ 1 + (1 | dist_id) + group + time + att,
+                prior = pflat, iter = 5000, warmup = 1000,
+                chains = 4, cores = 4, seed = 440,
+                file = "code/fits/b44_flat")
+
+b44_reg <- brm(data = di_44, family = bernoulli(),
+               sba_birth ~ 1 + (1 | dist_id) + group + time + att,
+               prior = preg, iter = 5000, warmup = 1000,
+               chains = 4, cores = 4, seed = 441,
+               file = "code/fits/b44_reg")
 
 #--------------------------- End of SECTION 2--------------------------#
 
@@ -287,8 +330,116 @@ me_23r <- tibble(param = "ATT(2,3)",
                 prior = "(0,0.5)",
                 est = rowMeans(yhat1b - yhat0b))
 
+# marginal effects for ATT(2,4)
+# first for flat priors
+mf <- model.frame(di_24)
+mf$att <- 0
+yhat0b <- fitted(b24_flat, mf,
+                 scale = "response", summary = FALSE)
+mf$att <- 1
+yhat1b <- fitted(b24_flat, mf,
+                 scale = "response", summary = FALSE)
+
+describe_posterior(rowMeans(yhat0b))
+describe_posterior(rowMeans(yhat1b))
+describe_posterior(rowMeans(yhat1b - yhat0b))
+
+# put into a data frame
+me_24f <- tibble(param = "ATT(2,4)",
+                prior = "(0,10)",
+                est = rowMeans(yhat1b - yhat0b))
+
+mf <- model.frame(di_24)
+mf$att <- 0
+yhat0b <- fitted(b24_reg, mf,
+                 scale = "response", summary = FALSE)
+mf$att <- 1
+yhat1b <- fitted(b24_reg, mf,
+                 scale = "response", summary = FALSE)
+
+describe_posterior(rowMeans(yhat0b))
+describe_posterior(rowMeans(yhat1b))
+describe_posterior(rowMeans(yhat1b - yhat0b))
+
+me_24r <- tibble(param = "ATT(2,4)",
+                prior = "(0,0.5)",
+                est = rowMeans(yhat1b - yhat0b))
+
+
+# marginal effects for ATT(3,2)
+# first for flat priors
+mf <- model.frame(di_32)
+mf$att <- 0
+yhat0b <- fitted(b32_flat, mf,
+                 scale = "response", summary = FALSE)
+mf$att <- 1
+yhat1b <- fitted(b32_flat, mf,
+                 scale = "response", summary = FALSE)
+
+describe_posterior(rowMeans(yhat0b))
+describe_posterior(rowMeans(yhat1b))
+describe_posterior(rowMeans(yhat1b - yhat0b))
+
+# put into a data frame
+me_32f <- tibble(param = "ATT(3,2)",
+                prior = "(0,10)",
+                est = rowMeans(yhat1b - yhat0b))
+
+mf <- model.frame(di_32)
+mf$att <- 0
+yhat0b <- fitted(b32_reg, mf,
+                 scale = "response", summary = FALSE)
+mf$att <- 1
+yhat1b <- fitted(b32_reg, mf,
+                 scale = "response", summary = FALSE)
+
+describe_posterior(rowMeans(yhat0b))
+describe_posterior(rowMeans(yhat1b))
+describe_posterior(rowMeans(yhat1b - yhat0b))
+
+me_32r <- tibble(param = "ATT(3,2)",
+                prior = "(0,0.5)",
+                est = rowMeans(yhat1b - yhat0b))
+
+# marginal effects for ATT(3,3)
+# first for flat priors
+mf <- model.frame(di_33)
+mf$att <- 0
+yhat0b <- fitted(b33_flat, mf,
+                 scale = "response", summary = FALSE)
+mf$att <- 1
+yhat1b <- fitted(b33_flat, mf,
+                 scale = "response", summary = FALSE)
+
+describe_posterior(rowMeans(yhat0b))
+describe_posterior(rowMeans(yhat1b))
+describe_posterior(rowMeans(yhat1b - yhat0b))
+
+# put into a data frame
+me_33f <- tibble(param = "ATT(3,3)",
+                prior = "(0,10)",
+                est = rowMeans(yhat1b - yhat0b))
+
+mf <- model.frame(di_33)
+mf$att <- 0
+yhat0b <- fitted(b33_reg, mf,
+                 scale = "response", summary = FALSE)
+mf$att <- 1
+yhat1b <- fitted(b33_reg, mf,
+                 scale = "response", summary = FALSE)
+
+describe_posterior(rowMeans(yhat0b))
+describe_posterior(rowMeans(yhat1b))
+describe_posterior(rowMeans(yhat1b - yhat0b))
+
+me_33r <- tibble(param = "ATT(3,3)",
+                prior = "(0,0.5)",
+                est = rowMeans(yhat1b - yhat0b))
+
+
+
 
 # plot of marginal effects
-me_22f %>% bind_rows(me_22r) %>%
+me_22f %>% bind_rows(me_22r, me_23f, me_23r) %>%
   ggplot(aes(x = est, y = param, color = prior)) +
     stat_pointinterval(position = "dodge")

@@ -59,7 +59,7 @@ d_sba <- d_ind %>%
 
 
 #-----------------------------------------------------------------------
-#  SECTION 1: Run the usual two way fixed effects DD model
+#  SECTION 1: 
 #  Notes: */
 #-----------------------------------------------------------------------
 
@@ -109,24 +109,25 @@ atts_6 <- did::att_gt(yname = "psba", tname = "time",
   biters = 1000, print_details = FALSE, panel = FALSE, 
   clustervars = "dist_id")
 
-df <- vector("list", length(atts_1))
-x <- 1:6
-for (i in 1:6) {
-  z <- i
-  mean(atts_z$att)
-}
-
-for (i in seq_along(x)) {
-  n <- sample(100, 1)
-  out[[i]] <- rnorm(n, means[[i]])
-}
-, 
-    type = ifelse(atts_[i]$DIDparams$panel,"panel","rc"), 
-    method = ifelse(atts_[i]$DIDparams$clustervars=="dist_id",
-                    ifelse(atts_[i]$DIDparams$bstrap,"bootc",
-                           "bootc"), "asm"), 
-    att = atts_[i]$att, se = atts_[i]$se)
-}
+# df <- vector("list", length(atts_1))
+# x <- 1:6
+# for (i in 1:6) {
+#   z <- i
+#   mean(atts_z$att)
+# }
+# 
+# for (i in seq_along(x)) {
+#   n <- sample(100, 1)
+#   out[[i]] <- rnorm(n, means[[i]])
+# }
+# , 
+#     type = ifelse(atts_[i]$DIDparams$panel,"panel","rc"), 
+#     method = ifelse(atts_[i]$DIDparams$clustervars=="dist_id",
+#                     ifelse(atts_[i]$DIDparams$bstrap,"bootc",
+#                            "bootc"), "asm"), 
+#     att = atts_[i]$att, se = atts_[i]$se)
+# }
+# 
 
 df1 <- data.frame(group = atts_1$group, 
   time = atts_1$t, type = "panel", method = "asm", 
@@ -201,6 +202,11 @@ atts_i <- bind_rows(df7,df8,df9)
 atts_i %>% 
   select(-se) %>% 
   pivot_wider(names_from=c(type, method), values_from = att) %>%
+  mutate_if(is.numeric, round, 3)
+
+atts_i %>% 
+  select(-att) %>% 
+  pivot_wider(names_from=c(type, method), values_from = se) %>%
   mutate_if(is.numeric, round, 3)
 
 
