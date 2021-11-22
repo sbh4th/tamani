@@ -158,13 +158,13 @@ b24_flat <- brm(data = di_24, family = bernoulli(),
       sba_birth ~ 1 + (1 | dist_id) + group + time + att,
       prior = pflat, iter = 5000, warmup = 1000,
       chains = 4, cores = 4, seed = 240,
-      file = "code/fits/b24_flat.rda")
+      file = "code/fits/b24_flat")
 
 b24_reg <- brm(data = di_24, family = bernoulli(),
       sba_birth ~ 1 + (1 | dist_id) + group + time + att,
       prior = preg, iter = 5000, warmup = 1000,
       chains = 4, cores = 4, seed = 241,
-      file = "code/fits/b24_reg.rda")
+      file = "code/fits/b24_reg")
 
 
 # ATT(3,2)
