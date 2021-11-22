@@ -209,6 +209,15 @@ b34_reg <- brm(data = di_34, family = bernoulli(),
       control = list(adapt_delta = 0.9),
       file = "code/fits/b34_reg")
 
+# Compare models
+b34_flat <- add_criterion(b34_flat, c("loo", "waic"))
+b34_reg <- add_criterion(b34_reg, c("loo", "waic"))
+
+loo_compare(b34_flat, b34_reg, criterion = "loo") %>% 
+  print(simplify = F)
+model_weights(b34_flat, b34_reg, weights = "loo") %>% 
+  round(digits = 2)
+
 # ATT(4,2)
 b42_flat <- brm(data = di_42, family = bernoulli(),
                 sba_birth ~ 1 + (1 | dist_id) + group + time + att,

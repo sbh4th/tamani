@@ -18,6 +18,8 @@ output:
 
 ```{r setup, include=FALSE}
 library(here)
+library(tidyverse)
+library(ggplot2)
 options(htmltools.dir.version = FALSE)
 library(DiagrammeR)
 library(xaringan)
@@ -26,9 +28,8 @@ library(ggplot2)
 library(kableExtra)
 library(fixest)
 library(modelsummary)
-devtools::install_github("bcallaway11/did")
+# devtools::install_github("bcallaway11/did")
 library(did)
-# library(emo)
 xfun::pkg_load2(c('tikzDevice', 'magick', 'pdftools'))
 ```
 
@@ -210,103 +211,201 @@ gt <- d_agg %>% select(group, time, psba, tpop) %>%
 gt %>%
   kbl(digits=3, col.names = c("Group", "Time1", "Time2", "Time3", "Time4",
           "Time5", "Time1", "Time2", "Time3", "Time4", "Time5")) %>%
-  kable_styling()
+  kable_styling() %>%
+  add_header_above(c(" " = 1, "P(SBA)" = 5, "Total Pop" = 5))
 
 ```
 
 ---
-## Group-Time 2x2 for Group 2
+### Callawy-Sant'Anna approach
+.footnote[See https://bcallaway11.github.io/did/articles/multi-period-did.html for R, https://econpapers.repec.org/software/bocbocode/S458976.htm for Stata ]
 
+- Includes options for different structure, SE calculation, weights, etc.
+
+```{r csdid, message=FALSE, warning=FALSE, eval=FALSE, echo=TRUE}
+# Use not-yet-treated as comparison group
+did::att_gt(yname = "psba", # name of the LHS variable
+  tname = "time", # name of the time variable
+  idname = "dist_id", # name of the id variable
+  gname = "group", # name of the first treatment period
+  data = d_sba, # dataset
+  xformla = NULL,
+  weightsname = "tpop",
+  est_method = "reg", # estimation method.
+  control_group = "notyettreated", # set the control group
+  bstrap = TRUE, # compute bootstrapped SE
+  biters = 1000, # bootstrap iterations
+  print_details = FALSE, # if TRUE, print detailed results
+  panel = FALSE) # panel or repeated cross-sectional
+```
 
 ---
-# First part of mediation: total effect
+## Estimates from CS approach
 .left-column[
-Basic idea is to understand pathways of effects  
+- Note there is no *overall* estimate
+
+- Each treatment group has an ATT at each time period.
 ]
-
----
-# Second part of mediation: decomposition
-.left-column[
-Basic idea is to understand pathways of effects  
-
-How much of the effect is due to $PM_{2.5}$ vs. other pathways?
-]
-
-
----
-# Basic DAG for mediation
-.pull-left[
-### $X$ = pre-treatment covariates
-### $T$ = exposure
-### $M$ = mediator
-### $W$ = confounders
-### $Y$ = outcome
-]
-
-
----
-# Basic DAG for mediation
-.pull-left[
-### $X$ = pre-treatment covariates
-### $T$ = exposure
-### $M$ = mediator
-### $W$ = confounders
-### $Y$ = outcome
-]
-
-
----
-# Quantities of interest
-## Estimate two regressions:
-$$\color{red}{E[Y|T,X]=\beta_{0}+\beta_{1}T +\beta_{2}X}$$
-$$E[Y|T,X,M] = \gamma_{0} + \gamma_{1}T + \gamma_{2}M + \gamma_{3}TM + \gamma_{4}X + \gamma_{5}W$$
-
---
-
-### First equation estimates the total effect of the ban:
-$$\color{red}{TE=\beta_{1}(T^{*}-T)}$$
-where $T^{*}$ is exposure to ban and $T$ is no exposure.
-
----
-# Quantities of interest
-## Estimate two regressions:
-$$E[Y|T,X]=\beta_{0}+\beta_{1}T +\beta_{2}X$$
-$$\color{red}{E[Y|T,X,M] = \gamma_{0} + \gamma_{1}T + \gamma_{2}M + \gamma_{3}TM + \gamma_{4}X + \gamma_{5}W}$$
-
-
-### Second equation estimates the "Controlled Direct Effect":
-$$\color{red}{CDE=\gamma_{1}+\gamma_{3}TM}$$
-
----
-# Key assumptions
 .right-column[
-### Assumptions for valid CDE:
-#### No confounding of the total effect.
-#### No confounding of the mediator-outcome effect.
-#### No confounding of the exposure-mediator effect.
-]
----
-# What the hell is the CDE?
-
-.pull-left[
-*This effect is the contrast between the counterfactual outcome if the individual were exposed at $T=t$ and the counterfactual outcome if the same individual were exposed at* $T=t*$, *with the mediator set to a fixed level* $M=m$.
-]
-
---
-
-.pull-right[
-English:
-### "By how much would blood pressure change if the policy were implemented and we held $PM_{2.5}$ fixed?"
+```{r cs_est, echo=FALSE, message=FALSE}
+atts_8 <- did::att_gt(yname = "sba_birth", tname = "time", 
+  idname = "p_id", gname = "group", data = d_ind, 
+  xformla = NULL, weightsname = NULL, est_method = "reg",
+  control_group = "notyettreated", bstrap = TRUE, 
+  biters = 1000, print_details = FALSE, panel = FALSE,
+  cband=FALSE)
+cstable <- tidy(atts_8)
+cstable %>% select(-point.conf.low, -point.conf.high) %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling()
+```
 ]
 
 ---
 .left-column[
-### Extension to multiple mediators
-More complicated
+- Some SEs hard to understand.
 
-Sequential mediatiors?
+- Cluster bootstrapped smaller in most cases.
 
-Interactions between mediators?
+- Absurdly small for ATT(4,4) that has small sample and only 4 clusters.
+]
+.right-column[
+```{r atts, echo=FALSE, message=FALSE}
+atts_i <- readRDS(here("output", "atts_i.rds"))
 
+atts_ig <- atts_i %>%
+  mutate(ll95 = att - 1.96 * se,
+         ul95 = att + 1.96 * se,
+         gt = paste("ATT(",group,",",time,")", sep=""),
+         method = recode(method, asm = "Asymptotic",
+          boot = "Bootstrapped", bootc = "Cluster\nbootstrapped"))
+
+pse <- ggplot(atts_ig, aes(x = att, y = method, color = method)) + 
+  geom_vline(xintercept = 0) + 
+  geom_errorbar(aes(xmin = ll95, xmax = ul95), width=0.1) +
+  geom_point() + facet_wrap(~gt) + theme_bw() +
+  theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
+        axis.ticks = element_blank(), axis.text.x = element_text(size = 14),
+        strip.text.x = element_text(size = 14),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank())
+
+ggsave(here("talk", "atts_se.png"), pse,  width = 9, height = 6)
+```
+
+```{r attse, echo=FALSE}
+knitr::include_graphics(here("talk", "atts_se.png"))
+```
 ]
 
+---
+### Creating the Group-Time ATTs
+- ATT(.red[2],.blue[2]) means estimating ATT .blue[*at time 2*] for the group .red[*first treated at time 2*]
+
+- For ATT(2,2) the groups being compared are:
+```{r gt22, echo=FALSE}
+# drop pop estimates
+gt <- d_agg %>% select(group, time, psba) %>%
+  pivot_wider(names_from = time, names_prefix = "time",
+              values_from = psba)
+gt %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling() %>%
+  column_spec(2:3, color = "black", background = "red") %>%
+  row_spec(2:4, background  = "lightgray") %>%
+  column_spec(4:6, background = "white") %>%
+  column_spec(1, background = "white") %>%
+  kable_minimal() %>%
+  footnote(general = "Red = treated, Gray = untreated")
+```
+
+---
+```{r gt22a, echo=FALSE}
+# drop pop estimates
+gt <- d_agg %>% select(group, time, psba) %>%
+  pivot_wider(names_from = time, names_prefix = "time",
+              values_from = psba)
+gt %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling() %>%
+  column_spec(2:3, color = "black", background = "red") %>%
+  row_spec(2:4, background  = "lightgray") %>%
+  column_spec(4:6, background = "white") %>%
+  column_spec(1, background = "white") %>%
+  kable_minimal() %>%
+  footnote(general = "Red = treated, Gray = untreated")
+```
+
+- The 2x2 (weighted averages):
+```{r att22, echo=FALSE, message=FALSE}
+d_agg %>% filter(time < 3) %>%
+  mutate(g22 = if_else(group==2,1,0)) %>%
+  group_by(g22, time) %>%
+  summarise(tsba = sum(tsba),
+            tpop = sum(tpop),
+            psba = tsba / tpop) %>%
+  select(g22, time, psba) %>%
+  pivot_wider(names_from = time, values_from = psba,
+              names_prefix = "time") %>%
+  mutate(`Long diff` = `time2` - `time1`) %>%
+  group_by() %>%
+  mutate(ATT_2_2 = `Long diff` - lag(`Long diff`, default = NA)) %>%
+  kable(digits=3) %>%
+  column_spec(5, bold=TRUE) %>%
+  kable_minimal()
+```
+
+This estimate says that intervention increased the probability of an SBA birth by 0.01 for Group 2 at Time 2.
+
+---
+
+- For ATT(2,3) the groups being compared are:
+```{r gt23, echo=FALSE}
+# drop pop estimates
+gt %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling() %>%
+  column_spec(c(2,4), color = "black", background = "red") %>%
+  row_spec(2, background = "white") %>%
+  row_spec(3:4, background  = "lightgray") %>%
+  column_spec(c(3,5,6), background = "white") %>%
+  column_spec(1, background = "white") %>%
+  kable_minimal() %>%
+  footnote(general = "Red = treated, Gray = untreated")
+```
+
+
+### Note
+- ATT(.red[2],.blue[3]) means estimating the ATT .blue[*at time 3*] for the group .red[*first treated at time 2*]
+
+- Need to exclude any group treated at time 3 to avoid bias.
+
+- The group first treated at time 3 is excluded.
+
+---
+- The 2x2 (weighted averages):
+```{r att23, message=FALSE}
+d_agg %>% filter((time==1 | time==3) & group!=3) %>%
+  mutate(g23 = if_else(group==2,1,0)) %>%
+  group_by(g23, time) %>%
+  summarise(tsba = sum(tsba),
+            tpop = sum(tpop),
+            psba = tsba / tpop) %>%
+  select(g23, time, psba) %>%
+  pivot_wider(names_from = time, values_from = psba,
+              names_prefix = "time") %>%
+  mutate(`Long diff` = `time3` - `time1`) %>%
+  group_by() %>%
+  mutate(ATT_2_3 = `Long diff` - lag(`Long diff`, default = NA)) %>%
+  kable(digits=3) %>%
+  column_spec(5, bold=TRUE) %>%
+  kable_minimal()
+```
+
+---
+## Questions
+.right-column[
+### Aggregating
+
+### Clustering
+]

@@ -361,28 +361,33 @@ We often use OLS (or LPM) to fit:
 ## CS Approach: Aggregate to Group-Time cohorts
 &lt;table class="table" style="margin-left: auto; margin-right: auto;"&gt;
  &lt;thead&gt;
+&lt;tr&gt;
+&lt;th style="empty-cells: hide;border-bottom:hidden;" colspan="1"&gt;&lt;/th&gt;
+&lt;th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="5"&gt;&lt;div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; "&gt;P(SBA)&lt;/div&gt;&lt;/th&gt;
+&lt;th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="5"&gt;&lt;div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; "&gt;Total Pop&lt;/div&gt;&lt;/th&gt;
+&lt;/tr&gt;
   &lt;tr&gt;
-   &lt;th style="text-align:right;"&gt; group &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; psba_t1 &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; psba_t2 &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; psba_t3 &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; psba_t4 &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; psba_t5 &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; tpop_t1 &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; tpop_t2 &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; tpop_t3 &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; tpop_t4 &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; tpop_t5 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Group &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Time1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Time2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Time3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Time4 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Time5 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Time1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Time2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Time3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Time4 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Time5 &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.63 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.71 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.81 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.83 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.631 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.711 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.814 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.846 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.826 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 898 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 90 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 102 &lt;/td&gt;
@@ -391,11 +396,11 @@ We often use OLS (or LPM) to fit:
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.68 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.77 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.66 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.80 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.78 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.678 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.770 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.664 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.784 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 1455 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 165 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 125 &lt;/td&gt;
@@ -404,11 +409,11 @@ We often use OLS (or LPM) to fit:
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.78 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.81 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.67 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.75 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.778 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.807 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.673 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.750 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.868 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 1128 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 140 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 101 &lt;/td&gt;
@@ -417,11 +422,11 @@ We often use OLS (or LPM) to fit:
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.94 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.80 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.86 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.939 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.855 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 556 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 66 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 41 &lt;/td&gt;
@@ -432,101 +437,390 @@ We often use OLS (or LPM) to fit:
 &lt;/table&gt;
 
 ---
-## Group-Time 2x2 for Group 2
+### Callawy-Sant'Anna approach
+.footnote[See https://bcallaway11.github.io/did/articles/multi-period-did.html for R, https://econpapers.repec.org/software/bocbocode/S458976.htm for Stata ]
 
+- Includes options for different structure, SE calculation, weights, etc.
+
+
+```r
+# Use not-yet-treated as comparison group
+did::att_gt(yname = "psba", # name of the LHS variable
+  tname = "time", # name of the time variable
+  idname = "dist_id", # name of the id variable
+  gname = "group", # name of the first treatment period
+  data = d_sba, # dataset
+  xformla = NULL,
+  weightsname = "tpop",
+  est_method = "reg", # estimation method.
+  control_group = "notyettreated", # set the control group
+  bstrap = TRUE, # compute bootstrapped SE
+  biters = 1000, # bootstrap iterations
+  print_details = FALSE, # if TRUE, print detailed results
+  panel = FALSE) # panel or repeated cross-sectional
+```
 
 ---
-# First part of mediation: total effect
+## Estimates from CS approach
 .left-column[
-Basic idea is to understand pathways of effects  
+- Note there is no *overall* estimate
+
+- Each treatment group has an ATT at each time period.
 ]
-
----
-# Second part of mediation: decomposition
-.left-column[
-Basic idea is to understand pathways of effects  
-
-How much of the effect is due to `\(PM_{2.5}\)` vs. other pathways?
-]
-
-
----
-# Basic DAG for mediation
-.pull-left[
-### `\(X\)` = pre-treatment covariates
-### `\(T\)` = exposure
-### `\(M\)` = mediator
-### `\(W\)` = confounders
-### `\(Y\)` = outcome
-]
-
-
----
-# Basic DAG for mediation
-.pull-left[
-### `\(X\)` = pre-treatment covariates
-### `\(T\)` = exposure
-### `\(M\)` = mediator
-### `\(W\)` = confounders
-### `\(Y\)` = outcome
-]
-
-
----
-# Quantities of interest
-## Estimate two regressions:
-`$$\color{red}{E[Y|T,X]=\beta_{0}+\beta_{1}T +\beta_{2}X}$$`
-`$$E[Y|T,X,M] = \gamma_{0} + \gamma_{1}T + \gamma_{2}M + \gamma_{3}TM + \gamma_{4}X + \gamma_{5}W$$`
-
---
-
-### First equation estimates the total effect of the ban:
-`$$\color{red}{TE=\beta_{1}(T^{*}-T)}$$`
-where `\(T^{*}\)` is exposure to ban and `\(T\)` is no exposure.
-
----
-# Quantities of interest
-## Estimate two regressions:
-`$$E[Y|T,X]=\beta_{0}+\beta_{1}T +\beta_{2}X$$`
-`$$\color{red}{E[Y|T,X,M] = \gamma_{0} + \gamma_{1}T + \gamma_{2}M + \gamma_{3}TM + \gamma_{4}X + \gamma_{5}W}$$`
-
-
-### Second equation estimates the "Controlled Direct Effect":
-`$$\color{red}{CDE=\gamma_{1}+\gamma_{3}TM}$$`
-
----
-# Key assumptions
 .right-column[
-### Assumptions for valid CDE:
-#### No confounding of the total effect.
-#### No confounding of the mediator-outcome effect.
-#### No confounding of the exposure-mediator effect.
-]
----
-# What the hell is the CDE?
-
-.pull-left[
-*This effect is the contrast between the counterfactual outcome if the individual were exposed at `\(T=t\)` and the counterfactual outcome if the same individual were exposed at* `\(T=t*\)`, *with the mediator set to a fixed level* `\(M=m\)`.
-]
-
---
-
-.pull-right[
-English:
-### "By how much would blood pressure change if the policy were implemented and we held `\(PM_{2.5}\)` fixed?"
+&lt;table class="table" style="margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; term &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; group &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.low &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.high &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(2,2) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.011 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.055 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.096 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.118 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(2,3) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.260 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.056 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.151 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.370 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(2,4) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.269 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.168 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.061 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.599 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(3,2) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.045 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.043 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.038 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.129 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(3,3) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.018 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.067 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.114 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.151 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(3,4) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.170 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.163 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.150 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.490 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(4,2) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.062 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.041 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.142 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.017 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(4,3) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.048 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.081 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.207 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.110 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(4,4) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.130 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.184 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.231 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.492 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 ]
 
 ---
 .left-column[
-### Extension to multiple mediators
-More complicated
+- Some SEs hard to understand.
 
-Sequential mediatiors?
+- Cluster bootstrapped smaller in most cases.
 
-Interactions between mediators?
+- Absurdly small for ATT(4,4) that has small sample and only 4 clusters.
+]
+.right-column[
 
+
+&lt;img src="/Users/samharper/git/tamani/talk/atts_se.png" width="3600" /&gt;
 ]
 
+---
+### Creating the Group-Time ATTs
+- ATT(.red[2],.blue[2]) means estimating ATT .blue[*at time 2*] for the group .red[*first treated at time 2*]
+
+- For ATT(2,2) the groups being compared are:
+&lt;table class="table lightable-minimal" style='margin-left: auto; margin-right: auto; font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;border-bottom: 0;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; group &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time4 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time5 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;"&gt; 0.631 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;"&gt; 0.711 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.814 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.846 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.826 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.678 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.770 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.664 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.784 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.778 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.807 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.673 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.750 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.868 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.939 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.855 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Red = treated, Gray = untreated&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+
+---
+&lt;table class="table lightable-minimal" style='margin-left: auto; margin-right: auto; font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;border-bottom: 0;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; group &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time4 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time5 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;"&gt; 0.631 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;"&gt; 0.711 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.814 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.846 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.826 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.678 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.770 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.664 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.784 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.778 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.807 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.673 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.750 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.868 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.939 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.855 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Red = treated, Gray = untreated&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+
+- The 2x2 (weighted averages):
+&lt;table class=" lightable-minimal" style='font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; g22 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Long diff &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; ATT_2_2 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.745 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.814 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.069 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.631 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.711 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.080 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 0.011 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+This estimate says that intervention increased the probability of an SBA birth by 0.01 for Group 2 at Time 2.
+
+---
+
+- For ATT(2,3) the groups being compared are:
+&lt;table class="table lightable-minimal" style='margin-left: auto; margin-right: auto; font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;border-bottom: 0;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; group &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time4 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time5 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;"&gt; 0.631 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.711 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;"&gt; 0.814 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.846 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.826 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: white !important;"&gt; 0.678 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.770 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: white !important;"&gt; 0.664 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.784 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.778 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.807 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.673 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.750 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.868 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.939 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.855 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Red = treated, Gray = untreated&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+
+
+### Note
+- ATT(.red[2],.blue[3]) means estimating the ATT .blue[*at time 3*] for the group .red[*first treated at time 2*]
+
+- Need to exclude any group treated at time 3 to avoid bias.
+
+- The group first treated at time 3 is excluded.
+
+---
+- The 2x2 (weighted averages):
+&lt;table class=" lightable-minimal" style='font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; g23 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Long diff &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; ATT_2_3 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.803 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.725 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.078 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.631 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.814 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.182 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 0.26 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+## Questions
+.right-column[
+### Aggregating
+
+### Clustering
+]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

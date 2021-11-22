@@ -198,6 +198,7 @@ df9 <- data.frame(group = atts_9$group,
   att = atts_9$att, se = atts_9$se)
 
 atts_i <- bind_rows(df7,df8,df9)
+saveRDS(atts_i, file = here("output", "atts_i.rds"))
 
 atts_i %>% 
   select(-se) %>% 
@@ -209,5 +210,21 @@ atts_i %>%
   pivot_wider(names_from=c(type, method), values_from = se) %>%
   mutate_if(is.numeric, round, 3)
 
+
+atts_i %>%
+  mutate(ll95 = att - 1.96 * se,
+         ul95 = att + 1.96 * se,
+         gt = paste("ATT(",group,",",time,")", sep=""),
+         method = recode(method, asm = "Asymptotic",
+          boot = "Bootstrapped", bootc = "Cluster\nbootstrapped")) %>%
+  ggplot(aes(x = att, y = method, color = method)) + 
+  geom_vline(xintercept = 0) + 
+  geom_errorbar(aes(xmin = ll95, xmax = ul95), width=0.1) +
+  geom_point() + facet_wrap(~gt) + theme_bw() +
+  theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
+        axis.ticks = element_blank(), axis.text.x = element_text(size = 14),
+        strip.text.x = element_text(size = 14),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank())
 
 
