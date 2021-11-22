@@ -6,6 +6,8 @@
     <meta name="author" content="Sam Harper" />
     <meta name="date" content="2021-11-23" />
     <script src="libs/header-attrs/header-attrs.js"></script>
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
     <link rel="stylesheet" href="style.css" type="text/css" />
   </head>
@@ -27,27 +29,56 @@ class: center, middle, inverse, title-slide
 
 
 
-# CIHR study objectives
-## Impact of the combined coal ban and heat pump subsidy on:
+## Basic setup for DD with variable timing
+Say different states/provinces are exposed to a policy at different times.   
+We often use OLS (or LPM) to fit:
+`$$y_{it} = \alpha_{i} + \tau_{t} + \beta^{DD}{D_{it}} + \epsilon_{it}$$`
+### where
+- `\(y_{it}\)` is the outcome for unit `\(i\)` at time `\(t\)`.
+- `\(\alpha_{i}\)` are unit-specific fixed effects.
+- `\(\tau_{t}\)` are fixed effects for each time period.
+- `\(D_{it}\)` is a time-varying treatment indicator.
+- `\(\beta^{DD}\)` is the difference-in-differences estimate.
 
+---
+# Key points from Goodman-Bacon (2019)
 .right-column[
-
-1. Community and personal air pollution;
-
-2. Indoor temperatures in homes;
-
-3. Health outcomes.
-
+- ### With OLS, DD with treatment timing is a variance-weighted average.
+- ### Weights are a function of both group sizes *and* variances.
+- ### Can lead to `\(\beta^{DD}\)` that is a poor summary of group-specific effects.
 ]
 
 ---
-### Next phase of project (HEI grant)
+.footnote[Graph from https://andrewcbaker.netlify.app/2019/09/25/difference-in-differences-methodology/]
+
+.left-column[
+1. Early-adopters (*k*) vs. never treated (*U*)
+
+2. Later-adopters (*l*) vs. never treated (*U*).
+
+3. Early (*k*) vs. later (*l*) adopters.
+
+4. *Later (l) vs. earlier (k) adopters.*
+]
+.right-column[.center[
+![:scale 90%](baker-f1.png)]]
 
 ---
-## HEI study objectives
+## Tabora Maternal Newborn Health Initiative (TAMANI) 
+.footnote[Source: https://commons.wikimedia.org/w/index.php?curid=47130439, Google Maps]
+
+.pull-right[
+&lt;img src="/Users/samharper/git/tamani/talk/Tabora.png" width="250" /&gt;
+]
+
+.pull-left[
+&lt;img src="/Users/samharper/git/tamani/talk/tanzania.png" width="250" /&gt;
+]
+
+---
 .right-column[
 ### Aim 1.
-#### Estimate the total effect of the intervention.
+#### Assess the impact of CARE’s multi-component intervention on several indicators of reproductive maternal and newborn health. 
 
 ### Aim 2. 
 #### Estimate the contribution of changes in the chemical composition of `\(PM_{2.5}\)` to the overall effect on health outcomes.
@@ -57,41 +88,357 @@ class: center, middle, inverse, title-slide
 ]
 
 ---
-## Basic idea for mediation study
-
-
-### To understand the pathways, mechanisms, and intermediates through which a treatment affects an outcome.
-
---
-
-.right-column[
-###How much of the policy effect is through:
-#### Reduced exposure to `\(PM_{2.5}\)`
-#### Other pathways (behavioral changes?)
-#### Also consider multiple mediators
+## Who is treated?
+.pull-right[
+&lt;img src="/Users/samharper/git/tamani/talk/tanzania.png" width="250" /&gt;
 ]
 
 ---
-## New measurements proposed for HEI study
-.right-column[
-### 3rd data campaign in winter ~~2020/21~~ 2021/22. 
-- Objective measurement of household stove use.
+## Data structure: Individual-level
+.left-column[
+- sba_birth = SBA present
 
-- 24h indoor (household) `\(PM_{2.5}\)` concentrations. 
+- txdel = treated
 
-- Analysis of community, indoor, and personal exposure PM2.5 samples for chemical composition and molecular tracers for household coal burning. 
+- time = survey wave
+
+- pid = person ID
+
+- group = time when group first treated 
+
 ]
+
+.right-column[
+&lt;table class="table" style="margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; district &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; sba_birth &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; txdel &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; dist_id &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p_id &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; group &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kaliua DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 237 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kaliua DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2168 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kaliua DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6723 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kaliua DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2269 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kaliua DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5084 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kaliua DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2058 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+---
+## Data structure: Pooled by district
+.left-column[
+- tsba = total SBA births
+- tpop = total pop
+
+- txdel = treated
+
+- time = survey wave
+
+- group = time when group first treated 
+
+]
+
+.right-column[
+&lt;table class="table" style="margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; district &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; dist_id &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; tsba &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; tpop &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; psba &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; txdel &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; group &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kaliua DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 409 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 705 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.580 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kaliua DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 49 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 73 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.671 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kaliua DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 63 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 77 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.818 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kaliua DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.900 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kaliua DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 94 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 114 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.825 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Nzega DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 465 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 634 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.733 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Nzega DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 60 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 76 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.789 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Nzega DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 43 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 57 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.754 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Nzega DC &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.900 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+---
+## TWFE models (OLS)
+.pull-left[
+`$$y_{sba} = \alpha + \beta*txdel + \gamma_{district} + \delta_{time} + \epsilon$$`
+
+- Individual and aggregate data basically identical
+
+- Clustered SEs are also approximately the same
+
+]
+.pull-right[
+&lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Individual &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Aggregate &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; txdel &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.060 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.060 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1px"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1px"&gt; (0.037) &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1px"&gt; (0.040) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5555 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 40 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Std.Errors &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; by: district &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; by: district &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; FE: district &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; X &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; X &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; FE: time &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; X &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; X &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+---
+## CS Approach: Aggregate to Group-Time cohorts
+&lt;table class="table" style="margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; group &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; psba_t1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; psba_t2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; psba_t3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; psba_t4 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; psba_t5 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; tpop_t1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; tpop_t2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; tpop_t3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; tpop_t4 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; tpop_t5 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.63 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.71 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.81 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.83 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 898 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 90 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 102 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 144 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.68 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.77 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.66 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.80 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.78 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1455 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 165 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 125 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 232 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.78 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.81 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.67 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.75 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1128 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 140 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 101 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 167 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.94 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.80 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.86 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 556 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 41 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 76 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+## Group-Time 2x2 for Group 2
+
 
 ---
 # First part of mediation: total effect
 .left-column[
 Basic idea is to understand pathways of effects  
-
-First step is to estimate the total effect of exposure `\(T\)` on outcomes.
-]
-
-.right-column[
-![](tamani-3po_files/figure-html/dag1-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -102,9 +449,6 @@ Basic idea is to understand pathways of effects
 How much of the effect is due to `\(PM_{2.5}\)` vs. other pathways?
 ]
 
-.right-column[
-![](tamani-3po_files/figure-html/dag2-1.png)&lt;!-- --&gt;
-]
 
 ---
 # Basic DAG for mediation
@@ -116,9 +460,6 @@ How much of the effect is due to `\(PM_{2.5}\)` vs. other pathways?
 ### `\(Y\)` = outcome
 ]
 
-.pull-right[
-![](tamani-3po_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
-]
 
 ---
 # Basic DAG for mediation
@@ -130,14 +471,8 @@ How much of the effect is due to `\(PM_{2.5}\)` vs. other pathways?
 ### `\(Y\)` = outcome
 ]
 
-.pull-right[
-![](tamani-3po_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
-]
 
 ---
-background-image: url(basic-dag.png)
-background-position: top right
-background-size: 450px 275px
 # Quantities of interest
 ## Estimate two regressions:
 `$$\color{red}{E[Y|T,X]=\beta_{0}+\beta_{1}T +\beta_{2}X}$$`
@@ -150,9 +485,6 @@ background-size: 450px 275px
 where `\(T^{*}\)` is exposure to ban and `\(T\)` is no exposure.
 
 ---
-background-image: url(basic-dag.png)
-background-position: top right
-background-size: 450px 275px
 # Quantities of interest
 ## Estimate two regressions:
 `$$E[Y|T,X]=\beta_{0}+\beta_{1}T +\beta_{2}X$$`
@@ -195,9 +527,6 @@ Interactions between mediators?
 
 ]
 
-.right-column[
-![](tamani-3po_files/figure-html/mm-1.png)&lt;!-- --&gt;
-]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

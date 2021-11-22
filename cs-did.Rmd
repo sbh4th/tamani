@@ -43,6 +43,9 @@ d_ind <- d %>%
 
 kable(head(d_ind)) %>%
   kable_styling()
+
+# Save an object to a file
+saveRDS(d_ind, file = here("data-clean", "d_ind.rds"))
 ```
 Using this data, let's now run the standard TWFE analysis that is the workhorse of most DD applications with differential treatment timing.
 $$y_{sba} = \alpha + \beta*txdel + \gamma_{district} + \delta_{time} + \epsilon$$
@@ -71,6 +74,9 @@ d_sba <- d_ind %>%
 d_sba %>%
   kbl(digits=3, escape = FALSE) %>%
   kable_styling()
+
+# save to data director
+saveRDS(d_sba, file = here("data-clean", "d_sba.rds"))
 ```
 You can see that we are aggregating up to the district level, and how we have the total population (`tpop`) and the total number of births with a skilled attendant (`tsba`), as well as the proportion by district. 
 

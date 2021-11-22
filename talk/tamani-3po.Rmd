@@ -17,11 +17,17 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+library(here)
 options(htmltools.dir.version = FALSE)
 library(DiagrammeR)
 library(xaringan)
 library(leaflet)
 library(ggplot2)
+library(kableExtra)
+library(fixest)
+library(modelsummary)
+devtools::install_github("bcallaway11/did")
+library(did)
 # library(emo)
 xfun::pkg_load2(c('tikzDevice', 'magick', 'pdftools'))
 ```
@@ -53,27 +59,48 @@ $$y_{it} = \alpha_{i} + \tau_{t} + \beta^{DD}{D_{it}} + \epsilon_{it}$$
 - $\beta^{DD}$ is the difference-in-differences estimate.
 
 ---
-# CIHR study objectives
-## Impact of the combined coal ban and heat pump subsidy on:
-
+# Key points from Goodman-Bacon (2019)
 .right-column[
-
-1. Community and personal air pollution;
-
-2. Indoor temperatures in homes;
-
-3. Health outcomes.
-
+- ### With OLS, DD with treatment timing is a variance-weighted average.
+- ### Weights are a function of both group sizes *and* variances.
+- ### Can lead to $\beta^{DD}$ that is a poor summary of group-specific effects.
 ]
 
 ---
-### Next phase of project (HEI grant)
+.footnote[Graph from https://andrewcbaker.netlify.app/2019/09/25/difference-in-differences-methodology/]
+
+.left-column[
+1. Early-adopters (*k*) vs. never treated (*U*)
+
+2. Later-adopters (*l*) vs. never treated (*U*).
+
+3. Early (*k*) vs. later (*l*) adopters.
+
+4. *Later (l) vs. earlier (k) adopters.*
+]
+.right-column[.center[
+![:scale 90%](baker-f1.png)]]
 
 ---
-## HEI study objectives
+## Tabora Maternal Newborn Health Initiative (TAMANI) 
+.footnote[Source: https://commons.wikimedia.org/w/index.php?curid=47130439, Google Maps]
+
+.pull-right[
+```{r,  echo=F, out.width = 250}
+knitr::include_graphics(here("talk", "Tabora.png"))
+```
+]
+
+.pull-left[
+```{r,  echo=F, out.width = 250}
+knitr::include_graphics(here("talk", "tanzania.png"))
+```
+]
+
+---
 .right-column[
 ### Aim 1.
-#### Estimate the total effect of the intervention.
+#### Assess the impact of CARE’s multi-component intervention on several indicators of reproductive maternal and newborn health. 
 
 ### Aim 2. 
 #### Estimate the contribution of changes in the chemical composition of $PM_{2.5}$ to the overall effect on health outcomes.
@@ -83,51 +110,118 @@ $$y_{it} = \alpha_{i} + \tau_{t} + \beta^{DD}{D_{it}} + \epsilon_{it}$$
 ]
 
 ---
-## Basic idea for mediation study
-
-
-### To understand the pathways, mechanisms, and intermediates through which a treatment affects an outcome.
-
---
-
-.right-column[
-###How much of the policy effect is through:
-#### Reduced exposure to $PM_{2.5}$
-#### Other pathways (behavioral changes?)
-#### Also consider multiple mediators
+## Who is treated?
+.pull-right[
+```{r,  echo=F, out.width = 250}
+knitr::include_graphics(here("talk", "tanzania.png"))
+```
 ]
 
 ---
-## New measurements proposed for HEI study
-.right-column[
-### 3rd data campaign in winter ~~2020/21~~ 2021/22. 
-- Objective measurement of household stove use.
+## Data structure: Individual-level
+.left-column[
+- sba_birth = SBA present
 
-- 24h indoor (household) $PM_{2.5}$ concentrations. 
+- txdel = treated
 
-- Analysis of community, indoor, and personal exposure PM2.5 samples for chemical composition and molecular tracers for household coal burning. 
+- time = survey wave
+
+- pid = person ID
+
+- group = time when group first treated 
+
 ]
+
+.right-column[
+```{r d_ind, echo=FALSE}
+d_ind <- readRDS(file = here("data-clean", "d_ind.rds"))
+
+kable(head(d_ind)) %>%
+  kable_styling()
+```
+]
+
+---
+## Data structure: Pooled by district
+.left-column[
+- tsba = total SBA births
+- tpop = total pop
+
+- txdel = treated
+
+- time = survey wave
+
+- group = time when group first treated 
+
+]
+
+.right-column[
+```{r d_agg, echo=FALSE}
+d_sba <- readRDS(file = here("data-clean", "d_sba.rds"))
+
+kable(head(d_sba, n=9L), digits=3) %>%
+  kable_styling()
+```
+]
+
+---
+## TWFE models (OLS)
+.pull-left[
+$$y_{sba} = \alpha + \beta*txdel + \gamma_{district} + \delta_{time} + \epsilon$$
+
+- Individual and aggregate data basically identical
+
+- Clustered SEs are also approximately the same
+
+]
+.pull-right[
+```{r twfe1, echo=FALSE}
+# Individual-level
+twfe <- fixest::feols(sba_birth ~ txdel | district + time, 
+                      data = d_ind,
+                      weights = NULL, 
+                      cluster = ~district)
+
+# Pooled
+twfep <- fixest::feols(psba ~ txdel | district + time, 
+                      data = d_sba,
+                      weights = ~tpop, 
+                      cluster = ~district)
+
+models <- list("Individual" = twfe, "Aggregate" = twfep)
+modelsummary(models, gof_omit = 'DF|Deviance|R2|AIC|BIC|Log.Lik')
+```
+]
+
+---
+## CS Approach: Aggregate to Group-Time cohorts
+```{r gt, echo=FALSE, message=FALSE}
+# create group-time aggregate data
+d_agg <- d_sba %>% group_by(group, time) %>%
+  summarise(tsba = sum(tsba),
+         tpop = sum(tpop),
+         psba = tsba / tpop, # % SBA
+         txdel = mean(txdel))
+
+gt <- d_agg %>% select(group, time, psba, tpop) %>%
+  pivot_wider(names_from = time, names_prefix = "t",
+              values_from = c(psba, tpop))
+
+gt %>%
+  kbl(digits=3, col.names = c("Group", "Time1", "Time2", "Time3", "Time4",
+          "Time5", "Time1", "Time2", "Time3", "Time4", "Time5")) %>%
+  kable_styling()
+
+```
+
+---
+## Group-Time 2x2 for Group 2
+
 
 ---
 # First part of mediation: total effect
 .left-column[
 Basic idea is to understand pathways of effects  
-
-First step is to estimate the total effect of exposure $T$ on outcomes.
-]
-
-.right-column[
-```{r dag1, engine='tikz', echo=F}
-\begin{tikzpicture}[shorten > = 1pt, line width=1.5pt]
-\tikzstyle{every node} = [rectangle, fill=white, draw=none]
-\node (t) at  (0,0) [align=center] {Policy\\($T$)};
-%\node (m) at  (3,0) [align=center] {PM\textsubscript{2.5}\\($M$)};
-\node (y) at  (6,0) [align=center] {Blood\\pressure\\($Y$)};
-% \node (de) at (3,1.6) [align=center, text=red!80] {\small{Direct effect}};
-\node (te) at (3,-0.6) [align=center,text=red!80] {\small{Total effect}};
-\draw [->] (t) to (y);
-\end{tikzpicture}
-```
 ]
 
 ---
@@ -138,21 +232,6 @@ Basic idea is to understand pathways of effects
 How much of the effect is due to $PM_{2.5}$ vs. other pathways?
 ]
 
-.right-column[
-```{r dag2, engine='tikz', echo=F}
-\begin{tikzpicture}[shorten > = 1pt, line width=1.5pt]
-\tikzstyle{every node} = [rectangle, fill=white, draw=none]
-\node (t) at  (0,0) [align=center] {Policy\\($T$)};
-\node (m) at  (3,0) [align=center] {PM\textsubscript{2.5}\\($M$)};
-\node (y) at  (6,0) [align=center] {Blood\\pressure\\($Y$)};
-\node (de) at (3,1.6) [align=center, text=red!80] {\small{Direct effect}};
-\node (ie) at (3,-0.6) [align=center,text=red!80] {\small{Indirect effect}};
-\foreach \from/\to in {t/m, m/y}
-  \draw [->] (\from) -- (\to);
-\draw [->] (t) to [bend left=35] (y);
-\end{tikzpicture}
-```
-]
 
 ---
 # Basic DAG for mediation
@@ -164,29 +243,6 @@ How much of the effect is due to $PM_{2.5}$ vs. other pathways?
 ### $Y$ = outcome
 ]
 
-.pull-right[
-```{r,engine='tikz', echo=FALSE}
-\begin{tikzpicture}[shorten > = 1pt, line width=1pt]
-\tikzstyle{every node} = [rectangle, fill=white, draw=none]
-\node (x) at (0,0) [align=center] {$X$};
-\node (t) at  (1.5,0) [align=center] {Policy\\($T$)};
-%\node (tt) at (0.5,-1) [align=left] {\footnotesize{$T$: Policy}};
-\node (m) at  (3.5,0) [align=center] {PM\textsubscript{2.5}\\($M$)};
-%\node (mt) at (0.5,-1.4) [align=left] {\footnotesize{$M$: PM~2.5~}};
-\node (y) at  (5.5,0) [align=center] {SBP\\($Y$)};
-%\node (yt) at (0.5,-1.8) [align=left] {\footnotesize{$Y$: SBP  }};
-\node (w) at (3.5,-1.5) [align=center] {$W$};
-% \node (u) at (4.5, -1.5) [align=center] {\textcolor{gray!30}{$U$}};
-\foreach \from/\to in {x/t, t/m, m/y, w/m, w/y}
-  \draw [->] (\from) -- (\to);
-%\foreach \from/\to in {u/m, u/y}
-  %\draw [->, color=gray!30] (\from) -- (\to);
-\draw [->] (t) to [bend left=45] (y);
-\draw [->] (x) to [bend left=45] (y.north);
-\draw [->] (x.north) to [bend left=45] (m);
-\end{tikzpicture}
-```
-]
 
 ---
 # Basic DAG for mediation
@@ -198,34 +254,8 @@ How much of the effect is due to $PM_{2.5}$ vs. other pathways?
 ### $Y$ = outcome
 ]
 
-.pull-right[
-```{r,engine='tikz', echo=FALSE}
-\begin{tikzpicture}[shorten > = 1pt, line width=1pt]
-\tikzstyle{every node} = [rectangle, fill=white, draw=none]
-\node (x) at (0,0) [align=center] {$X$};
-\node (t) at  (1.5,0) [align=center] {Policy\\($T$)};
-%\node (tt) at (0.5,-1) [align=left] {\footnotesize{$T$: Policy}};
-\node (m) at  (3.5,0) [align=center] {PM\textsubscript{2.5}\\($M$)};
-%\node (mt) at (0.5,-1.4) [align=left] {\footnotesize{$M$: PM~2.5~}};
-\node (y) at  (5.5,0) [align=center] {SBP\\($Y$)};
-%\node (yt) at (0.5,-1.8) [align=left] {\footnotesize{$Y$: SBP  }};
-\node (w) at (3.5,-1.5) [align=center] {$W$};
-\node (u) at (4.5, -1.5) [align=center] {\textcolor{gray!30}{$U$}};
-\foreach \from/\to in {x/t, t/m, m/y, w/m, w/y}
-  \draw [->] (\from) -- (\to);
-\foreach \from/\to in {u/m, u/y}
-  \draw [->, color=gray!30] (\from) -- (\to);
-\draw [->] (t) to [bend left=45] (y);
-\draw [->] (x) to [bend left=45] (y.north);
-\draw [->] (x.north) to [bend left=45] (m);
-\end{tikzpicture}
-```
-]
 
 ---
-background-image: url(basic-dag.png)
-background-position: top right
-background-size: 450px 275px
 # Quantities of interest
 ## Estimate two regressions:
 $$\color{red}{E[Y|T,X]=\beta_{0}+\beta_{1}T +\beta_{2}X}$$
@@ -238,9 +268,6 @@ $$\color{red}{TE=\beta_{1}(T^{*}-T)}$$
 where $T^{*}$ is exposure to ban and $T$ is no exposure.
 
 ---
-background-image: url(basic-dag.png)
-background-position: top right
-background-size: 450px 275px
 # Quantities of interest
 ## Estimate two regressions:
 $$E[Y|T,X]=\beta_{0}+\beta_{1}T +\beta_{2}X$$
@@ -283,22 +310,3 @@ Interactions between mediators?
 
 ]
 
-.right-column[
-```{r mm, engine='tikz', echo=F}
-\begin{tikzpicture}[shorten > = 1pt, line width=1pt]
-\tikzstyle{every node} = [rectangle, fill=white, draw=none]
-\node (x) at (0,0) [align=center] {$X$};
-\node (t) at  (1.5,0) [align=center] {Policy\\($T$)};
-\node (m1) at  (3.5,1) [align=center] {PM\textsubscript{2.5}\\($M_{1}$)};
-\node (m2) at  (3.5,-1) [align=center] {Indoor\\Temp\\($M_{2}$)};
-\node (y) at  (5.5,0) [align=center] {SBP\\($Y$)};
-\node (w) at (2,-1.5) [align=center] {$W$};
-\foreach \from/\to in {x/t, t/y, t/m1, t/m2, m1/y, m2/y, w/m1, w/m2}
-  \draw [->] (\from) -- (\to);
-\draw [->] (x) to [bend left=45] (y.north);
-\draw [->] (x) to [bend left=20] (m1);
-\draw [->] (x) to [bend right=25] (m2);
-\draw [->] (w) to [bend right=45] (y);
-\end{tikzpicture}
-```
-]
