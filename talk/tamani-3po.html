@@ -84,6 +84,23 @@ class: center, middle, inverse, title-slide
 ]
 
 ---
+## A note about defining 'treated'
+.pull-left[
+- *Treated* at wave 4 For immediate outcomes (contraceptive prevalence, unmet need for family planning).
+
+- Same woman reports on a child that was born in January 2019 (before the intervention was implemented).
+
+- *Untreated* at wave 4 for for Jan '19 delivery outcomes (skilled birth attendance and respectful care).
+
+- Pregnancy began in the spring of 2018, so pregnancy outcomes (antenatal care visits) are considered “untreated”. 
+]
+
+.pull-right[
+Respondent at wave 4 (January 2021). 
+&lt;img src="/Users/samharper/git/tamani/talk/treated.png" width="988" /&gt;
+]
+
+---
 ## Basic setup for DD with variable timing
 .right-column[
 We have different districts that are exposed to our intervention at different times. We often use OLS (or LPM) to fit:
@@ -118,12 +135,6 @@ We have different districts that are exposed to our intervention at different ti
 ]
 .right-column[.center[
 ![:scale 90%](baker-f1.png)]]
-
----
-## Who is treated?
-.pull-right[
-&lt;img src="/Users/samharper/git/tamani/talk/treated.png" width="250" /&gt;
-]
 
 ---
 ## Data structure: Individual-level
@@ -533,81 +544,81 @@ did::att_gt(yname = "sba_birth", # name of the LHS variable
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.011 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.057 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.100 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.122 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.052 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.091 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.113 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(2,3) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.260 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.059 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.144 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.376 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.058 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.146 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.374 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(2,4) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.269 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.171 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.066 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.604 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.170 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.064 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.602 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,2) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.045 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.044 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.041 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.132 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.042 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.037 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.128 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,3) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.018 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.069 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.116 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.153 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.071 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.120 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.157 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,4) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.170 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.162 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.148 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.488 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.157 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.137 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.476 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(4,2) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; -0.062 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.043 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.147 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.022 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.046 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.152 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.027 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(4,3) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; -0.048 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.085 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.215 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.119 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.082 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.209 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.113 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(4,4) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.130 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.189 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.240 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.500 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.172 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.207 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.468 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;tfoot&gt;
@@ -1074,18 +1085,18 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.011 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.056 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.099 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.121 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.055 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.096 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.118 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(2,3) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.260 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.059 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.145 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.376 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.055 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.152 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.368 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(2,4) &lt;/td&gt;
@@ -1094,16 +1105,16 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
    &lt;td style="text-align:right;"&gt; 0.269 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.169 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; -0.062 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.600 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.601 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,2) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.045 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.043 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.038 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.129 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.045 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.044 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.134 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,3) &lt;/td&gt;
@@ -1111,8 +1122,8 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.018 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.071 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.122 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.159 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.120 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.157 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,4) &lt;/td&gt;
@@ -1120,35 +1131,35 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.170 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.156 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.137 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.476 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.135 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.474 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;background-color: yellow !important;"&gt; ATT(4,2) &lt;/td&gt;
    &lt;td style="text-align:right;background-color: yellow !important;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;background-color: yellow !important;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;background-color: yellow !important;"&gt; -0.062 &lt;/td&gt;
-   &lt;td style="text-align:right;background-color: yellow !important;"&gt; 0.044 &lt;/td&gt;
-   &lt;td style="text-align:right;background-color: yellow !important;"&gt; -0.149 &lt;/td&gt;
-   &lt;td style="text-align:right;background-color: yellow !important;"&gt; 0.024 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: yellow !important;"&gt; 0.048 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: yellow !important;"&gt; -0.156 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: yellow !important;"&gt; 0.031 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(4,3) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; -0.048 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.081 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.206 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.110 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.085 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.215 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.118 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(4,4) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.130 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.185 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.232 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.493 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.182 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.226 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.487 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -1268,37 +1279,37 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; -2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; -0.062 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.045 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.150 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.026 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.042 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.144 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.019 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; -1 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.004 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.047 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.088 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.096 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.052 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.097 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.105 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.053 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.071 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.087 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.193 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.068 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.080 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.186 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.204 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.100 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.008 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.401 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.104 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.001 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.408 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.269 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.159 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.043 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.581 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.166 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.057 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.595 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -1331,30 +1342,30 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Average &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.128 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.103 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.075 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.331 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.096 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.060 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.317 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.180 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.067 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.049 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.311 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.064 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.055 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.306 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.094 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.092 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.086 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.274 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.089 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.081 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.269 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.130 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.189 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.240 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.501 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.190 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.243 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.504 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -1388,23 +1399,23 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.011 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.055 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.096 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.118 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.057 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.100 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.122 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.111 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.055 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.004 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.218 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.057 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.001 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.224 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.183 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.145 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.102 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.467 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.151 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.113 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.478 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;

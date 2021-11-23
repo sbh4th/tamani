@@ -110,6 +110,25 @@ knitr::include_graphics(here("talk", "sw-design.png"))
 ]
 
 ---
+## A note about defining 'treated'
+.pull-left[
+- *Treated* at wave 4 For immediate outcomes (contraceptive prevalence, unmet need for family planning).
+
+- Same woman reports on a child that was born in January 2019 (before the intervention was implemented).
+
+- *Untreated* at wave 4 for for Jan '19 delivery outcomes (skilled birth attendance and respectful care).
+
+- Pregnancy began in the spring of 2018, so pregnancy outcomes (antenatal care visits) are considered “untreated”. 
+]
+
+.pull-right[
+Respondent at wave 4 (January 2021). 
+```{r,  echo=F}
+knitr::include_graphics(here("talk", "treated.png"))
+```
+]
+
+---
 ## Basic setup for DD with variable timing
 .right-column[
 We have different districts that are exposed to our intervention at different times. We often use OLS (or LPM) to fit:
@@ -144,14 +163,6 @@ $$y_{it} = \alpha_{i} + \tau_{t} + \beta^{DD}{D_{it}} + \epsilon_{it}$$
 ]
 .right-column[.center[
 ![:scale 90%](baker-f1.png)]]
-
----
-## Who is treated?
-.pull-right[
-```{r,  echo=F, out.width = 250}
-knitr::include_graphics(here("talk", "treated.png"))
-```
-]
 
 ---
 ## Data structure: Individual-level
