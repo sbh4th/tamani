@@ -447,6 +447,48 @@ me_33r <- tibble(param = "ATT(3,3)",
 
 
 
+# marginal effects for ATT(4,4)
+# first for flat prior
+
+# if models not fit
+b44_flat <- readRDS(here("code/fits", "b44_flat.rds")) 
+b44_reg <- readRDS(here("code/fits", "b44_reg.rds")) 
+
+mf <- model.frame(di_44)
+mf$att <- 0
+yhat0b <- fitted(b44_flat, mf,
+                 scale = "response", summary = FALSE)
+mf$att <- 1
+yhat1b <- fitted(b44_flat, mf,
+                 scale = "response", summary = FALSE)
+
+describe_posterior(rowMeans(yhat0b))
+describe_posterior(rowMeans(yhat1b))
+describe_posterior(rowMeans(yhat1b - yhat0b),
+                   dispersion = TRUE)
+
+# put into a data frame
+me_44f <- tibble(param = "ATT(4,4)",
+                prior = "(0,10)",
+                est = rowMeans(yhat1b - yhat0b))
+
+mf <- model.frame(di_44)
+mf$att <- 0
+yhat0b <- fitted(b44_reg, mf,
+                 scale = "response", summary = FALSE)
+mf$att <- 1
+yhat1b <- fitted(b44_reg, mf,
+                 scale = "response", summary = FALSE)
+
+describe_posterior(rowMeans(yhat0b))
+describe_posterior(rowMeans(yhat1b))
+describe_posterior(rowMeans(yhat1b - yhat0b),
+                   dispersion = TRUE)
+
+me_44r <- tibble(param = "ATT(4,4)",
+                prior = "(0,0.5)",
+                est = rowMeans(yhat1b - yhat0b))
+
 
 # plot of marginal effects
 me_22f %>% bind_rows(me_22r, me_23f, me_23r) %>%

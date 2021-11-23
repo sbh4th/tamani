@@ -1,8 +1,8 @@
 ---
 title: "TAMANI Project DD"
-subtitle: "3PO Meeting"  
-author: "Sam Harper"
-institute: "with Erin H., Ari, Ilona, Holly (errors are mine)"
+subtitle: "Sam Harper" 
+author: "joint with Erin H., Ari, Ilona, Holly"
+institute: "(all errors are mine)"
 date: 2021-11-23
 output:
   xaringan::moon_reader:
@@ -31,6 +31,9 @@ library(modelsummary)
 # devtools::install_github("bcallaway11/did")
 library(did)
 library(lme4)
+library(RStata)
+options("RStata.StataVersion" = 16)
+options("RStata.StataPath"= '/Applications/Stata/StataMP.app/Contents/MacOS/stata-mp')
 ```
 
 ```{r, include=FALSE}
@@ -192,7 +195,8 @@ kable(head(d_ind)) %>%
 ## Data structure: Pooled by district
 .left-column[
 - tsba = total SBA births
-- tpop = total pop
+
+- tpop = total pop (births)
 
 - txdel = treated
 
@@ -213,17 +217,16 @@ kable(head(d_sba, n=9L), digits=3) %>%
 
 ---
 ## TWFE models (OLS)
-.pull-left[
-$$y_{sba} = \alpha + \beta*txdel + \gamma_{district} + \delta_{time} + \epsilon$$
+.left-column[
+- Individual and aggregate basically identical.
 
-- Individual and aggregate data basically identical
+- Clustered SEs approximately the same.
 
-- Clustered SEs are also approximately the same
-
-- Intervention increased the probability of skilled birth attendance by 6 pp (95% CI -1.3 to 13.3).
-
+- Intervention increased the Pr(SBA) by 6 pp (95% CI -1.3 to 13.3).
 ]
-.pull-right[
+
+.right-column[
+$$y_{sba} = \alpha + \beta*txdel + \gamma_{district} + \delta_{time} + \epsilon$$
 ```{r twfe1, echo=FALSE}
 # Individual-level
 twfe <- fixest::feols(sba_birth ~ txdel | district + time, 
@@ -304,7 +307,7 @@ did::att_gt(yname = "sba_birth", # name of the LHS variable
 ---
 ## Estimates from CS approach
 .left-column[
-- Note there is no *overall* estimate
+- Note there is no *overall* estimate, lots of heterogeneity.
 
 - Each treatment group has an ATT at each time period.
 
@@ -507,7 +510,7 @@ d_agg %>% filter(time < 3 & group >= 3) %>%
 ```
 
 ---
-Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
+Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the regression-based CS estimate:
 ```{r cs_est_42, echo=FALSE, message=FALSE}
 atts_8 <- did::att_gt(yname = "sba_birth", tname = "time", 
   idname = "p_id", gname = "group", data = d_ind, 
@@ -523,7 +526,7 @@ cstable %>% select(-point.conf.low, -point.conf.high) %>%
 ```
 
 ---
-"Final" ATT(4,4) compares only 2 groups:
+"Final" ATT(4,4) compares only 2 groups (4 clusters):
 ```{r gt44, echo=FALSE}
 gt %>%
   kbl(digits=3, escape = FALSE) %>%
@@ -562,7 +565,7 @@ d_agg %>% filter((time ==3 | time == 4) & group >= 4) %>%
 #### What is the right way to conceptualize aggregating the ATTs?
 
 ### Clustering
-#### What is the correct standard error?
+#### How to think about the 'right' standard error?
 ]
 
 ---
@@ -570,8 +573,7 @@ d_agg %>% filter((time ==3 | time == 4) & group >= 4) %>%
 .pull-left[
 - Estimates by length of exposure
 
-- Overall summary:
-  - ATT = 0.176 (-0.02, 0.37)
+- Overall summary: $$\overline{ATT} = 0.176 (-0.02, 0.37)$$
 
 ```{r dynamic, message = FALSE, echo=FALSE}
 agg.dn <- aggte(atts_8, type = "dynamic")
@@ -582,7 +584,7 @@ datts %>% select(-type, -term,
   kable_styling(font_size = 16)
 ```
 
-- Recall TWFE estimate was 0.06 (-0.013, 0.133).
+- TWFE estimate was $$\overline{ATT} =0.06 (-0.013, 0.133)$$
 ]
 
 .pull-right[
@@ -596,7 +598,7 @@ ggdid(agg.dn)
 .pull-left[
 - Group-specific estimates
 
-- Weighted average of each group-time ATT
+- Weighted avg of each group-time ATT for group g
 
 ```{r grouped, message = FALSE, echo=FALSE}
 agg.d <- aggte(atts_8, type = "group")
@@ -607,7 +609,7 @@ gsatts %>% select(-type, -term,
   kable_styling(font_size = 16)
 ```
 
-- Recall TWFE estimate was 0.06 (-0.013, 0.133).
+- TWFE estimate was $$\overline{ATT} =0.06 (-0.013, 0.133)$$
 ]
 
 .pull-right[
@@ -619,10 +621,9 @@ ggdid(agg.d)
 ---
 ### Calendar Time ATTs
 .pull-left[
-- Time-specific estimates
+- ATT in time period t for groups that have participated in the treatment by time period t.
 
-- - Overall summary:
-  - ATT = 0.102 (-0.02, 0.22)
+- Overall summary:$$\overline{ATT} = 0.102 (-0.02, 0.22)$$
 
 ```{r calendar, message = FALSE, echo=FALSE}
 agg.c <- aggte(atts_8, type = "calendar")
@@ -633,12 +634,29 @@ catts %>% select(-type, -term,
   kable_styling(font_size = 16)
 ```
 
-- Recall TWFE estimate was 0.06 (-0.013, 0.133).
+- TWFE estimate was $$\overline{ATT} =0.06 (-0.013, 0.133)$$
 ]
 
 .pull-right[
 ```{r calendar_g, message = FALSE, echo=FALSE}
 ggdid(agg.c)
+```
+]
+
+---
+## Options for Standard errors
+.left-column[
+- Asymptotic
+
+- Bootstrap
+
+- Cluster bootstrap
+]
+
+.right-column[
+### Comment from the Callaway-Sant'Anna paper:
+```{r,  echo=F}
+knitr::include_graphics(here("talk", "cs-quote-clustering.png"))
 ```
 ]
 
@@ -676,5 +694,54 @@ ggsave(here("talk", "atts_se.png"), pse,  width = 9, height = 6)
 
 ```{r attse, echo=FALSE}
 knitr::include_graphics(here("talk", "atts_se.png"))
+```
+]
+
+---
+### Other attempts to estimate ATT(4,4)
+.left-column[
+
+- Cluster-adjustment always excessively narrow.
+
+- Ignoring clustering also seems wrong.
+
+- Bayesian estimation more conservative.
+]
+.right-column[
+Method | ATT(4,4) | SE | 95% CI
+--------|-------|----|-------
+Diff in proportions | 0.130 | 0.182 | -0.228, 0.489
+Diff in proportions (svy clustered) | 0.130 | 0.002 | 0.123, 0.138
+ | | |
+OLS, robust SE | 0.130 | 0.184 | -0.232, 0.493
+OLS, cluster robust SE | 0.130 | 0.002 | 0.123, 0.138
+ | | |
+Logit ME, robust | 0.123 | 0.150 | -0.171, 0.418
+Logit ME, cluster robust | 0.123 | 0.015 | 0.093, 0.154
+ | | |
+Bayesian logit, flat priors | 0.120 | 0.130 | -0.230, 0.330
+Bayesian logit, regularizing priors | 0.060 | 0.100| -0.160, 0.230
+
+]
+
+---
+.left-column[
+Bayesian priors for intercept
+]
+
+.right-column[
+```{r prior1, echo=FALSE}
+knitr::include_graphics(here("output", "b44_intercept_priors.png"))
+```
+]
+
+---
+.left-column[
+Bayesian priors for ATT
+]
+
+.right-column[
+```{r prior2, echo=FALSE}
+knitr::include_graphics(here("output", "b44_beta_priors.png"))
 ```
 ]

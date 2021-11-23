@@ -573,14 +573,27 @@ scalar d0 = r(P_diff)
 scalar d0_se = r(se_diff)
 display "ATT(4,4)= " d1 - d0
 display "ATT(4,4) SE = " sqrt(d1_se^2 + d0_se^2)
+display "ATT(4,4) CI = (" %4.3f (d1 - d0) - 1.96*sqrt(d1_se^2 + d0_se^2) ", " %4.3f (d1 - d0) + 1.96*sqrt(d1_se^2 + d0_se^2) ")"
 reg sba_birth i.txdel i.g44 i.time, robust
 reg sba_birth i.txdel i.g44 i.time, vce(cl dist_id)
-qui logit sba_birth i.txdel i.g44 i.time
+qui logit sba_birth i.txdel i.g44 i.time, robust
 margins(r.txdel)
 qui logit sba_birth i.txdel i.g44 i.time, vce(cl dist_id)
 margins(r.txdel)
 '
 stata(s_cs44, data.in=di_44)
+
+s_cs44s <- '
+clonevar g44 = group
+svyset dist_id
+proportion sba_birth, over(g44 time) coeflegend
+lincom (_b[1.sba_birth@1.g44#4.time] - _b[1.sba_birth@1.g44#3.time]) - (_b[1.sba_birth@0bn.g44#4.time] - _b[1.sba_birth@0bn.g44#3.time]) 
+
+svy: proportion sba_birth, over(g44 time) coeflegend
+lincom (_b[1.sba_birth@1.g44#4.time] - _b[1.sba_birth@1.g44#3.time]) - (_b[1.sba_birth@0bn.g44#4.time] - _b[1.sba_birth@0bn.g44#3.time]) 
+drop group
+'
+stata(s_cs44s, data.in=di_44)
 
 s_cs <- '
 csdid psba [weight=tpop], ivar(dist_id) time(time) gvar(group) method(reg) notyet

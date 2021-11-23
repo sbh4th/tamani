@@ -3,7 +3,7 @@
   <head>
     <title>TAMANI Project DD</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Sam Harper" />
+    <meta name="author" content="joint with Erin H., Ari, Ilona, Holly" />
     <meta name="date" content="2021-11-23" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <script src="libs/kePrint/kePrint.js"></script>
@@ -16,9 +16,9 @@
 class: center, middle, inverse, title-slide
 
 # TAMANI Project DD
-## 3PO Meeting
-### Sam Harper
-### with Erin H., Ari, Ilona, Holly (errors are mine)
+## Sam Harper
+### joint with Erin H., Ari, Ilona, Holly
+### (all errors are mine)
 ### 2021-11-23
 
 ---
@@ -227,7 +227,8 @@ We have different districts that are exposed to our intervention at different ti
 ## Data structure: Pooled by district
 .left-column[
 - tsba = total SBA births
-- tpop = total pop
+
+- tpop = total pop (births)
 
 - txdel = treated
 
@@ -348,17 +349,16 @@ We have different districts that are exposed to our intervention at different ti
 
 ---
 ## TWFE models (OLS)
-.pull-left[
-`$$y_{sba} = \alpha + \beta*txdel + \gamma_{district} + \delta_{time} + \epsilon$$`
+.left-column[
+- Individual and aggregate basically identical.
 
-- Individual and aggregate data basically identical
+- Clustered SEs approximately the same.
 
-- Clustered SEs are also approximately the same
-
-- Intervention increased the probability of skilled birth attendance by 6 pp (95% CI -1.3 to 13.3).
-
+- Intervention increased the Pr(SBA) by 6 pp (95% CI -1.3 to 13.3).
 ]
-.pull-right[
+
+.right-column[
+`$$y_{sba} = \alpha + \beta*txdel + \gamma_{district} + \delta_{time} + \epsilon$$`
 &lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
  &lt;thead&gt;
   &lt;tr&gt;
@@ -519,7 +519,7 @@ did::att_gt(yname = "sba_birth", # name of the LHS variable
 ---
 ## Estimates from CS approach
 .left-column[
-- Note there is no *overall* estimate
+- Note there is no *overall* estimate, lots of heterogeneity.
 
 - Each treatment group has an ATT at each time period.
 
@@ -544,63 +544,63 @@ did::att_gt(yname = "sba_birth", # name of the LHS variable
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.011 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.052 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.091 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.113 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.053 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.094 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.116 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(2,3) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.260 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.058 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.146 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.374 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.057 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.149 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.371 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(2,4) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.269 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.170 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.064 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.602 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.174 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.072 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.610 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,2) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.045 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.042 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.037 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.128 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.043 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.039 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.129 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,3) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.018 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.071 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.120 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.157 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.070 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.118 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.155 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,4) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.170 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.157 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.137 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.476 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.160 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.145 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.484 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(4,2) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; -0.062 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.046 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.152 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.027 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.043 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.147 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.022 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(4,3) &lt;/td&gt;
@@ -608,17 +608,17 @@ did::att_gt(yname = "sba_birth", # name of the LHS variable
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; -0.048 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.082 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.209 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.113 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.208 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.112 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(4,4) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.130 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.172 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.207 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.468 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.186 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.234 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.495 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;tfoot&gt;
@@ -1066,7 +1066,7 @@ class: center, middle
 &lt;/table&gt;
 
 ---
-Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
+Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the regression-based CS estimate:
 &lt;table class="table" style="margin-left: auto; margin-right: auto;"&gt;
  &lt;thead&gt;
   &lt;tr&gt;
@@ -1086,44 +1086,44 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.011 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.055 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.096 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.118 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.098 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.120 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(2,3) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.260 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.055 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.152 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.368 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.057 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.149 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.372 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(2,4) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.269 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.169 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.062 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.601 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.161 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.046 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.585 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,2) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.045 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.045 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.044 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.134 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.043 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.039 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.130 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,3) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.018 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.071 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.120 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.157 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.064 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.107 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.144 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,4) &lt;/td&gt;
@@ -1131,41 +1131,41 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.170 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.156 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.135 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.474 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.136 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.476 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;background-color: yellow !important;"&gt; ATT(4,2) &lt;/td&gt;
    &lt;td style="text-align:right;background-color: yellow !important;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;background-color: yellow !important;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;background-color: yellow !important;"&gt; -0.062 &lt;/td&gt;
-   &lt;td style="text-align:right;background-color: yellow !important;"&gt; 0.048 &lt;/td&gt;
-   &lt;td style="text-align:right;background-color: yellow !important;"&gt; -0.156 &lt;/td&gt;
-   &lt;td style="text-align:right;background-color: yellow !important;"&gt; 0.031 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: yellow !important;"&gt; 0.046 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: yellow !important;"&gt; -0.152 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: yellow !important;"&gt; 0.027 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(4,3) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; -0.048 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.085 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.215 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.118 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.083 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.211 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.115 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(4,4) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.130 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.182 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.226 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.487 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.189 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.241 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.502 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 
 ---
-"Final" ATT(4,4) compares only 2 groups:
+"Final" ATT(4,4) compares only 2 groups (4 clusters):
 &lt;table class="table lightable-minimal" style='margin-left: auto; margin-right: auto; font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;border-bottom: 0;'&gt;
  &lt;thead&gt;
   &lt;tr&gt;
@@ -1254,7 +1254,7 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
 #### What is the right way to conceptualize aggregating the ATTs?
 
 ### Clustering
-#### What is the correct standard error?
+#### How to think about the 'right' standard error?
 ]
 
 ---
@@ -1262,8 +1262,7 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
 .pull-left[
 - Estimates by length of exposure
 
-- Overall summary:
-  - ATT = 0.176 (-0.02, 0.37)
+- Overall summary: `$$\overline{ATT} = 0.176 (-0.02, 0.37)$$`
 
 &lt;table class="table" style="font-size: 16px; margin-left: auto; margin-right: auto;"&gt;
  &lt;thead&gt;
@@ -1279,42 +1278,42 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; -2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; -0.062 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.042 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.144 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.019 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.045 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.151 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.026 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; -1 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.004 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.052 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.097 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.105 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.047 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.087 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.096 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.053 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.068 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.080 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.186 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.071 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.086 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.192 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.204 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.104 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.001 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.408 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.098 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.012 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.397 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.269 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.166 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.057 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.595 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.167 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.058 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.596 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 
-- Recall TWFE estimate was 0.06 (-0.013, 0.133).
+- TWFE estimate was `$$\overline{ATT} =0.06 (-0.013, 0.133)$$`
 ]
 
 .pull-right[
@@ -1326,7 +1325,7 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
 .pull-left[
 - Group-specific estimates
 
-- Weighted average of each group-time ATT
+- Weighted avg of each group-time ATT for group g
 
 &lt;table class="table" style="font-size: 16px; margin-left: auto; margin-right: auto;"&gt;
  &lt;thead&gt;
@@ -1342,35 +1341,35 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Average &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.128 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.096 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.060 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.317 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.097 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.061 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.318 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.180 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.064 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.055 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.306 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.062 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.059 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.301 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.094 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.089 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.081 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.269 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.088 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.079 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.267 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.130 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.190 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.243 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.504 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.183 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.228 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.488 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 
-- Recall TWFE estimate was 0.06 (-0.013, 0.133).
+- TWFE estimate was `$$\overline{ATT} =0.06 (-0.013, 0.133)$$`
 ]
 
 .pull-right[
@@ -1380,10 +1379,9 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
 ---
 ### Calendar Time ATTs
 .pull-left[
-- Time-specific estimates
+- ATT in time period t for groups that have participated in the treatment by time period t.
 
-- - Overall summary:
-  - ATT = 0.102 (-0.02, 0.22)
+- Overall summary:$$\overline{ATT} = 0.102 (-0.02, 0.22)$$
 
 &lt;table class="table" style="font-size: 16px; margin-left: auto; margin-right: auto;"&gt;
  &lt;thead&gt;
@@ -1399,32 +1397,47 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.011 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.057 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.100 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.122 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.053 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.093 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.115 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.111 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.057 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.001 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.224 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.054 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.006 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.216 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.183 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.151 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.113 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.478 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.152 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.115 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.480 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 
-- Recall TWFE estimate was 0.06 (-0.013, 0.133).
+- TWFE estimate was `$$\overline{ATT} =0.06 (-0.013, 0.133)$$`
 ]
 
 .pull-right[
 ![](tamani-3po_files/figure-html/calendar_g-1.png)&lt;!-- --&gt;
+]
+
+---
+## Options for Standard errors
+.left-column[
+- Asymptotic
+
+- Bootstrap
+
+- Cluster bootstrap
+]
+
+.right-column[
+### Comment from the Callaway-Sant'Anna paper:
+&lt;img src="/Users/samharper/git/tamani/talk/cs-quote-clustering.png" width="2955" /&gt;
 ]
 
 ---
@@ -1439,6 +1452,51 @@ Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
 
 
 &lt;img src="/Users/samharper/git/tamani/talk/atts_se.png" width="3600" /&gt;
+]
+
+---
+### Other attempts to estimate ATT(4,4)
+.left-column[
+
+- Cluster-adjustment always excessively narrow.
+
+- Ignoring clustering also seems wrong.
+
+- Bayesian estimation more conservative.
+]
+.right-column[
+Method | ATT(4,4) | SE | 95% CI
+--------|-------|----|-------
+Diff in proportions | 0.130 | 0.182 | -0.228, 0.489
+Diff in proportions (svy clustered) | 0.130 | 0.002 | 0.123, 0.138
+ | | |
+OLS, robust SE | 0.130 | 0.184 | -0.232, 0.493
+OLS, cluster robust SE | 0.130 | 0.002 | 0.123, 0.138
+ | | |
+Logit ME, robust | 0.123 | 0.150 | -0.171, 0.418
+Logit ME, cluster robust | 0.123 | 0.015 | 0.093, 0.154
+ | | |
+Bayesian logit, flat priors | 0.120 | 0.130 | -0.230, 0.330
+Bayesian logit, regularizing priors | 0.060 | 0.100| -0.160, 0.230
+
+]
+
+---
+.left-column[
+Bayesian priors for intercept
+]
+
+.right-column[
+&lt;img src="/Users/samharper/git/tamani/output/b44_intercept_priors.png" width="3600" /&gt;
+]
+
+---
+.left-column[
+Bayesian priors for ATT
+]
+
+.right-column[
+&lt;img src="/Users/samharper/git/tamani/output/b44_beta_priors.png" width="3600" /&gt;
 ]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
