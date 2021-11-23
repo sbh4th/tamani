@@ -1,8 +1,8 @@
 ---
-title: "TAMANI Project DiD"
+title: "TAMANI Project DD"
 subtitle: "3PO Meeting"  
 author: "Sam Harper"
-institute: " <br> </br>"
+institute: "with Erin H., Ari, Ilona, Holly (errors are mine)"
 date: 2021-11-23
 output:
   xaringan::moon_reader:
@@ -30,7 +30,7 @@ library(fixest)
 library(modelsummary)
 # devtools::install_github("bcallaway11/did")
 library(did)
-xfun::pkg_load2(c('tikzDevice', 'magick', 'pdftools'))
+library(lme4)
 ```
 
 ```{r, include=FALSE}
@@ -48,9 +48,71 @@ pdf2png = function(path) {
 library(xaringanthemer)
 write_xaringan_theme(text_color = "#000000", header_color = "#737373", text_font_size = "24px",  text_font_family = "'Lucida Sans'", header_font_google = google_font("Source Sans Pro"), title_slide_background_color =  "#ffffff", title_slide_text_color = "#000000", link_color = "#0000ee", footnote_font_size = "0.5em")
 ```
+## Tabora Maternal Newborn Health Initiative (TAMANI) 
+.center[
+```{r,  echo=F, out.width = 800}
+knitr::include_graphics(here("talk", "tamani-goals.png"))
+```
+]
+
+---
+## Tabora Maternal Newborn Health Initiative (TAMANI) 
+.pull-left[
+### Interventions
+- Training health care providers in basic and comprehensive Emergency Obstetric and Newborn Care and family planning (EmONC) 
+
+- Community Health Worker training
+
+- Community-based dialogues focused on gender and women's empowerment
+]
+
+.pull-right[
+### Main outcomes
+- Unmet needs for family planning
+
+- .blue[Skilled birth attendance]
+
+- 4+ antenatal visits
+
+- Contraceptive prevalence
+
+- Respectful maternity care
+]
+
+---
+## Tabora Maternal Newborn Health Initiative (TAMANI) 
+.footnote[Source: https://commons.wikimedia.org/w/index.php?curid=47130439, Google Maps]
+
+- Implemented by CARE Canada/Tanzania in 8 districts in Tabora region, Tanzania
+
+.center[
+```{r,  echo=F, out.width = 250}
+knitr::include_graphics(here("talk", "tanzania.png"))
+knitr::include_graphics(here("talk", "Tabora.png"))
+```
+]
+
+---
+.left-column[
+### Initial Design: Stepped Wedge
+
+- Political constraints led to breaking random timing.
+
+- Switching of order of two districts.
+
+- Analyze as DD?
+]
+
+.right-column[
+```{r,  echo=F}
+knitr::include_graphics(here("talk", "sw-design.png"))
+```
+]
+
+---
 ## Basic setup for DD with variable timing
-Say different states/provinces are exposed to a policy at different times.   
-We often use OLS (or LPM) to fit:
+.right-column[
+We have different districts that are exposed to our intervention at different times. We often use OLS (or LPM) to fit:
 $$y_{it} = \alpha_{i} + \tau_{t} + \beta^{DD}{D_{it}} + \epsilon_{it}$$
 ### where
 - $y_{it}$ is the outcome for unit $i$ at time $t$.
@@ -58,11 +120,12 @@ $$y_{it} = \alpha_{i} + \tau_{t} + \beta^{DD}{D_{it}} + \epsilon_{it}$$
 - $\tau_{t}$ are fixed effects for each time period.
 - $D_{it}$ is a time-varying treatment indicator.
 - $\beta^{DD}$ is the difference-in-differences estimate.
+]
 
 ---
 # Key points from Goodman-Bacon (2019)
 .right-column[
-- ### With OLS, DD with treatment timing is a variance-weighted average.
+- ### With OLS, DD with treatment timing is a variance-weighted average of many 2x2 ATTs.
 - ### Weights are a function of both group sizes *and* variances.
 - ### Can lead to $\beta^{DD}$ that is a poor summary of group-specific effects.
 ]
@@ -77,44 +140,16 @@ $$y_{it} = \alpha_{i} + \tau_{t} + \beta^{DD}{D_{it}} + \epsilon_{it}$$
 
 3. Early (*k*) vs. later (*l*) adopters.
 
-4. *Later (l) vs. earlier (k) adopters.*
+4. **Later (l) vs. earlier (k) adopters.**
 ]
 .right-column[.center[
 ![:scale 90%](baker-f1.png)]]
 
 ---
-## Tabora Maternal Newborn Health Initiative (TAMANI) 
-.footnote[Source: https://commons.wikimedia.org/w/index.php?curid=47130439, Google Maps]
-
-.pull-right[
-```{r,  echo=F, out.width = 250}
-knitr::include_graphics(here("talk", "Tabora.png"))
-```
-]
-
-.pull-left[
-```{r,  echo=F, out.width = 250}
-knitr::include_graphics(here("talk", "tanzania.png"))
-```
-]
-
----
-.right-column[
-### Aim 1.
-#### Assess the impact of CARE’s multi-component intervention on several indicators of reproductive maternal and newborn health. 
-
-### Aim 2. 
-#### Estimate the contribution of changes in the chemical composition of $PM_{2.5}$ to the overall effect on health outcomes.
-
-### Aim 3. 
-#### Examine alternative (i.e., non $PM_{2.5}$) .orange[pathways and mechanisms] that may contribute to the intervention’s impact.
-]
-
----
 ## Who is treated?
 .pull-right[
 ```{r,  echo=F, out.width = 250}
-knitr::include_graphics(here("talk", "tanzania.png"))
+knitr::include_graphics(here("talk", "treated.png"))
 ```
 ]
 
@@ -174,6 +209,8 @@ $$y_{sba} = \alpha + \beta*txdel + \gamma_{district} + \delta_{time} + \epsilon$
 
 - Clustered SEs are also approximately the same
 
+- Intervention increased the probability of skilled birth attendance by 6 pp (95% CI -1.3 to 13.3).
+
 ]
 .pull-right[
 ```{r twfe1, echo=FALSE}
@@ -189,13 +226,24 @@ twfep <- fixest::feols(psba ~ txdel | district + time,
                       weights = ~tpop, 
                       cluster = ~district)
 
-models <- list("Individual" = twfe, "Aggregate" = twfep)
-modelsummary(models, gof_omit = 'DF|Deviance|R2|AIC|BIC|Log.Lik')
+# RE model
+# rem <- lmer(sba_birth ~ txdel + time + 
+#              (1 | district), data = d_ind)
+
+models <- list("Individual" = twfe, "Aggregate" = twfep) 
+#               "Random Effects" = rem)
+modelsummary(models, coef_map = "txdel",
+  statistic = c("({std.error})",
+                "[{conf.low}, {conf.high}]"),
+  gof_omit = 'DF|Deviance|R2|AIC|BIC|Log.Lik|ICC|RMSE')
 ```
 ]
 
 ---
-## CS Approach: Aggregate to Group-Time cohorts
+## Callaway-Sant'Anna Approach: Group-Time cohorts
+- The CS approach starts with defining Group-Time cohorts.
+- Groups defined by when they were *first* treated.
+
 ```{r gt, echo=FALSE, message=FALSE}
 # create group-time aggregate data
 d_agg <- d_sba %>% group_by(group, time) %>%
@@ -216,27 +264,30 @@ gt %>%
 
 ```
 
+- Different aggregation schemes for ATTs are possible.
+- Can allow for covariates via regressions adjustments, IPW and DR.
 ---
-### Callawy-Sant'Anna approach
+### Callawy-Sant'Anna implementation
 .footnote[See https://bcallaway11.github.io/did/articles/multi-period-did.html for R, https://econpapers.repec.org/software/bocbocode/S458976.htm for Stata ]
 
 - Includes options for different structure, SE calculation, weights, etc.
 
 ```{r csdid, message=FALSE, warning=FALSE, eval=FALSE, echo=TRUE}
 # Use not-yet-treated as comparison group
-did::att_gt(yname = "psba", # name of the LHS variable
+did::att_gt(yname = "sba_birth", # name of the LHS variable
   tname = "time", # name of the time variable
-  idname = "dist_id", # name of the id variable
+  idname = "p_id", # name of the id variable
   gname = "group", # name of the first treatment period
-  data = d_sba, # dataset
-  xformla = NULL,
-  weightsname = "tpop",
-  est_method = "reg", # estimation method.
+  data = d_ind, # dataset
+  xformla = NULL, # conditional parallel-trends
+  weightsname = NULL, # can add weights
+  est_method = "reg", # estimation method
   control_group = "notyettreated", # set the control group
   bstrap = TRUE, # compute bootstrapped SE
   biters = 1000, # bootstrap iterations
   print_details = FALSE, # if TRUE, print detailed results
-  panel = FALSE) # panel or repeated cross-sectional
+  panel = FALSE, # panel or repeated cross-sectional
+  clustervars = NULL) # cluster ID
 ```
 
 ---
@@ -245,6 +296,8 @@ did::att_gt(yname = "psba", # name of the LHS variable
 - Note there is no *overall* estimate
 
 - Each treatment group has an ATT at each time period.
+
+- Can be combined to produce different aggregate ATTs.
 ]
 .right-column[
 ```{r cs_est, echo=FALSE, message=FALSE}
@@ -257,52 +310,16 @@ atts_8 <- did::att_gt(yname = "sba_birth", tname = "time",
 cstable <- tidy(atts_8)
 cstable %>% select(-point.conf.low, -point.conf.high) %>%
   kbl(digits=3, escape = FALSE) %>%
+  footnote(general = "P-value for pre-test of parallel trends assumption:  0.31") %>%
   kable_styling()
 ```
 ]
 
 ---
-.left-column[
-- Some SEs hard to understand.
-
-- Cluster bootstrapped smaller in most cases.
-
-- Absurdly small for ATT(4,4) that has small sample and only 4 clusters.
-]
-.right-column[
-```{r atts, echo=FALSE, message=FALSE}
-atts_i <- readRDS(here("output", "atts_i.rds"))
-
-atts_ig <- atts_i %>%
-  mutate(ll95 = att - 1.96 * se,
-         ul95 = att + 1.96 * se,
-         gt = paste("ATT(",group,",",time,")", sep=""),
-         method = recode(method, asm = "Asymptotic",
-          boot = "Bootstrapped", bootc = "Cluster\nbootstrapped"))
-
-pse <- ggplot(atts_ig, aes(x = att, y = method, color = method)) + 
-  geom_vline(xintercept = 0) + 
-  geom_errorbar(aes(xmin = ll95, xmax = ul95), width=0.1) +
-  geom_point() + facet_wrap(~gt) + theme_bw() +
-  theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
-        axis.ticks = element_blank(), axis.text.x = element_text(size = 14),
-        strip.text.x = element_text(size = 14),
-        legend.text = element_text(size = 14),
-        legend.title = element_blank())
-
-ggsave(here("talk", "atts_se.png"), pse,  width = 9, height = 6)
-```
-
-```{r attse, echo=FALSE}
-knitr::include_graphics(here("talk", "atts_se.png"))
-```
-]
-
----
-### Creating the Group-Time ATTs
+### Re-creating the Group-Time ATTs
 - ATT(.red[2],.blue[2]) means estimating ATT .blue[*at time 2*] for the group .red[*first treated at time 2*]
 
-- For ATT(2,2) the groups being compared are:
+- For ATT(2,2) we are comparing Pr(SBA) between:
 ```{r gt22, echo=FALSE}
 # drop pop estimates
 gt <- d_agg %>% select(group, time, psba) %>%
@@ -375,16 +392,31 @@ gt %>%
 ```
 
 
-### Note
 - ATT(.red[2],.blue[3]) means estimating the ATT .blue[*at time 3*] for the group .red[*first treated at time 2*]
 
 - Need to exclude any group treated at time 3 to avoid bias.
 
 - The group first treated at time 3 is excluded.
 
+- Provides an estimate of the lagged impact of intervention.
+
 ---
+```{r gt23a, echo=FALSE}
+# drop pop estimates
+gt %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling() %>%
+  column_spec(c(2,4), color = "black", background = "red") %>%
+  row_spec(2, background = "white") %>%
+  row_spec(3:4, background  = "lightgray") %>%
+  column_spec(c(3,5,6), background = "white") %>%
+  column_spec(1, background = "white") %>%
+  kable_minimal() %>%
+  footnote(general = "Red = treated, Gray = untreated")
+```
+
 - The 2x2 (weighted averages):
-```{r att23, message=FALSE}
+```{r att23, message=FALSE, echo=FALSE}
 d_agg %>% filter((time==1 | time==3) & group!=3) %>%
   mutate(g23 = if_else(group==2,1,0)) %>%
   group_by(g23, time) %>%
@@ -403,9 +435,235 @@ d_agg %>% filter((time==1 | time==3) & group!=3) %>%
 ```
 
 ---
-## Questions
+class: center, middle
+# Etc., etc., etc...
+
+---
+- For ATT(4,2) the groups being compared are:
+```{r gt42, echo=FALSE}
+# drop pop estimates
+gt %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling() %>%
+  column_spec(c(2,3), color = "black", background = "red") %>%
+  row_spec(1, background = "white") %>%
+  row_spec(c(2,4), background = "lightgray") %>%
+  column_spec(c(1,4,5,6), background = "white") %>%
+  kable_minimal() %>%
+  footnote(general = "Red = treated, Gray = untreated")
+```
+
+
+- ATT(.red[4],.blue[2]) means estimating the ATT .blue[*at time 2*] for the group .red[*first treated at time 4*]
+
+- Need to exclude any group treated at time 2 to avoid bias.
+
+- The group first treated at time 2 is excluded.
+
+- Provides an estimate of the lead effects or non-parallel trends.
+
+---
+```{r gt42a, echo=FALSE}
+# drop pop estimates
+gt %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling() %>%
+  column_spec(c(2,3), color = "black", background = "red") %>%
+  row_spec(1, background = "white") %>%
+  row_spec(c(2,4), background = "lightgray") %>%
+  column_spec(c(1,4,5,6), background = "white") %>%
+  kable_minimal() %>%
+  footnote(general = "Red = treated, Gray = untreated")
+```
+
+- The 2x2 (weighted averages):
+```{r att42, message=FALSE, echo=FALSE}
+d_agg %>% filter(time < 3 & group >= 3) %>%
+  mutate(g42 = if_else(group==4,1,0)) %>%
+  group_by(g42, time) %>%
+  summarise(tsba = sum(tsba),
+            tpop = sum(tpop),
+            psba = tsba / tpop) %>%
+  select(g42, time, psba) %>%
+  pivot_wider(names_from = time, values_from = psba,
+              names_prefix = "time") %>%
+  mutate(`Long diff` = `time2` - `time1`) %>%
+  group_by() %>%
+  mutate(ATT_4_2 = `Long diff` - lag(`Long diff`, default = NA)) %>%
+  kable(digits=3) %>%
+  column_spec(5, bold=TRUE) %>%
+  kable_minimal()
+```
+
+---
+Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
+```{r cs_est_42, echo=FALSE, message=FALSE}
+atts_8 <- did::att_gt(yname = "sba_birth", tname = "time", 
+  idname = "p_id", gname = "group", data = d_ind, 
+  xformla = NULL, weightsname = NULL, est_method = "reg",
+  control_group = "notyettreated", bstrap = TRUE, 
+  biters = 1000, print_details = FALSE, panel = FALSE,
+  cband=FALSE)
+cstable <- tidy(atts_8)
+cstable %>% select(-point.conf.low, -point.conf.high) %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling() %>%
+  row_spec(7, background = "yellow")
+```
+
+---
+"Final" ATT(4,4) compares only 2 groups:
+```{r gt44, echo=FALSE}
+gt %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling() %>%
+  column_spec(c(4,5), color = "black", background = "red") %>%
+  row_spec(1:2, background = "white") %>%
+  row_spec(4, background = "lightgray") %>%
+  column_spec(c(1,2,3,6), background = "white") %>%
+  kable_minimal() %>%
+  footnote(general = "Red = treated, Gray = untreated")
+```
+
+- The 2x2 (weighted averages):
+```{r att44, echo=FALSE, message=FALSE}
+d_agg %>% filter((time ==3 | time == 4) & group >= 4) %>%
+  mutate(g44 = if_else(group==4,1,0)) %>%
+  group_by(g44, time) %>%
+  summarise(tsba = sum(tsba),
+            tpop = sum(tpop),
+            psba = tsba / tpop) %>%
+  select(g44, time, psba) %>%
+  pivot_wider(names_from = time, values_from = psba,
+              names_prefix = "time") %>%
+  mutate(`Long diff` = `time4` - `time3`) %>%
+  group_by() %>%
+  mutate(ATT_4_4 = `Long diff` - lag(`Long diff`, default = NA)) %>%
+  kable(digits=3) %>%
+  column_spec(5, bold=TRUE) %>%
+  kable_minimal()
+```
+
+---
+## Questions / Help
 .right-column[
 ### Aggregating
+#### What is the right way to conceptualize aggregating the ATTs?
 
 ### Clustering
+#### What is the correct standard error?
+]
+
+---
+### Dynamic Effects
+.pull-left[
+- Estimates by length of exposure
+
+- Overall summary:
+  - ATT = 0.176 (-0.02, 0.37)
+
+```{r dynamic, message = FALSE, echo=FALSE}
+agg.dn <- aggte(atts_8, type = "dynamic")
+datts <- tidy(agg.dn)
+datts %>% select(-type, -term, 
+                  -point.conf.low, -point.conf.high) %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling(font_size = 16)
+```
+
+- Recall TWFE estimate was 0.06 (-0.013, 0.133).
+]
+
+.pull-right[
+```{r dynamic_g, message = FALSE, echo=FALSE}
+ggdid(agg.dn)
+```
+]
+
+---
+### Group-specific ATTs
+.pull-left[
+- Group-specific estimates
+
+- Weighted average of each group-time ATT
+
+```{r grouped, message = FALSE, echo=FALSE}
+agg.d <- aggte(atts_8, type = "group")
+gsatts <- tidy(agg.d)
+gsatts %>% select(-type, -term, 
+                  -point.conf.low, -point.conf.high) %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling(font_size = 16)
+```
+
+- Recall TWFE estimate was 0.06 (-0.013, 0.133).
+]
+
+.pull-right[
+```{r grouped_g, message = FALSE, echo=FALSE}
+ggdid(agg.d)
+```
+]
+
+---
+### Calendar Time ATTs
+.pull-left[
+- Time-specific estimates
+
+- - Overall summary:
+  - ATT = 0.102 (-0.02, 0.22)
+
+```{r calendar, message = FALSE, echo=FALSE}
+agg.c <- aggte(atts_8, type = "calendar")
+catts <- tidy(agg.c)
+catts %>% select(-type, -term, 
+                  -point.conf.low, -point.conf.high) %>%
+  kbl(digits=3, escape = FALSE) %>%
+  kable_styling(font_size = 16)
+```
+
+- Recall TWFE estimate was 0.06 (-0.013, 0.133).
+]
+
+.pull-right[
+```{r calendar_g, message = FALSE, echo=FALSE}
+ggdid(agg.c)
+```
+]
+
+---
+.left-column[
+- Some SEs hard to understand.
+
+- Cluster bootstrapped smaller in most cases.
+
+- Absurdly small for ATT(4,4) that has small sample and only 4 clusters.
+]
+.right-column[
+```{r atts, echo=FALSE, message=FALSE}
+atts_i <- readRDS(here("output", "atts_i.rds"))
+
+atts_ig <- atts_i %>%
+  mutate(ll95 = att - 1.96 * se,
+         ul95 = att + 1.96 * se,
+         gt = paste("ATT(",group,",",time,")", sep=""),
+         method = recode(method, asm = "Asymptotic",
+          boot = "Bootstrapped", bootc = "Cluster\nbootstrapped"))
+
+pse <- ggplot(atts_ig, aes(x = att, y = method, color = method)) + 
+  geom_vline(xintercept = 0) + 
+  geom_errorbar(aes(xmin = ll95, xmax = ul95), width=0.1) +
+  geom_point() + facet_wrap(~gt) + theme_bw() +
+  theme(axis.text.y = element_blank(), axis.title.y = element_blank(),
+        axis.ticks = element_blank(), axis.text.x = element_text(size = 14),
+        strip.text.x = element_text(size = 14),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank())
+
+ggsave(here("talk", "atts_se.png"), pse,  width = 9, height = 6)
+```
+
+```{r attse, echo=FALSE}
+knitr::include_graphics(here("talk", "atts_se.png"))
+```
 ]

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>TAMANI Project DiD</title>
+    <title>TAMANI Project DD</title>
     <meta charset="utf-8" />
     <meta name="author" content="Sam Harper" />
     <meta name="date" content="2021-11-23" />
@@ -15,10 +15,10 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# TAMANI Project DiD
+# TAMANI Project DD
 ## 3PO Meeting
 ### Sam Harper
-### <br> </br>
+### with Erin H., Ari, Ilona, Holly (errors are mine)
 ### 2021-11-23
 
 ---
@@ -29,9 +29,64 @@ class: center, middle, inverse, title-slide
 
 
 
+## Tabora Maternal Newborn Health Initiative (TAMANI) 
+.center[
+&lt;img src="/Users/samharper/git/tamani/talk/tamani-goals.png" width="800" /&gt;
+]
+
+---
+## Tabora Maternal Newborn Health Initiative (TAMANI) 
+.pull-left[
+### Interventions
+- Training health care providers in basic and comprehensive Emergency Obstetric and Newborn Care and family planning (EmONC) 
+
+- Community Health Worker training
+
+- Community-based dialogues focused on gender and women's empowerment
+]
+
+.pull-right[
+### Main outcomes
+- Unmet needs for family planning
+
+- .blue[Skilled birth attendance]
+
+- 4+ antenatal visits
+
+- Contraceptive prevalence
+
+- Respectful maternity care
+]
+
+---
+## Tabora Maternal Newborn Health Initiative (TAMANI) 
+.footnote[Source: https://commons.wikimedia.org/w/index.php?curid=47130439, Google Maps]
+
+- Implemented by CARE Canada/Tanzania in 8 districts in Tabora region, Tanzania
+
+.center[
+&lt;img src="/Users/samharper/git/tamani/talk/tanzania.png" width="250" /&gt;&lt;img src="/Users/samharper/git/tamani/talk/Tabora.png" width="250" /&gt;
+]
+
+---
+.left-column[
+### Initial Design: Stepped Wedge
+
+- Political constraints led to breaking random timing.
+
+- Switching of order of two districts.
+
+- Analyze as DD?
+]
+
+.right-column[
+&lt;img src="/Users/samharper/git/tamani/talk/sw-design.png" width="1091" /&gt;
+]
+
+---
 ## Basic setup for DD with variable timing
-Say different states/provinces are exposed to a policy at different times.   
-We often use OLS (or LPM) to fit:
+.right-column[
+We have different districts that are exposed to our intervention at different times. We often use OLS (or LPM) to fit:
 `$$y_{it} = \alpha_{i} + \tau_{t} + \beta^{DD}{D_{it}} + \epsilon_{it}$$`
 ### where
 - `\(y_{it}\)` is the outcome for unit `\(i\)` at time `\(t\)`.
@@ -39,11 +94,12 @@ We often use OLS (or LPM) to fit:
 - `\(\tau_{t}\)` are fixed effects for each time period.
 - `\(D_{it}\)` is a time-varying treatment indicator.
 - `\(\beta^{DD}\)` is the difference-in-differences estimate.
+]
 
 ---
 # Key points from Goodman-Bacon (2019)
 .right-column[
-- ### With OLS, DD with treatment timing is a variance-weighted average.
+- ### With OLS, DD with treatment timing is a variance-weighted average of many 2x2 ATTs.
 - ### Weights are a function of both group sizes *and* variances.
 - ### Can lead to `\(\beta^{DD}\)` that is a poor summary of group-specific effects.
 ]
@@ -58,39 +114,15 @@ We often use OLS (or LPM) to fit:
 
 3. Early (*k*) vs. later (*l*) adopters.
 
-4. *Later (l) vs. earlier (k) adopters.*
+4. **Later (l) vs. earlier (k) adopters.**
 ]
 .right-column[.center[
 ![:scale 90%](baker-f1.png)]]
 
 ---
-## Tabora Maternal Newborn Health Initiative (TAMANI) 
-.footnote[Source: https://commons.wikimedia.org/w/index.php?curid=47130439, Google Maps]
-
-.pull-right[
-&lt;img src="/Users/samharper/git/tamani/talk/Tabora.png" width="250" /&gt;
-]
-
-.pull-left[
-&lt;img src="/Users/samharper/git/tamani/talk/tanzania.png" width="250" /&gt;
-]
-
----
-.right-column[
-### Aim 1.
-#### Assess the impact of CARE’s multi-component intervention on several indicators of reproductive maternal and newborn health. 
-
-### Aim 2. 
-#### Estimate the contribution of changes in the chemical composition of `\(PM_{2.5}\)` to the overall effect on health outcomes.
-
-### Aim 3. 
-#### Examine alternative (i.e., non `\(PM_{2.5}\)`) .orange[pathways and mechanisms] that may contribute to the intervention’s impact.
-]
-
----
 ## Who is treated?
 .pull-right[
-&lt;img src="/Users/samharper/git/tamani/talk/tanzania.png" width="250" /&gt;
+&lt;img src="/Users/samharper/git/tamani/talk/treated.png" width="250" /&gt;
 ]
 
 ---
@@ -312,6 +344,8 @@ We often use OLS (or LPM) to fit:
 
 - Clustered SEs are also approximately the same
 
+- Intervention increased the probability of skilled birth attendance by 6 pp (95% CI -1.3 to 13.3).
+
 ]
 .pull-right[
 &lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
@@ -329,9 +363,14 @@ We often use OLS (or LPM) to fit:
    &lt;td style="text-align:center;"&gt; 0.060 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (0.037) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (0.040) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
    &lt;td style="text-align:left;box-shadow: 0px 1px"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:center;box-shadow: 0px 1px"&gt; (0.037) &lt;/td&gt;
-   &lt;td style="text-align:center;box-shadow: 0px 1px"&gt; (0.040) &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1px"&gt; [-0.013, 0.133] &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1px"&gt; [-0.019, 0.138] &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Num.Obs. &lt;/td&gt;
@@ -339,9 +378,9 @@ We often use OLS (or LPM) to fit:
    &lt;td style="text-align:center;"&gt; 40 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Std.Errors &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; by: district &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; by: district &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Std. Errors &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Clustered (district) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Clustered (district) &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; FE: district &lt;/td&gt;
@@ -358,7 +397,10 @@ We often use OLS (or LPM) to fit:
 ]
 
 ---
-## CS Approach: Aggregate to Group-Time cohorts
+## Callaway-Sant'Anna Approach: Group-Time cohorts
+- The CS approach starts with defining Group-Time cohorts.
+- Groups defined by when they were *first* treated.
+
 &lt;table class="table" style="margin-left: auto; margin-right: auto;"&gt;
  &lt;thead&gt;
 &lt;tr&gt;
@@ -436,8 +478,10 @@ We often use OLS (or LPM) to fit:
 &lt;/tbody&gt;
 &lt;/table&gt;
 
+- Different aggregation schemes for ATTs are possible.
+- Can allow for covariates via regressions adjustments, IPW and DR.
 ---
-### Callawy-Sant'Anna approach
+### Callawy-Sant'Anna implementation
 .footnote[See https://bcallaway11.github.io/did/articles/multi-period-did.html for R, https://econpapers.repec.org/software/bocbocode/S458976.htm for Stata ]
 
 - Includes options for different structure, SE calculation, weights, etc.
@@ -445,19 +489,20 @@ We often use OLS (or LPM) to fit:
 
 ```r
 # Use not-yet-treated as comparison group
-did::att_gt(yname = "psba", # name of the LHS variable
+did::att_gt(yname = "sba_birth", # name of the LHS variable
   tname = "time", # name of the time variable
-  idname = "dist_id", # name of the id variable
+  idname = "p_id", # name of the id variable
   gname = "group", # name of the first treatment period
-  data = d_sba, # dataset
-  xformla = NULL,
-  weightsname = "tpop",
-  est_method = "reg", # estimation method.
+  data = d_ind, # dataset
+  xformla = NULL, # conditional parallel-trends
+  weightsname = NULL, # can add weights
+  est_method = "reg", # estimation method
   control_group = "notyettreated", # set the control group
   bstrap = TRUE, # compute bootstrapped SE
   biters = 1000, # bootstrap iterations
   print_details = FALSE, # if TRUE, print detailed results
-  panel = FALSE) # panel or repeated cross-sectional
+  panel = FALSE, # panel or repeated cross-sectional
+  clustervars = NULL) # cluster ID
 ```
 
 ---
@@ -466,9 +511,11 @@ did::att_gt(yname = "psba", # name of the LHS variable
 - Note there is no *overall* estimate
 
 - Each treatment group has an ATT at each time period.
+
+- Can be combined to produce different aggregate ATTs.
 ]
 .right-column[
-&lt;table class="table" style="margin-left: auto; margin-right: auto;"&gt;
+&lt;table style="NAborder-bottom: 0; margin-left: auto; margin-right: auto;" class="table"&gt;
  &lt;thead&gt;
   &lt;tr&gt;
    &lt;th style="text-align:left;"&gt; term &lt;/th&gt;
@@ -486,105 +533,96 @@ did::att_gt(yname = "psba", # name of the LHS variable
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.011 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.055 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.096 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.118 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.057 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.100 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.122 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(2,3) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.260 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.056 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.151 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.370 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.059 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.144 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.376 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(2,4) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.269 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.168 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.061 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.599 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.171 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.066 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.604 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,2) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.045 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.043 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.038 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.129 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.044 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.041 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.132 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,3) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.018 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.067 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.114 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.151 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.069 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.116 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.153 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(3,4) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.170 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.163 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.150 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.490 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.162 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.148 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.488 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(4,2) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; -0.062 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.041 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.142 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.017 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.043 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.147 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.022 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(4,3) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; -0.048 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.081 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.207 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.110 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.085 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.215 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.119 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ATT(4,4) &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.130 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.184 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.231 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.492 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.189 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.240 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.500 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; P-value for pre-test of parallel trends assumption:  0.31&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
 &lt;/table&gt;
 ]
 
 ---
-.left-column[
-- Some SEs hard to understand.
-
-- Cluster bootstrapped smaller in most cases.
-
-- Absurdly small for ATT(4,4) that has small sample and only 4 clusters.
-]
-.right-column[
-
-
-&lt;img src="/Users/samharper/git/tamani/talk/atts_se.png" width="3600" /&gt;
-]
-
----
-### Creating the Group-Time ATTs
+### Re-creating the Group-Time ATTs
 - ATT(.red[2],.blue[2]) means estimating ATT .blue[*at time 2*] for the group .red[*first treated at time 2*]
 
-- For ATT(2,2) the groups being compared are:
+- For ATT(2,2) we are comparing Pr(SBA) between:
 &lt;table class="table lightable-minimal" style='margin-left: auto; margin-right: auto; font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;border-bottom: 0;'&gt;
  &lt;thead&gt;
   &lt;tr&gt;
@@ -777,14 +815,67 @@ This estimate says that intervention increased the probability of an SBA birth b
 &lt;/table&gt;
 
 
-### Note
 - ATT(.red[2],.blue[3]) means estimating the ATT .blue[*at time 3*] for the group .red[*first treated at time 2*]
 
 - Need to exclude any group treated at time 3 to avoid bias.
 
 - The group first treated at time 3 is excluded.
 
+- Provides an estimate of the lagged impact of intervention.
+
 ---
+&lt;table class="table lightable-minimal" style='margin-left: auto; margin-right: auto; font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;border-bottom: 0;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; group &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time4 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time5 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;"&gt; 0.631 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.711 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;"&gt; 0.814 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.846 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.826 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: white !important;"&gt; 0.678 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.770 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: white !important;"&gt; 0.664 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.784 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.778 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.807 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.673 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.750 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.868 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.939 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.855 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Red = treated, Gray = untreated&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+
 - The 2x2 (weighted averages):
 &lt;table class=" lightable-minimal" style='font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;'&gt;
  &lt;thead&gt;
@@ -815,11 +906,528 @@ This estimate says that intervention increased the probability of an SBA birth b
 &lt;/table&gt;
 
 ---
-## Questions
+class: center, middle
+# Etc., etc., etc...
+
+---
+- For ATT(4,2) the groups being compared are:
+&lt;table class="table lightable-minimal" style='margin-left: auto; margin-right: auto; font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;border-bottom: 0;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; group &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time4 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time5 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: white !important;"&gt; 0.631 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: white !important;"&gt; 0.711 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.814 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.846 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.826 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.678 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.770 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.664 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.784 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;"&gt; 0.778 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;"&gt; 0.807 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.673 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.750 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.868 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.939 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.855 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Red = treated, Gray = untreated&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+
+
+- ATT(.red[4],.blue[2]) means estimating the ATT .blue[*at time 2*] for the group .red[*first treated at time 4*]
+
+- Need to exclude any group treated at time 2 to avoid bias.
+
+- The group first treated at time 2 is excluded.
+
+- Provides an estimate of the lead effects or non-parallel trends.
+
+---
+&lt;table class="table lightable-minimal" style='margin-left: auto; margin-right: auto; font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;border-bottom: 0;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; group &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time4 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time5 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: white !important;"&gt; 0.631 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: white !important;"&gt; 0.711 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.814 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.846 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.826 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.678 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.770 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.664 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.784 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;"&gt; 0.778 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;"&gt; 0.807 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.673 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.750 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.868 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.939 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.855 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Red = treated, Gray = untreated&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+
+- The 2x2 (weighted averages):
+&lt;table class=" lightable-minimal" style='font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; g42 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Long diff &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; ATT_4_2 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.727 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.818 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.091 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.778 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.807 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.029 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; -0.062 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+Our 'hand-calculated' ATT(4,2) of -0.062 is the same as the CS estimate:
+&lt;table class="table" style="margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; term &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; group &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.low &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.high &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(2,2) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.011 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.056 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.099 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.121 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(2,3) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.260 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.059 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.145 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.376 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(2,4) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.269 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.169 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.062 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.600 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(3,2) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.045 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.043 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.038 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.129 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(3,3) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.018 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.071 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.122 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.159 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(3,4) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.170 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.156 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.137 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.476 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;background-color: yellow !important;"&gt; ATT(4,2) &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: yellow !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: yellow !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: yellow !important;"&gt; -0.062 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: yellow !important;"&gt; 0.044 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: yellow !important;"&gt; -0.149 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: yellow !important;"&gt; 0.024 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(4,3) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.048 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.081 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.206 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.110 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ATT(4,4) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.130 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.185 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.232 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.493 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+"Final" ATT(4,4) compares only 2 groups:
+&lt;table class="table lightable-minimal" style='margin-left: auto; margin-right: auto; font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;border-bottom: 0;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; group &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time4 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time5 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.631 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.711 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: white !important;"&gt; 0.814 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: white !important;"&gt; 0.846 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.826 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.678 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.770 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: white !important;"&gt; 0.664 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: white !important;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;background-color: white !important;"&gt; 0.784 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.778 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.807 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;"&gt; 0.673 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;"&gt; 0.750 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: white !important;"&gt; 0.868 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.939 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;color: black !important;background-color: red !important;background-color: lightgray !important;"&gt; 0.800 &lt;/td&gt;
+   &lt;td style="text-align:right;background-color: lightgray !important;background-color: white !important;"&gt; 0.855 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Red = treated, Gray = untreated&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+
+- The 2x2 (weighted averages):
+&lt;table class=" lightable-minimal" style='font-family: "Trebuchet MS", verdana, sans-serif; margin-left: auto; margin-right: auto;'&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; g44 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; time4 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Long diff &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; ATT_4_4 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.854 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.80 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.054 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.673 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.75 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.077 &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;"&gt; 0.13 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+## Questions / Help
 .right-column[
 ### Aggregating
+#### What is the right way to conceptualize aggregating the ATTs?
 
 ### Clustering
+#### What is the correct standard error?
+]
+
+---
+### Dynamic Effects
+.pull-left[
+- Estimates by length of exposure
+
+- Overall summary:
+  - ATT = 0.176 (-0.02, 0.37)
+
+&lt;table class="table" style="font-size: 16px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; event.time &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.low &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.high &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.062 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.045 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.150 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.026 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.004 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.047 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.088 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.096 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.053 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.071 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.087 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.193 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.204 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.100 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.401 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.269 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.159 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.043 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.581 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+- Recall TWFE estimate was 0.06 (-0.013, 0.133).
+]
+
+.pull-right[
+![](tamani-3po_files/figure-html/dynamic_g-1.png)&lt;!-- --&gt;
+]
+
+---
+### Group-specific ATTs
+.pull-left[
+- Group-specific estimates
+
+- Weighted average of each group-time ATT
+
+&lt;table class="table" style="font-size: 16px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; group &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.low &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.high &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Average &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.128 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.103 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.075 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.331 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.180 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.067 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.049 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.311 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.094 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.092 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.086 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.274 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.130 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.189 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.240 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.501 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+- Recall TWFE estimate was 0.06 (-0.013, 0.133).
+]
+
+.pull-right[
+![](tamani-3po_files/figure-html/grouped_g-1.png)&lt;!-- --&gt;
+]
+
+---
+### Calendar Time ATTs
+.pull-left[
+- Time-specific estimates
+
+- - Overall summary:
+  - ATT = 0.102 (-0.02, 0.22)
+
+&lt;table class="table" style="font-size: 16px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; time &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; std.error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.low &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; conf.high &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.011 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.055 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.096 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.118 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.111 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.055 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.004 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.218 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.183 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.145 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.102 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.467 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+- Recall TWFE estimate was 0.06 (-0.013, 0.133).
+]
+
+.pull-right[
+![](tamani-3po_files/figure-html/calendar_g-1.png)&lt;!-- --&gt;
+]
+
+---
+.left-column[
+- Some SEs hard to understand.
+
+- Cluster bootstrapped smaller in most cases.
+
+- Absurdly small for ATT(4,4) that has small sample and only 4 clusters.
+]
+.right-column[
+
+
+&lt;img src="/Users/samharper/git/tamani/talk/atts_se.png" width="3600" /&gt;
 ]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
